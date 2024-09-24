@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 페이지 레이아웃</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e0f5f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .header {
+            background-color: #62d0c8;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .promo-banner {
+            background-color: #f9f3d2;
+            padding: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .menu-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .menu-section div {
+            text-align: center;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #62d0c8;
+            color: white;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="location">의정부시 문충로 98</div>
+        <div class="icons">
+            <span>🔍</span>
+            <span>🛒</span>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="찾는 메뉴가 뭐에요?">
+    </div>
+
+    <div class="promo-banner">
+        최소주문금액 없는 10% 쿠폰!
+    </div>
+
+    <div class="menu-section">
+        <div>가게배달</div>
+        <div>장보기/쇼핑</div>
+        <div>대용량특가</div>
+        <div>배민배달</div>
+        <div>돈까스/회</div>
+        <div>피자</div>
+        <div>중식</div>
+        <div>치킨</div>
+        <div>카페/디저트</div>
+        <div>분식</div>
+        <div>스타벅스</div>
+        <div>CU</div>
+        <div>GS더프레시</div>
+    </div>
+
+    <footer>
+        Home | 장보기/쇼핑 | 찜 | 주문내역 | 마이배민
+    </footer>
+</div>
+
+</body>
+</html>

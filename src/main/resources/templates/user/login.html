@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <div th:if="${param.error}">
+        <h3>아이디나 비밀번호가 틀립니다.</h3>
+    </div>
+
+    <form action="/user/login" method="POST">
+        <input type="text" name="username"><br>
+        <input type="text" name="password"><br>
+        <button type="submit">전송</button>
+    </form>
+    
+</body>
+</html>
