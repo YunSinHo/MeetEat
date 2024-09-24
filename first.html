@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웨이팅 맛집</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+            font-family: fantasy;
+        }
+
+        h1 {
+            font-size: 20px; /* 크기 조절 */
+            color: #3d0511; /* 색상 조절 */
+            margin-bottom: 20px;
+            animation: fadeOut 5s forwards; /* 애니메이션 시간 수정 */
+        }
+
+        #logo {
+            width: 500px; /* 로고 크기를 조절하세요 */
+            animation: fadeOut 5s forwards; /* 애니메이션 시간 수정 */
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <img id="logo" src="LOGO.png" alt="로고" />
+    <h1>저랑 같이 ‘웨이팅 맛집’에서 식사 하실래요?</h1>
+
+    <script>
+        // 로고와 텍스트가 사라진 후 페이지를 이동하고 싶다면 여기에 코드를 추가하세요.
+        setTimeout(() => { 
+            window.location.href = 'second.html';
+        }, 3000); // 로고와 텍스트가 사라진 후 3초 후에 실행
+    </script>
+</body>
+</html>
