@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 // 이메일 전송 서비스 클래스
 public class EmailService {
 
+    // 수정한내용ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
     @Autowired
     private JavaMailSender mailSender;
 
