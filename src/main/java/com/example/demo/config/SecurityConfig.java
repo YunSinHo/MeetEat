@@ -24,15 +24,10 @@ public class SecurityConfig {
                 httpSecurity.formLogin((formLogin) -> formLogin.loginPage("/user/login")
                                 .defaultSuccessUrl("/index?login")
                                 .failureUrl("/user/login?error"));
-                httpSecurity.formLogin((formLogin) -> formLogin.loginPage("/owner/login")
-                                .defaultSuccessUrl("/index?login")
-                                .failureUrl("/owner/login?error"));
 
                 httpSecurity.logout((logout) -> logout.logoutUrl("/user/logout")
                                 .logoutSuccessUrl("/index?logout=true"));
 
-                httpSecurity.logout((logout) -> logout.logoutUrl("/owner/logout")
-                                .logoutSuccessUrl("/index?logout=true"));
 
                 return httpSecurity.build();
 
