@@ -14,6 +14,7 @@ public class EmailService {
 
     // 수정한내용ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
     // 테스트수정
+    // 두번 째 테스트
     @Autowired
     private JavaMailSender mailSender;
 
