@@ -143,11 +143,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="email">이메일</label>
-                <input type="text" id="email" name="email" placeholder="example@domain.com">
-                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
-            </div>
+
 
             <div class="form-group">
                 <label for="phoneNumber">전화번호</label>
@@ -155,12 +151,18 @@
                 <div id="phoneError" class="error-message">올바른 전화번호를 입력하세요.</div>
             </div>
 
-            <div class="terms">
-                <input type="checkbox" id="termsCheck">
-                <label for="termsCheck">이용약관에 동의합니다.</label>
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="text" id="email" name="email" placeholder="example@domain.com"><br />
+                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
+                <input type="text" id="code" name="code" placeholder="인증번호 입력" style="display:none;">
+                <a href="#" id="resendLink" style="display:none;">재전송</a>
+                <div id="confirmCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
+                <button type="button" id="confirmCodeBtn" style="display:none;">인증하기</button>
             </div>
 
-            <button type="submit" id="submitBtn" disabled>가입하기</button>
+            <button type="button" id="sendBtn" disabled>이메일 인증번호 전송</button>
+            <button type="submit" id="submitBtn" style="display:none;" disabled>가입하기</button>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -174,6 +176,12 @@
         const phoneInput = document.getElementById('phoneNumber');
         const submitBtn = document.getElementById('submitBtn');
         const termsCheck = document.getElementById('termsCheck');
+        const sendBtn = document.getElementById('sendBtn');
+        const authCodeInput = document.getElementById('authCode');
+        const resendLink = document.getElementById('resendLink');
+        const confirmCodeBtn = document.getElementById('confirmCodeBtn');
+        const code = document.getElementById('code');
+
 
         const usernameError = document.getElementById('usernameError');
         const emailError = document.getElementById('emailError');
@@ -181,13 +189,17 @@
         const nameError = document.getElementById('nameError');
         const confirmPasswordError = document.getElementById('confirmPasswordError');
         const phoneError = document.getElementById('phoneError');
+        const confirmCodeError = document.getElementById('confirmCodeError');
+
 
         let validId = false;
         let checkGender = false;
+        let authCode = "";
+        let validCode = false;
         usernameInput.addEventListener('input', function () {
             const username = usernameInput.value;
 
-            // 3자 이상 입력 시에만 서버로 요청
+            // 아이디 체크, 3자 이상 입력 시에만 서버로 요청
             if (username.length >= 3) {
                 $.ajax({
                     url: '/user/check-username',
@@ -222,6 +234,8 @@
             checkFormValidity();
         });
 
+
+
         // 이메일 유효성 검사
         emailInput.addEventListener('input', () => {
             const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -229,9 +243,73 @@
                 emailError.style.display = 'block';
             } else {
                 emailError.style.display = 'none';
+                sendBtn.disabled = false;
             }
             checkFormValidity();
         });
+
+        // 이메일 인증하기
+        // 이메일에 인증 코드 보내기
+        function sendCode() {
+            $.ajax({
+                url: '/send-email',
+                type: 'POST',
+                success: function (response) {
+                    authCode = response;
+                    code.style.display = 'block';
+                    sendBtn.style.display = 'none';
+                    resendLink.style.display = 'block';
+                    confirmCodeBtn.style.display = 'block';
+                },
+                error: function () {
+                    return;
+                }
+            });
+        }
+        sendBtn.addEventListener('click', sendCode);
+        resendLink.addEventListener('click', sendCode);
+
+        // 코드 인증하기
+        confirmCodeBtn.addEventListener('click', function () {
+            let inputCode = code.value;
+            $.ajax({
+                url: '/check-code',
+                type: 'POST',
+                data: {
+                    authCode: authCode,
+                    inputCode: inputCode
+                },
+                success: function (response) {
+                    if (response.isValidCode === true) {
+                        confirmCodeError.textContent = "인증 완료";
+                        confirmCodeError.className = 'success-message';
+                        confirmCodeError.style.display = 'block';
+                        validCode = true;
+
+                        sendBtn.style.display = 'none';
+                        resendLink.style.display = 'none';
+                        confirmCodeBtn.style.display = 'none';
+                        submitBtn.style.display = 'block';
+                        checkFormValidity();
+                    }
+
+                    else {
+                        confirmCodeError.textContent = "잘못된 인증번호";
+                        confirmCodeError.className = 'error-message';
+                        confirmCodeError.style.display = 'block';
+                        validCode = false;
+                    }
+
+                },
+                error: function () {
+                    return;
+                }
+            });
+
+        });
+
+
+
 
         // 비밀번호 유효성 검사
         passwordInput.addEventListener('input', () => {
@@ -290,10 +368,7 @@
             checkFormValidity();
         });
 
-        // 약관 체크
-        termsCheck.addEventListener('change', () => {
-            checkFormValidity();
-        });
+
 
         // 폼 전체 유효성 검사
         function checkFormValidity() {
@@ -304,9 +379,11 @@
                 nameError.style.display === 'none' &&
                 checkGender &&
                 confirmPasswordError.style.display === 'none' &&
-                phoneError.style.display === 'none' &&
-                termsCheck.checked;
-            submitBtn.disabled = !isFormValid;
+                validCode;
+            if (isFormValid) {
+                submitBtn.style.display === 'block';
+                submitBtn.disabled = false;
+            }
         }
 
     </script>
