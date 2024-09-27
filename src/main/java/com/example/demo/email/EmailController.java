@@ -2,10 +2,8 @@ package com.example.demo.email;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
@@ -19,6 +17,7 @@ public class EmailController {
     private EmailService emailService;
 
 
+    // 이메일 코드 전송
     @PostMapping("/send-email")
     public ResponseEntity<String> sendEmail() {
         String authCode = VerificationCodeGenerator.generateVerificationCode();
@@ -27,6 +26,7 @@ public class EmailController {
         return ResponseEntity.ok(authCode);
     }
 
+    // 코드 확인
     @PostMapping("/check-code")
     public ResponseEntity<Map<String, Boolean>> checkCode(@RequestParam("authCode") String authCode,
             @RequestParam("inputCode") String inputCode) {

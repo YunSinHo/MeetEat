@@ -16,7 +16,6 @@ public class UserDTO {
     private String name;
     private String email;
     private String phoneNumber;
-    private Character gender;
     private Boolean isActive = true;
     private LocalDateTime createdAt;
 
@@ -24,13 +23,12 @@ public class UserDTO {
 
     }
 
-    public UserDTO(String username, String password, String name, String email, String phoneNumber, Character gender){
+    public UserDTO(String username, String password, String name, String email, String phoneNumber){
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.gender = gender;
     }
 
 }

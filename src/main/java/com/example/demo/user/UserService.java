@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +31,20 @@ public class UserService {
     }
 
     // 아이디 중복 체크
-    public boolean isExist(String username) {
+    public boolean isExistsUsername(String username) {
 
         return userRepository.existsByUsername(username);
+    }
+
+    // 현재 로그인한 사용자의 id
+    public Long loggedInUserId(){
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userRepository.findByUsername(username)
+                                   .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+        return user.getUserId();
+        
     }
 
     

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            display: none;
+        }
+
+        .terms {
+            margin-top: 20px;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        /* 네모 버튼 */
+        .custom-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            background-color: white;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        /* 선택 시 스타일 */
+        input[type="radio"]:checked+.custom-radio {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        /* 선택된 성별 텍스트 표시 */
+        .radio-label span {
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/user/joinform" method="post">
+    <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="text" id="email" name="email" placeholder="example@domain.com"><br />
+        <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
+        <input type="text" id="code" name="code" placeholder="인증번호 입력" style="display:none;">
+        <a href="#" id="resendLink" style="display:none;">재전송</a>
+        <div id="confirmCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
+        <button type="button" id="confirmCodeBtn" style="display:none;">인증하기</button>
+
+        <button type="button" id="sendBtn" disabled>이메일 인증번호 전송</button>
+        <button type="submit"  id="nextBtn" disabled>다음</button>
+    </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const emailInput = document.getElementById('email');
+        const resendLink = document.getElementById('resendLink');
+        const confirmCodeBtn = document.getElementById('confirmCodeBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const code = document.getElementById('code');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const emailError = document.getElementById('emailError');
+        const confirmCodeError = document.getElementById('confirmCodeError');
+
+        let authCode = "";
+
+        emailInput.addEventListener('input', () => {
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(emailInput.value)) {
+                emailError.style.display = 'block';
+                emailError.className = 'error-message';
+                emailError.textContent = "올바른 이메일을 입력하세요.";
+                emailError.style.display = 'block';
+            } else {
+                const username = emailInput.value;
+
+                // 중복 체크
+                $.ajax({
+                    url: '/user/check-username',
+                    type: 'POST',
+                    data: { username: username },
+                    success: function (response) {
+                        if (response.exist) {
+                            emailError.textContent = "이미 사용 중인 이메일입니다.";
+                            emailError.className = 'error-message';
+                            emailError.style.display = 'block';
+                        } else {
+                            emailError.textContent = "사용 가능한 이메일입니다.";
+                            emailError.className = 'success-message';
+                            emailError.style.display = 'block';
+                            sendBtn.disabled = false;
+                        }
+                    },
+                    error: function () {
+                        emailError.textContent = "서버 오류가 발생했습니다.";
+                        emailError.className = 'error-message';
+                        emailError.style.display = 'block';
+                    }
+                });
+            }
+        });
+        // 이메일에 인증 코드 보내기
+        function sendCode() {
+            $.ajax({
+                url: '/send-email',
+                type: 'POST',
+                success: function (response) {
+                    authCode = response;
+                    code.style.display = 'block';
+                    sendBtn.style.display = 'none';
+                    resendLink.style.display = 'block';
+                    confirmCodeBtn.style.display = 'block';
+                },
+                error: function () {
+                    return;
+                }
+            });
+        }
+        sendBtn.addEventListener('click', sendCode);
+        resendLink.addEventListener('click', sendCode);
+
+        // 코드 인증하기
+        confirmCodeBtn.addEventListener('click', function () {
+            let inputCode = code.value;
+            $.ajax({
+                url: '/check-code',
+                type: 'POST',
+                data: {
+                    authCode: authCode,
+                    inputCode: inputCode
+                },
+                success: function (response) {
+                    if (response.isValidCode === true) {
+                        confirmCodeError.textContent = "인증 완료";
+                        confirmCodeError.className = 'success-message';
+                        confirmCodeError.style.display = 'block';
+
+                        sendBtn.style.display = 'none';
+                        resendLink.style.display = 'none';
+                        confirmCodeBtn.style.display = 'none';
+                        nextBtn.disabled = false;
+                    }
+
+                    else {
+                        confirmCodeError.textContent = "잘못된 인증번호";
+                        confirmCodeError.className = 'error-message';
+                        confirmCodeError.style.display = 'block';
+                    }
+
+                },
+                error: function () {
+                    return;
+                }
+            });
+
+        });
+
+
+    </script>
+</body>
+
+</html>

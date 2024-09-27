@@ -39,9 +39,6 @@ public class Users {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "gender", nullable = false)
-    private Character gender;
-
     @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isActive = true;
 
@@ -55,11 +52,10 @@ public class Users {
 
 
     public void setUser(UserDTO userDTO) {
-        this.username = userDTO.getUsername();
+        this.username = userDTO.getEmail();
         this.password = userDTO.getPassword();
         this.name = userDTO.getName();
         this.email = userDTO.getEmail();
-        this.gender = userDTO.getGender();
         this.phoneNumber = userDTO.getPhoneNumber();
     }
 }

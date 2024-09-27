@@ -19,7 +19,8 @@ public class SecurityConfig {
                 httpSecurity.authorizeHttpRequests((authorize) -> authorize
                                 .anyRequest().permitAll());
 
-                // httpSecurity.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/**").permitAll());
+                // httpSecurity.authorizeHttpRequests((authorize) ->
+                // authorize.requestMatchers("/**").permitAll());
 
                 httpSecurity.formLogin((formLogin) -> formLogin.loginPage("/user/login")
                                 .defaultSuccessUrl("/index?login")
@@ -28,6 +29,17 @@ public class SecurityConfig {
                 httpSecurity.logout((logout) -> logout.logoutUrl("/user/logout")
                                 .logoutSuccessUrl("/index?logout=true"));
 
+                
+
+                // 오너 로그인 설정
+                // httpSecurity.formLogin((formLogin) -> formLogin
+                //                 .loginPage("/owner/login") // 오너 로그인 페이지
+                //                 .defaultSuccessUrl("/owner/home?login") // 오너 로그인 성공 후 리다이렉트
+                //                 .failureUrl("/owner/login?error")); // 오너 로그인 실패 시 리다이렉트
+
+                // httpSecurity.logout((logout) -> logout
+                //                 .logoutUrl("/owner/logout") // 오너 로그아웃 URL
+                //                 .logoutSuccessUrl("/index?logout=true")); // 로그아웃 성공 시 리다이렉트
 
                 return httpSecurity.build();
 
