@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 선택</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- 외부 CSS 연결 -->
+    <style>
+        .choice-container {
+            text-align: center;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: white;
+            color: rgb(49, 49, 49);
+            border: 2px solid #f39c12;;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <div class="choice-container">
+        <button class="button" onclick="window.location.href='phone_verification.html'">전화번호로 가입</button>
+        <button class="button" onclick="window.location.href='email_signup.html'">이메일로 가입</button>
+    </div>
+</body>
+</html>

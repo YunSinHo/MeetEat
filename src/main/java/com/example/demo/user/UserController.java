@@ -39,9 +39,13 @@ public class UserController {
     // 회원가입 첫 화면
     @GetMapping("/check-email")
     public String checkEmail() {
-        return "/user/checkEmail";
+        return "/user/check-email";
     }
     
+    @GetMapping("/test")
+    public String test(){
+        return "/user/email_signup";
+    }
 
     // 두 번째 회원가입페이지
     @PostMapping("/joinform")

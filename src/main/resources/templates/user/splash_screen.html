@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetEat 로딩 화면</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- 외부 CSS 연결 -->
+    <style>
+        .loading-container {
+            text-align: center;
+        }
+        .message {
+            font-size: 23px;
+            font-weight: bold; /* 글자 두껍게 설정 */
+            color: #333;
+            margin-top: 0;
+        }
+        .color-transition {
+            animation: colorChange 1s forwards;
+        }
+
+        @keyframes colorChange {
+            0% { background-color: #f39c12; }
+            100% { background-color: #ffffff; }
+        }
+
+    </style>
+    <script>
+        setTimeout(() => {
+            window.location.href = "index.html"; // 회원가입 화면으로 이동
+        }, 3000); // 3초 후 이동
+    </script>
+</head>
+<body>
+    <div class="loading-container">
+        <img src="images/loading_logo.png" alt="로딩 중" class="loading-logo">
+        <div class="message">저랑 같이 '웨이팅 맛집'에서 식사하실래요?</div>
+    </div>
+</body>
+</html>
