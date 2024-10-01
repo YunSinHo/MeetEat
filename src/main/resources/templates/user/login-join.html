@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeetEat 회원가입</title>
-    <link rel="stylesheet" href="css/styles.css"> <!-- 외부 CSS 연결 -->
+    <link rel="stylesheet" href="/css/styles.css"> <!-- 외부 CSS 연결 -->
     <style>
         .background-container {
             position: fixed; /* 고정 위치 */
@@ -76,18 +76,18 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="images/register_page_background.jfif" alt="배경" class="register_page_background">
+        <img src="/images/register_page_background.jfif" alt="배경" class="register_page_background">
     </div>
     <div class="signup-container">
         <div class="title">
             숨겨진 맛집부터 나와 딱 맞는 식사 파트너까지!<br>
             지금 식사 시간 괜찮으세요?
         </div>
-        <button class="button" onclick="window.location.href='signup_choice.html'">회원가입</button>
+        <button class="button" onclick="window.location.href='/user/signup-choice'">회원가입</button>
         <button class="button">카카오톡 계정으로 계속</button>
         <div class="account-check">
             <div>이미 계정이 있나요?</div>
-            <a href="#" class="login-link" onclick="window.location.href='login.html'">로그인</a>
+            <a href="#" class="login-link" onclick="window.location.href='/user/login'">로그인</a>
         </div>        
     </div>
 </body>

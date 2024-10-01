@@ -11,6 +11,8 @@ public class UserProFileDTO {
 
     private Long userId;
 
+    private String name;
+
     private String nickname;
 
     private Date dateOfBirth;

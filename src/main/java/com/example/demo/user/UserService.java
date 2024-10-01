@@ -36,6 +36,11 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
+    public boolean isExistsPhoneNumber(String phoneNumber) {
+
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
     // 현재 로그인한 사용자의 id
     public Long loggedInUserId(){
 

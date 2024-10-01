@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/user")
@@ -30,30 +32,36 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 로그인
-    @GetMapping("/login")
-    public String login() {
-        return "/user/login";
+    // 첫 화면 이후 로그인 or 회원가입 화면
+    @GetMapping("/login-join")
+    public String loginOrJoin() {
+        return "/user/login-join";
     }
-
-    // 회원가입 첫 화면
-    @GetMapping("/check-email")
-    public String checkEmail() {
-        return "/user/check-email";
+    // 회원가입 방식 선택 페이지로 이동
+    @GetMapping("/signup-choice")
+    public String signupChoice() {
+        return "/user/signup-choice";
     }
     
-    @GetMapping("/test")
-    public String test(){
-        return "/user/email_signup";
+    // 휴대폰 번호로 회원가입
+    @GetMapping("/phone-verification")
+    public String phoneVerification() {
+        return "/user/phone-verification";
     }
 
-    // 두 번째 회원가입페이지
-    @PostMapping("/joinform")
-    public String joinForm(@RequestParam("email") String email, Model model) {
+    // 이메일로 회원가입
+    @GetMapping("/email-verification")
+    public String emailVerification() {
+        return "/user/email-verification";
+    }
+    
+    // 휴대폰 or 이메일 인증 후 다음 화면
+    @PostMapping("/next-join")
+    public String nextJoin(@RequestParam("email") String email, Model model) {
         model.addAttribute("email", email);
-        return "/user/join";
+        return "/user/next-join";
     }
-
+    
     // 회원가입 처리
     @PostMapping("/join")
     public String join(@ModelAttribute UserDTO userDTO) {
@@ -69,13 +77,42 @@ public class UserController {
         System.out.println(userService.loggedInUserId());
         return "redirect:/";
     }
+    
 
-    // 아이디 중복 확인
-    @PostMapping("/check-username")
-    public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam("username") String username) {
+    // 로그인
+    @GetMapping("/login")
+    public String login() {
+        return "/user/login";
+    }
+
+
+
+    // 두 번째 회원가입페이지
+    // @PostMapping("/joinform")
+    // public String joinForm(@RequestParam("email") String email, Model model) {
+    //     model.addAttribute("email", email);
+    //     return "/user/join";
+    // }
+
+    
+
+    // 아이디 중복 확인(일단 이메일로)
+    @PostMapping("/isExist-username")
+    public ResponseEntity<Map<String, Boolean>> isExistUsername(@RequestParam("username") String username) {
         boolean exist = userService.isExistsUsername(username);
         Map<String, Boolean> response = new HashMap<>();
         response.put("exist", exist);
         return ResponseEntity.ok(response);
     }
+
+    // 전화번호 중복확인
+    @PostMapping("/isExist-phoneNumber")
+    public ResponseEntity<Map<String, Boolean>> isExistPhoneNumber(@RequestParam("phoneNumber") String phoneNumber) {
+        
+        boolean exist = userService.isExistsPhoneNumber(phoneNumber);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exist", exist);
+        return ResponseEntity.ok(response);
+    }
+    
 }

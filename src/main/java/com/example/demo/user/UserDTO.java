@@ -13,7 +13,6 @@ public class UserDTO {
     private Long userId;
     private String username;
     private String password;
-    private String name;
     private String email;
     private String phoneNumber;
     private Boolean isActive = true;
@@ -23,10 +22,9 @@ public class UserDTO {
 
     }
 
-    public UserDTO(String username, String password, String name, String email, String phoneNumber){
+    public UserDTO(String username, String password, String email, String phoneNumber){
         this.username = username;
         this.password = password;
-        this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }

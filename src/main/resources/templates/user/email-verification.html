@@ -10,34 +10,32 @@
 </head>
 
 <body>
-    <form action="/user/joinform" method="post">
+    <form action="/user/next-join" method="post">
         <div class="container">
             <img src="/images/logo.png" class="logo">
             <div class="title">이메일로 가입해주세요</div>
             <div class="subtitle">신뢰할 수 있는 커뮤니티를 위해 필요해요!</div>
             <div class="input-group">
                 <input type="text" id="email" name="email" class="input" placeholder="example@domain.com">
-                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div> <!-- 에러 메시지 위치 이동 -->
+                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div> 
                 <button type="button" id="sendBtn" class="button-request" disabled>인증 요청</button>
                 <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력" style="display:none;">
                 <a href="#" id="resendLink" style="display:none;">재전송</a>
-                <div id="confirmCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
-                <button type="button" id="confirmCodeBtn">인증하기</button>
+                <div id="verifyCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
             </div>
         </div>
-        <button type="submit" class="button-next" id="nextBtn" disabled>확인</button>
+        <button type="submit" class="button-next" id="verifyCodeBtn" disabled>확인</button>
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const emailInput = document.getElementById('email');
         const resendLink = document.getElementById('resendLink');
-        const confirmCodeBtn = document.getElementById('confirmCodeBtn');
         const sendBtn = document.getElementById('sendBtn');
         const code = document.getElementById('code');
-        const nextBtn = document.getElementById('nextBtn');
+        const verifyCodeBtn = document.getElementById('verifyCodeBtn');
 
         const emailError = document.getElementById('emailError');
-        const confirmCodeError = document.getElementById('confirmCodeError');
+        const verifyCodeError = document.getElementById('verifyCodeError');
 
         let authCode = "";
 
@@ -48,8 +46,7 @@
             sendBtn.disabled = true;
             resendLink.style.display = 'none';
             sendBtn.style.display = 'block';
-            confirmCodeBtn.style.display = 'none';
-            confirmCodeError.style.display = 'none';
+            verifyCodeError.style.display = 'none';
             const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailPattern.test(emailInput.value)) {
                 emailError.style.display = 'block';
@@ -61,7 +58,7 @@
 
                 // 중복 체크
                 $.ajax({
-                    url: '/user/check-username',
+                    url: '/user/isExist-username',
                     type: 'POST',
                     data: { username: username },
                     success: function (response) {
@@ -88,7 +85,7 @@
         // 이메일에 인증 코드 보내기
         function sendCode() {
             emailError.style.display = 'none';
-            confirmCodeError.style.display = 'none';
+            verifyCodeError.style.display = 'none';
             $.ajax({
                 url: '/send-email',
                 type: 'POST',
@@ -97,8 +94,7 @@
                     code.style.display = 'block';
                     sendBtn.style.display = 'none';
                     resendLink.style.display = 'block';
-                    confirmCodeBtn.style.display = 'block';
-                    confirmCodeBtn.disabled = false;
+                    verifyCodeBtn.disabled = false;
                 },
                 error: function () {
                     return;
@@ -109,7 +105,8 @@
         resendLink.addEventListener('click', sendCode);
 
         // 코드 인증하기
-        confirmCodeBtn.addEventListener('click', function () {
+        verifyCodeBtn.addEventListener('click', function (event) {
+            event.preventDefault();
             let inputCode = code.value;
             $.ajax({
                 url: '/check-code',
@@ -120,21 +117,13 @@
                 },
                 success: function (response) {
                     if (response.isValidCode === true) {
-                        confirmCodeError.textContent = "인증 완료";
-                        confirmCodeError.className = 'success-message';
-                        confirmCodeError.style.display = 'block';
-
-                        sendBtn.style.display = 'none';
-                        resendLink.style.display = 'none';
-                        confirmCodeBtn.style.display = 'none';
-                        nextBtn.disabled = false;
-                        emailInput.readOnly = true;
+                        document.querySelector('form').submit();
                     }
 
                     else {
-                        confirmCodeError.textContent = "잘못된 인증번호";
-                        confirmCodeError.className = 'error-message';
-                        confirmCodeError.style.display = 'block';
+                        verifyCodeError.textContent = "잘못된 인증번호";
+                        verifyCodeError.className = 'error-message';
+                        verifyCodeError.style.display = 'block';
                         confirmCodeBtn.disabled = false;
                     }
 
@@ -148,7 +137,7 @@
 
         // 코드 유효성
         code.addEventListener('input', function () {
-            nextBtn.disabled = !code.value.length === 6;
+            verifyCodeBtn.disabled = !code.value.length === 6;
         });
 
 

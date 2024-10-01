@@ -1,21 +1,48 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Login</h1>
-    <div th:if="${param.error}">
-        <h3>아이디나 비밀번호가 틀립니다.</h3>
-    </div>
+    <title>이메일로 가입하기</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- 외부 CSS 연결 -->
+    <style>
+        .title {
+            margin-bottom: 50px;
+        }
 
+        .input-group {
+            position: relative;
+            margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            /* 세로 방향으로 정렬 */
+            gap: 10px;
+            /* 입력 필드 사이 여백 추가 */
+            align-items: center;
+        }
+
+        .input {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
     <form action="/user/login" method="POST">
-        <input type="text" name="username"><br>
-        <input type="text" name="password"><br>
-        <button type="submit">전송</button>
+        <div class="container">
+            <img src="/images/logo.png" class="logo">
+            <div class="title">
+                맛있는 음식을 예약하면<br>
+                새로운 인연을 만날 기회도 생겨요!
+            </div>
+            <div class="input-group">
+                <input type="text" class="input" placeholder="아이디">
+                <input type="text" class="input" placeholder="비밀번호">
+            </div>
+        </div>
+        <button type="submit" class="button-login"> 로그인</button>
     </form>
-    
 </body>
+
 </html>

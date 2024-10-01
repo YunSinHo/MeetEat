@@ -22,6 +22,8 @@ public class UserProfile {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "name", nullable = false)
+    private String name;
     @Column(name = "nickname", length = 255)
     private String nickname;
 

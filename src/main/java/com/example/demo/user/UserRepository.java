@@ -11,4 +11,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     // 해당 아이디가 이미 존재하는지 확인
     boolean existsByUsername(String username);
+
+    // 해당 전화번호가 이미 존재하는지
+    boolean existsByPhoneNumber(String PhoneNumber);
 }

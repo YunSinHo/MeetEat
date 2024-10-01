@@ -30,9 +30,6 @@ public class Users {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -54,7 +51,6 @@ public class Users {
     public void setUser(UserDTO userDTO) {
         this.username = userDTO.getEmail();
         this.password = userDTO.getPassword();
-        this.name = userDTO.getName();
         this.email = userDTO.getEmail();
         this.phoneNumber = userDTO.getPhoneNumber();
     }
