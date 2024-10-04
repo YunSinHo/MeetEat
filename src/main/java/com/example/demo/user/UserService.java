@@ -19,6 +19,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // 회원 ID로 유저 찾기
+    public Users findById(Long userId) {
+        Users user = userRepository.findById(userId)
+                                   .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        return user;
+    }
+
+    // 회원 아이디로 유저 찾기
+    public Users findByUsername(String username){
+        Users user = userRepository.findByUsername(username)
+                                   .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+        return user;
+    }
+
     // 회원가입 처리
     public void saveUser(UserDTO userDTO) {
         String hashValue = passwordEncoder.encode(userDTO.getPassword());
@@ -29,6 +44,12 @@ public class UserService {
 
         userRepository.save(newUser);
     }
+
+    // 권한 저장
+    public void saveUser(Users user) {
+        userRepository.save(user);
+    }
+
 
     // 아이디 중복 체크
     public boolean isExistsUsername(String username) {
@@ -42,7 +63,7 @@ public class UserService {
     }
 
     // 현재 로그인한 사용자의 id
-    public Long loggedInUserId(){
+    public Long getLoggedInUserId(){
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByUsername(username)
@@ -51,6 +72,9 @@ public class UserService {
         return user.getUserId();
         
     }
+
+
+   
 
     
 }

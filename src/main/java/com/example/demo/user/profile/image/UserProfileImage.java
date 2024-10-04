@@ -1,4 +1,4 @@
-package com.example.demo.user.profile;
+package com.example.demo.user.profile.image;
 
 import com.example.demo.user.Users;
 

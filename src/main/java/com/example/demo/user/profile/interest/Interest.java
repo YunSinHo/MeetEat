@@ -1,4 +1,4 @@
-package com.example.demo.user.interest;
+package com.example.demo.user.profile.interest;
 
 import jakarta.persistence.*;
 import lombok.Getter;

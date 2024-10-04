@@ -1,4 +1,5 @@
 package com.example.demo.email;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
@@ -6,9 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
-import java.util.HashMap;
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 public class EmailController {
@@ -16,28 +16,38 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-
     // 이메일 코드 전송
     @PostMapping("/send-email")
-    public ResponseEntity<String> sendEmail() {
-        String authCode = VerificationCodeGenerator.generateVerificationCode();
-        emailService.sendSimpleEmail("mallrege@naver.com", "가입 인증 메일입니다.", authCode);
+    public ResponseEntity<String> sendEmail(@RequestParam(value = "email", required = false) String email) {
+        if (email == null)
+            return ResponseEntity.badRequest().body("올바른 이메일이 아닙니다.");
+        String authCode = VerificationCodeGenerator.generateVerificationCode(); // 가입 인증 코드
+        LocalDateTime currentTime = LocalDateTime.now(); // 전송한 시간
+        LocalDateTime expirationTime = currentTime.plus(5, ChronoUnit.MINUTES); // 만료 시간
+        // 재전송시 이전코드 삭제
+        boolean isExistsEmailCode = emailService.isExistsEmailCode(email);
+        if (isExistsEmailCode)
+            emailService.deleteByEmail(email);
+
+        emailService.saveEmailCode(email, authCode, currentTime, expirationTime);
+        emailService.sendSimpleEmail(email, "가입 인증 메일입니다.", authCode);
         System.out.println(authCode);
-        return ResponseEntity.ok(authCode);
+        return ResponseEntity.ok().build();
     }
 
     // 코드 확인
     @PostMapping("/check-code")
-    public ResponseEntity<Map<String, Boolean>> checkCode(@RequestParam("authCode") String authCode,
-            @RequestParam("inputCode") String inputCode) {
-        boolean isValidCode;
-        if(authCode.equals(inputCode)) isValidCode = true;
-        else isValidCode = false;
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isValidCode", isValidCode);
-        System.out.println("인증번호" + authCode + " " + "입력한 인증번호" + inputCode + isValidCode);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Void> checkCode(@RequestParam("inputEmail") String inputEmail,
+                                                          @RequestParam("inputCode") String inputCode) {
+
+        EmailCode code = emailService.findByEmail(inputEmail);
+        if (code == null) return ResponseEntity.badRequest().build();
+        String authCode = code.getVerificationCode();
+        if (authCode.equals(inputCode))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
+        
+
     }
-
 }
-
