@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.Date;
 @Getter
 @Setter
-public class UserProFileDTO {
+public class UserProfileDTO {
     private Long profileId;
 
     private Long userId;
@@ -16,10 +16,6 @@ public class UserProFileDTO {
     private String nickname;
 
     private Date dateOfBirth;
-
-    private String foodPreference;
-
-    private String interests;
-
-    private String profilePicture;
+    
+    private Character gender;
 }

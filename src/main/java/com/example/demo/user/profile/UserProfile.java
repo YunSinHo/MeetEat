@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 
 @Entity
@@ -28,10 +29,19 @@ public class UserProfile {
     private String nickname;
 
     @Column(name = "date_of_birth")
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    private LocalDateTime dateOfBirth;
 
-    public UserProfile(){}
-    
-    
+    @Column(name = "gender", nullable = false)
+    private Character gender;
+
+    public UserProfile() {
+    }
+    public UserProfile(Long userId, UserProfileDTO userProfileDTO, LocalDateTime dateTime ){
+        this.userId = userId;
+        this.name = userProfileDTO.getName();
+        this.nickname = userProfileDTO.getNickname();
+        this.gender = userProfileDTO.getGender();
+        this.dateOfBirth = dateTime;
+    }
+
 }

@@ -29,7 +29,7 @@
 </head>
 
 <body>
-    <form action="/user/login" method="POST">
+    <form action="/login/user-login" method="POST">
         <div class="container">
             <img src="/images/logo.png" class="logo">
             <div class="title">
@@ -37,8 +37,8 @@
                 새로운 인연을 만날 기회도 생겨요!
             </div>
             <div class="input-group">
-                <input type="text" class="input" placeholder="아이디">
-                <input type="text" class="input" placeholder="비밀번호">
+                <input type="text" name="username" class="input" placeholder="아이디">
+                <input type="password" name="password" class="input" placeholder="비밀번호">
             </div>
         </div>
         <button type="submit" class="button-login"> 로그인</button>

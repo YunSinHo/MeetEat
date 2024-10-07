@@ -1,16 +1,17 @@
 package com.example.demo.login;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.user.UserRepository;
@@ -20,33 +21,30 @@ import com.example.demo.user.Users;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
- 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> result = userRepository.findByUsername(username);
- 
-        if (result.isEmpty()) {
+        Users user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        Users user = result.get();
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        
-        if (user.getUsername().equals("admin")) {
-            authorities.add(new SimpleGrantedAuthority("ADMIN-USER"));
-        }
-        else {
-            authorities.add(new SimpleGrantedAuthority("NORMAL-USER"));
-        }
-
-        return new User(user.getUsername(), user.getPassword(), authorities);
-
-    }
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+                if (!passwordEncoder.matches("12341234", user.getPassword())) {
+                    throw new BadCredentialsException("Invalid password");
+                }
     
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities // 사용자 권한 포함
+        );
+    }
 }

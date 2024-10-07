@@ -1,6 +1,5 @@
-package com.example.demo.user.profile;
+package com.example.demo.user.profile.interest;
 
-import com.example.demo.owner.Categories;
 import com.example.demo.user.Users;
 
 import jakarta.persistence.*;
@@ -9,25 +8,24 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "user_food_categories")
+@Table(name = "user_interests")
 @Getter
 @Setter
 @ToString
-public class UserFoodCategory {
+public class UserInterest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_category_id")
-    private Long userCategoryId;
+    @Column(name = "user_interest_id")
+    private Long userInterestId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Categories category;
+    @JoinColumn(name = "interest_id", nullable = false)
+    private Interest interest;
 
-    public UserFoodCategory(){}
-
+    public UserInterest(){}
 }

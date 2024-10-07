@@ -8,9 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/login")
 public class LoginController {
     
-    // 일반 유저 로그인
-    @GetMapping("/user/form")
-    public String userLoginForm() {
+
+    // 유저 로그인폼
+    @GetMapping("/user-login")
+    public String showLoginPage() {
         return "/user/login";
     }
+
+    // 로그인 성공시 메인페이지로 이동
+    @GetMapping("/user/main")
+    public String userMain() {
+        return "/user/main";
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.example.demo.user.profile;
+package com.example.demo.user.profile.interest;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

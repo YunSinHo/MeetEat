@@ -17,7 +17,7 @@
             <div class="subtitle">신뢰할 수 있는 커뮤니티를 위해 필요해요!</div>
             <div class="input-group">
                 <input type="text" id="email" name="email" class="input" placeholder="example@domain.com">
-                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div> 
+                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
                 <button type="button" id="sendBtn" class="button-request" disabled>인증 요청</button>
                 <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력" style="display:none;">
                 <a href="#" id="resendLink" style="display:none;">재전송</a>
@@ -49,7 +49,6 @@
             verifyCodeError.style.display = 'none';
             const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailPattern.test(emailInput.value)) {
-                emailError.style.display = 'block';
                 emailError.className = 'error-message';
                 emailError.textContent = "올바른 이메일을 입력하세요.";
                 emailError.style.display = 'block';
@@ -89,6 +88,7 @@
             $.ajax({
                 url: '/send-email',
                 type: 'POST',
+                data: { email: emailInput.value },
                 success: function (response) {
                     authCode = response;
                     code.style.display = 'block';
@@ -96,8 +96,10 @@
                     resendLink.style.display = 'block';
                     verifyCodeBtn.disabled = false;
                 },
-                error: function () {
-                    return;
+                error: function (error_message) {
+                    emailError.className = 'error-message';
+                    emailError.textContent = error_message;
+                    emailError.style.display = 'block';
                 }
             });
         }
@@ -108,28 +110,23 @@
         verifyCodeBtn.addEventListener('click', function (event) {
             event.preventDefault();
             let inputCode = code.value;
+            let inputEmail = emailInput.value;
             $.ajax({
                 url: '/check-code',
                 type: 'POST',
                 data: {
-                    authCode: authCode,
+                    inputEmail: inputEmail,
                     inputCode: inputCode
                 },
-                success: function (response) {
-                    if (response.isValidCode === true) {
-                        document.querySelector('form').submit();
-                    }
-
-                    else {
-                        verifyCodeError.textContent = "잘못된 인증번호";
-                        verifyCodeError.className = 'error-message';
-                        verifyCodeError.style.display = 'block';
-                        confirmCodeBtn.disabled = false;
-                    }
+                success: function () {
+                    document.querySelector('form').submit();
 
                 },
                 error: function () {
-                    return;
+                    verifyCodeError.textContent = "잘못된 인증번호";
+                    verifyCodeError.className = 'error-message';
+                    verifyCodeError.style.display = 'block';
+                    confirmCodeBtn.disabled = false;
                 }
             });
 
