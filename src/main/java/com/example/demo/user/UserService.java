@@ -66,6 +66,7 @@ public class UserService {
     public Long getLoggedInUserId(){
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(username);
         Users user = userRepository.findByUsername(username)
                                    .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 

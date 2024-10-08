@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EmailService {
 
@@ -45,6 +47,7 @@ public class EmailService {
     }
 
     // 재전송시 이메일 코드 삭제
+    @Transactional
     public void deleteByEmail(String email) {
         emailCodeRepository.deleteByEmail(email);
     }

@@ -3,8 +3,12 @@ package com.example.demo.user.profile.image;
 import com.example.demo.user.Users;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "user_profile_images")
 public class UserProfileImage {
 
@@ -23,6 +27,8 @@ public class UserProfileImage {
     @Column(name = "image_name")
     private String imageName;
 
+    @Column(name = "is_main", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isMain = false;
     public UserProfileImage(){}
 
 }

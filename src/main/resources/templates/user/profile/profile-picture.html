@@ -1,28 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>프로필 사진</title>
-    <link rel="stylesheet" href="css/styles.css"> <!-- 외부 CSS 연결 -->
     <style>
-        /* width: 180px;
-        height: 186px;
-        top: 2111px;
-        left: 1878px;
-        padding: 46.5px 26.58px 20.31px 26.59px;
-        gap: 0px;
-        border-radius: 100px 0px 0px 0px;
-        opacity: 0px; */
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .icon.small {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        #sub-images {
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
+
     <div class="container">
-        <img src="images/logo.png" class="logo">
-        <div class="title">
-            마지막으로 (OO)님의<br>
-            매력적인 사진 부탁드릴게요!
-        </div>
+        <h2>마지막으로 <p th:text="${profile.name}"></p>님의 매력적인 사진 부탁드릴게요!</h2>
+        <form action="/profile/image/set-user" method="POST" enctype="multipart/form-data">
+        <img src="/images/logo.png" class="logo">
+        <!-- 대표 이미지 -->
+        <div id="main-image" class="icon" th:style="'background-image: url(' + ${mainImage?.imagePath} + ');'"></div>
+            <input type="file" name="mainImage" id="main-file-input" class="file-input" accept="image/*">
+
+            <!-- 서브 이미지들 -->
+            <!-- <div id="sub-images">
+                <div id="sub-image-1" class="icon small"></div>
+                <input type="file" name="images" id="sub-file-input-1" class="file-input" accept="image/*">
+
+                <div id="sub-image-2" class="icon small"></div>
+                <input type="file" name="images" id="sub-file-input-2" class="file-input" accept="image/*">
+
+                <div id="sub-image-3" class="icon small"></div>
+                <input type="file" name="images" id="sub-file-input-3" class="file-input" accept="image/*">
+
+                <div id="sub-image-4" class="icon small"></div>
+                <input type="file" name="images" id="sub-file-input-4" class="file-input" accept="image/*">
+            </div> -->
+            <div id="sub-images">
+                <div th:each="subImage, iterStat : ${subImages}">
+                    <div th:class="'icon small'" th:style="'background-image: url(' + ${subImage.imagePath} + ');'">
+                    </div>
+                    <input type="file" name="images" th:id="'sub-file-input-' + ${iterStat.index + 1}"
+                        class="file-input" accept="image/*">
+                </div>
+
+                <!-- 비어 있는 서브 이미지 슬롯 -->
+                <div th:if="${subImages.size() < 4}" th:each="i : ${#numbers.sequence(subImages.size() + 1, 4)}">
+                    <div class="icon small"></div>
+                    <input type="file" name="images" th:id="'sub-file-input-' + ${i}" class="file-input"
+                        accept="image/*">
+                </div>
+            </div>
+
+            <p>얼굴이 잘 나온 사진일수록 매칭률이 올라가요 :)</p>
+
+            <button type="submit">다음</button>
+        </form>
     </div>
+
+    <script>
+        // 대표 이미지 업로드
+        const mainImage = document.getElementById('main-image');
+        const mainFileInput = document.getElementById('main-file-input');
+
+        mainImage.addEventListener('click', () => {
+            mainFileInput.click();
+        });
+
+        mainFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    mainImage.style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 서브 이미지 업로드
+        const subImages = [
+            { image: document.getElementById('sub-image-1'), fileInput: document.getElementById('sub-file-input-1') },
+            { image: document.getElementById('sub-image-2'), fileInput: document.getElementById('sub-file-input-2') },
+            { image: document.getElementById('sub-image-3'), fileInput: document.getElementById('sub-file-input-3') },
+            { image: document.getElementById('sub-image-4'), fileInput: document.getElementById('sub-file-input-4') },
+        ];
+
+        subImages.forEach((sub) => {
+            sub.image.addEventListener('click', () => {
+                sub.fileInput.click();
+            });
+
+            sub.fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        sub.image.style.backgroundImage = `url(${e.target.result})`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
 </body>
+
 </html>

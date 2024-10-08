@@ -36,9 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-                if (!passwordEncoder.matches("12341234", user.getPassword())) {
-                    throw new BadCredentialsException("Invalid password");
-                }
     
 
         return new org.springframework.security.core.userdetails.User(
