@@ -78,51 +78,7 @@ public class UserController {
         model.addAttribute("email", email);
         return "/user/next-join";
     }
-
-    // 회원가입 처리
-    @Transactional
-    @PostMapping("/join")
-    public String join(@ModelAttribute UserDTO userDTO) {
-
-        userDTO.setUsername(userDTO.getEmail()); // 이메일을 아이디로 사용
-        userService.saveUser(userDTO);
-        Users user = userService.findByUsername(userDTO.getUsername()); // 저장한 사용자를 다시 조회
-        Role userRole = roleService.findByName("ROLE_USER"); // 일반 유저 롤
-        user.getRoles().add(userRole); // 롤 추가
-
-        // 변경 사항 저장
-        userService.saveUser(user);
-
-        // authenticateUser(user.getUsername(), user.getPassword()); // 로그인 처리
-        // SecurityContext에 직접 인증
-        // 사용자 권한 설정
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-
-        // 인증 객체 생성 (아이디,비밀번호, 권한)
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDTO.getUsername(), userDTO.getPassword(), authorities);
-
-        // SecurityContext에 인증 설정
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        try {
-            authenticationManager.authenticate(authentication);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authenticated user: " + auth.getName());
-        System.out.println("Is authenticated: " + auth.isAuthenticated());
-        System.out.println("Authorities: " + auth.getAuthorities());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-        System.out.println(userService.getLoggedInUserId());
-        System.out.println("회원가입동안" + SecurityContextHolder.getContext().getAuthentication().getName());
-        return "redirect:/profile/join/form/set-user";
-    }
-
-
+    
     // 아이디 중복 확인(일단 이메일로)
     @PostMapping("/isExist-username")
     public ResponseEntity<Map<String, Boolean>> isExistUsername(@RequestParam("username") String username) {
@@ -141,5 +97,24 @@ public class UserController {
         response.put("exist", exist);
         return ResponseEntity.ok(response);
     }
+
+    // 회원가입 처리
+    @Transactional
+    @PostMapping("/join")
+    public String join(@ModelAttribute UserDTO userDTO) {
+        // String rawPassword = userDTO.getPassword();
+        userDTO.setUsername(userDTO.getEmail()); // 이메일을 아이디로 사용
+        userService.saveUser(userDTO);
+        Users user = userService.findByUsername(userDTO.getUsername()); // 저장한 사용자를 다시 조회
+        Role userRole = roleService.findByName("ROLE_USER"); // 일반 유저 롤
+        user.getRoles().add(userRole); // 롤 추가
+
+        // 변경 사항 저장
+        userService.saveUser(user);
+
+        return "redirect:/login";
+    }
+
+
 
 }

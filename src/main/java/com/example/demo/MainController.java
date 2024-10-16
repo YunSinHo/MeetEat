@@ -2,6 +2,8 @@ package com.example.demo;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -14,6 +16,12 @@ public class MainController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/user-type")
+    public String userType() {
+        return "/user-type";
+    }
+    
     
     
     

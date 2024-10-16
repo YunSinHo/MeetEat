@@ -22,30 +22,67 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-                // CSRF 보호를 비활성화합니다.
                 httpSecurity.csrf((csrf) -> csrf.disable());
 
                 httpSecurity
-                .sessionManagement(management ->management
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+                                .sessionManagement(management -> management
+                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
                 // 모든 요청을 허용합니다.
                 // 요청에 대한 권한 설정
-                httpSecurity.authorizeHttpRequests((authorize) -> authorize
-                                .requestMatchers("/login/user/main")
-                                .hasRole("USER") // 이 경로들은 USER 권한 필요
-                                .anyRequest().permitAll()); // 그 외 요청은 모두 허용
+                // httpSecurity.authorizeHttpRequests((authorize) -> authorize
+                // .requestMatchers("/login/user/main")
+                // .hasRole("USER") // 이 경로들은 USER 권한 필요
+                // .requestMatchers("/login/owner/main")
+                // .hasRole("OWNER") // 이 경로들은 OWNER 권한 필요
+                // .anyRequest().permitAll()); // 그 외 요청은 모두 허용
 
-                httpSecurity.formLogin(formLogin -> formLogin
-                                .loginPage("/login/user-login")
-                                .defaultSuccessUrl("/login/user/main")
-                                .failureHandler((request, response, exception) -> {
-                                        System.out.println("Login failed: " + exception.getMessage());
-                                        response.sendRedirect("/login/user-login?error=true");
-                                }));
+                // httpSecurity.formLogin(formLogin -> formLogin
+                // .loginPage("/login/user-login")
+                // .defaultSuccessUrl("/login/user/main")
+                // .failureHandler((request, response, exception) -> {
+                // System.out.println("Login failed: " + exception.getMessage());
+                // response.sendRedirect("/login/user-login?error=true");
+                // }))
+                // .formLogin(formLogin -> formLogin
+                // .loginPage("/login/owner-login")
+                // .defaultSuccessUrl("/login/owner/main")
+                // .failureHandler((request, response, exception) -> {
+                // System.out.println("Login failed: " + exception.getMessage());
+                // response.sendRedirect("/login/owner-login?error=true");
+                // }));
 
-                httpSecurity.logout((logout) -> logout.logoutUrl("/user/logout")
-                                .logoutSuccessUrl("/index?logout=true"));
+              
+                httpSecurity
+                        .authorizeHttpRequests((authorize) -> authorize
+                                        .requestMatchers("/login/user/main").hasRole("USER")
+                                        .requestMatchers("/login/owner/main").hasRole("OWNER")
+                                        .anyRequest().permitAll())
+                        .formLogin(formLogin -> formLogin
+                                        .loginPage("/login") // 공통 로그인 페이지
+                                        .loginProcessingUrl("/process-login") // 공통 로그인 처리 URL
+                                        .successHandler((request, response, authentication) -> {
+                                                // 로그인 성공 후 권한에 따른 리다이렉트 처리
+                                                if (authentication.getAuthorities().stream()
+                                                                .anyMatch(grantedAuthority -> grantedAuthority
+                                                                                .getAuthority()
+                                                                                .equals("ROLE_USER"))) {
+                                                        response.sendRedirect("/login/user/main"); // ROLE_USER
+                                                                                                       
+                                                } else if (authentication.getAuthorities().stream()
+                                                                .anyMatch(grantedAuthority -> grantedAuthority
+                                                                                .getAuthority()
+                                                                                .equals("ROLE_OWNER"))) {
+                                                        response.sendRedirect("/login/owner/main"); // ROLE_OWNER
+                                                                                                        
+                                                } else {
+                                                        response.sendRedirect("/"); // 그 외 경우
+                                                }
+                                        })
+                                        .permitAll())
+                        .logout(logout -> logout
+                                        .logoutUrl("/logout")
+                                        .logoutSuccessUrl("/index?logout=true"));
 
                 httpSecurity.exceptionHandling(handling -> handling
                                 .authenticationEntryPoint((request, response, authException) -> {

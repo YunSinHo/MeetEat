@@ -1,6 +1,6 @@
 package com.example.demo.user.profile.foodinterest;
 
-import com.example.demo.owner.Categories;
+import com.example.demo.owner.store.Categories;
 import com.example.demo.user.Users;
 
 import jakarta.persistence.*;

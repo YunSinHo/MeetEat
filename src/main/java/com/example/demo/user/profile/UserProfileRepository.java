@@ -11,5 +11,8 @@ import com.example.demo.user.profile.interest.Interest;
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long>{
 
     Optional<UserProfile> findByUserId(Long userId);
+
+    
+    boolean existsByUserId(Long userId);
     
 }

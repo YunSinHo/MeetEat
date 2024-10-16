@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 @Controller
-@RequestMapping("/profile")
+@RequestMapping("/user-profile")
+@Transactional
 public class UserProfileController {
 
     @Autowired
@@ -43,9 +44,16 @@ public class UserProfileController {
         this.userService = userService;
     }
 
-    // 기본프로필 Model add
+    // 기본 프로필 model add
+    @ModelAttribute
     public void addBasicProfile(Model model) {
         Long userId = userService.getLoggedInUserId();
+        boolean isExistProfile = userProfileService.isExistBasicProfile(userId);
+        if (!isExistProfile){
+            System.out.println("프로필이 없는 사람");
+            return;
+        }
+            
         UserProfile profile = userProfileService.findByUserIdFromBasicProfile(userId);
         if (profile != null) {
             model.addAttribute("profile", profile);
@@ -53,38 +61,30 @@ public class UserProfileController {
 
     }
 
-    // 회원가입시 이동되는 프로필설정 페이지
-    @GetMapping("/join/form/set-user")
+    @GetMapping("/set-user")
     public String setUserProfileForm() {
-        // System.out.println(userService.getLoggedInUserId());
-        System.out.println("폼에서 유저 아이디" + SecurityContextHolder.getContext().getAuthentication().getName());
 
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-        return "/user/profile/basic-information";
+        return "user/profile/basic-information";
     }
 
     // 기본 프로필 저장
-    @Transactional
-    @PostMapping("/join/set-user")
+    @PostMapping("/basic/set-user")
     public String setUserProfile(@ModelAttribute UserProfileDTO userProfileDTO,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
             @RequestParam("day") int day,
             Model model) {
-        System.out.println("저장하는 동안" + SecurityContextHolder.getContext().getAuthentication().getName());
         Long userId = userService.getLoggedInUserId();
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, 0, 0); // datetime 형식으로 변환
         UserProfile profile = new UserProfile(userId, userProfileDTO, dateTime);
         userProfileService.saveBasicProfile(profile);
-        model.addAttribute("profile", profile);
-        return "/user/profile/personal-interest";
+        return "redirect:/user-profile/interest/form";
     }
 
     // interest 폼
     @GetMapping("/interest/form")
     public String interestForm(Model model) {
-        addBasicProfile(model);
-        return "/user/profile/personal-interest";
+        return "user/profile/personal-interest";
     }
 
     // interest(흥미) 저장
@@ -99,15 +99,13 @@ public class UserProfileController {
             Long id = userProfileService.findByNameFromInterest(interest);
             userProfileService.saveUserInterest(id, userService.getLoggedInUserId());
         }
-        addBasicProfile(model);
-        return "redirect:/profile/food/form";
+        return "redirect:/user-profile/food/form";
     }
 
     // food-category 폼
     @GetMapping("/food/form")
     public String foodForm(Model model) {
-        addBasicProfile(model);
-        return "/user/profile/food-interest";
+        return "user/profile/food-interest";
     }
 
     // 음식 취향 저장
@@ -122,8 +120,7 @@ public class UserProfileController {
             Long id = userProfileService.findByNameFromCategory(food);
             userProfileService.saveUserFood(id, userService.getLoggedInUserId());
         }
-        addBasicProfile(model);
-        return "redirect:/profile/image/form";
+        return "redirect:/user-profile/image/form";
     }
 
     // 유저 이미지 폼
@@ -134,7 +131,7 @@ public class UserProfileController {
         List<UserProfileImage> images = userProfileService.findByUserIdFromUserImages(user);
 
         // 메인 이미지와 서브 이미지 나누기 (isMain 필드로 구분)
-        UserProfileImage mainImage = null;
+        UserProfileImage mainImage = new UserProfileImage();
 
         List<UserProfileImage> subImages = new ArrayList<>();
         for (UserProfileImage image : images) {
@@ -143,29 +140,53 @@ public class UserProfileController {
             else
                 subImages.add(image);
         }
+
+        // 비어있는 이미지 슬롯은 noImage를 넣어준다
+        if(mainImage.getImagePath() == null) mainImage = new UserProfileImage(
+            0L, new Users() ,"/images/user/noImage.png", "noImage.png", true);
+
+        int initialSubImageSize = subImages.size();
+        for(int i = 0; i < 4 - initialSubImageSize; i++) {
+            subImages.add(new UserProfileImage(
+                0L, new Users() ,"/images/user/noImage.png", "noImage.png", false));
+        }
+        
         model.addAttribute("mainImage", mainImage);
         model.addAttribute("subImages", subImages);
-        addBasicProfile(model);
-        return "/user/profile/profile-picture";
+        return "user/profile/profile-picture";
     }
 
     // 유저 이미지 저장
     @PostMapping("/image/set-user")
-    public String handleFileUpload(@RequestParam("images") List<MultipartFile> images,
-            @RequestParam("mainImage") MultipartFile mainImage,
+    public String saveUserProfileImages(@RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+            @RequestParam(value = "prevMainImage", required = false) String prevMainImage,
+            @RequestParam(value = "images", required = false) MultipartFile[] images,
+            @RequestParam(value = "prevImages", required = false) String[] prevImages,
             Model model) {
         String uploadDir = "src/main/resources/static/images/user/";
         Long userId = userService.getLoggedInUserId();
 
         // 서브 이미지 파일 처리
-        for (MultipartFile image : images) {
-            if (!image.isEmpty()) {
-                saveImage(image, userId, uploadDir, false);
+        for (int i = 0; i < prevImages.length; i++) {
+            // images 배열에서 빈 값이나 null 체크
+            if (images.length > i && images[i] != null && !images[i].isEmpty()) {
+                // 새 파일로 업데이트
+                // 기존 파일 삭제
+                if(!prevImages[i].equals("noImage.png"))
+                deleteImage(uploadDir + prevImages[i]);
+                // DB 데이터 삭제
+                userProfileService.deleteByImageName(prevImages[i]);
+
+                saveImage(images[i], userId, uploadDir, false);
             }
         }
+        if (mainImage != null && !mainImage.isEmpty()) {
+            // 새 파일이 업로드되면 기존 파일 삭제
+            if(!prevMainImage.equals("noImage.png"))
+            deleteImage(uploadDir + prevMainImage);
 
-        // 메인 이미지 처리
-        if (!mainImage.isEmpty()) {
+            userProfileService.deleteByImageName(prevMainImage);
+
             saveImage(mainImage, userId, uploadDir, true);
         }
 
@@ -197,71 +218,23 @@ public class UserProfileController {
             e.printStackTrace();
         }
     }
-    // // 유저 이미지 저장
-    // @PostMapping("/image/set-user")
-    // public String handleFileUpload(@RequestParam("images") List<MultipartFile>
-    // images,
-    // @RequestParam("mainImage") MultipartFile mainImage, Model model) {
-    // // 저장 경로 지정 (예: static/user-images)
-    // String uploadDir = "src/main/resources/static/images/user/";
-    // Long userId = userService.getLoggedInUserId();
 
-    // // 서브 이미지 파일 처리
-    // for (MultipartFile image : images) {
-    // if (!image.isEmpty()) {
-    // try {
-    // // 원래 파일 이름
-    // String originalFileName = image.getOriginalFilename();
-
-    // // 파일 확장자 추출
-    // String extension =
-    // originalFileName.substring(originalFileName.lastIndexOf("."));
-
-    // // UUID로 새로운 파일 이름 생성
-    // String uuid = UUID.randomUUID().toString();
-    // String newFileName = uuid + extension;
-
-    // // 저장 경로
-    // Path path = Paths.get(uploadDir + newFileName);
-    // // 파일 저장
-    // Files.copy(image.getInputStream(), path,
-    // StandardCopyOption.REPLACE_EXISTING);
-
-    // userProfileService.saveUserImage(userId, newFileName, "/images/user/" +
-    // newFileName);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // }
-    // // 메인 이미지
-    // try {
-    // String originalFileName = mainImage.getOriginalFilename();
-
-    // // 파일 확장자 추출
-    // String extension =
-    // originalFileName.substring(originalFileName.lastIndexOf("."));
-
-    // // UUID로 새로운 파일 이름 생성
-    // String uuid = UUID.randomUUID().toString();
-    // String newFileName = uuid + extension;
-
-    // // 저장 경로
-    // Path path = Paths.get(uploadDir + newFileName);
-    // // 파일 저장
-    // Files.copy(mainImage.getInputStream(), path,
-    // StandardCopyOption.REPLACE_EXISTING);
-
-    // userProfileService.saveUserImage(userId, newFileName, "/images/user/" +
-    // newFileName, true);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // Users user = userService.findById(userId);
-    // List<UserProfileImage> image =
-    // userProfileService.findByUserIdFromUserImages(user);
-    // model.addAttribute("images", image);
-    // return "user/main";
-    // }
+    // 이미지 삭제 메소드
+    private void deleteImage(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully: " + filePath);
+                } else {
+                    throw new IOException("Failed to delete file: " + filePath);
+                }
+            } else {
+                System.out.println("File not found: " + filePath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

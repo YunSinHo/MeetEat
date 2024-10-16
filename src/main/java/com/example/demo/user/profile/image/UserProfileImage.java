@@ -31,4 +31,12 @@ public class UserProfileImage {
     private Boolean isMain = false;
     public UserProfileImage(){}
 
+    public UserProfileImage(Long userPictureId, Users user, String imagePath, String imageName, Boolean isMain){
+        this.userPictureId = userPictureId;
+        this.user = user;
+        this.imagePath = imagePath;
+        this.imageName = imageName;
+        this.isMain = isMain;
+    }
+
 }

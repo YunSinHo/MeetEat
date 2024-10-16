@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.owner.Categories;
-import com.example.demo.owner.CategoriesRepository;
+import com.example.demo.owner.store.Categories;
+import com.example.demo.owner.store.CategoriesRepository;
 import com.example.demo.user.Users;
 import com.example.demo.user.profile.foodinterest.UserFoodCategory;
 import com.example.demo.user.profile.foodinterest.UserFoodCategoryRepository;
@@ -135,6 +135,17 @@ public class UserProfileService {
     public List<UserProfileImage> findByUserIdFromUserImages(Users user) {
         List<UserProfileImage> images = userProfileImageRepository.findAllByUser(user);
         return images;
+    }
+
+    // 기본 프로필 존재유무
+    public boolean isExistBasicProfile(Long userId) {
+        boolean isExist = userProfileRepository.existsByUserId(userId);
+        return isExist;
+    }
+
+    // 기존 프로필 삭제
+    public void deleteByImageName(String imageName) {
+        userProfileImageRepository.deleteByImageName(imageName);
     }
 
 

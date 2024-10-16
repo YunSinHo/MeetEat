@@ -1,4 +1,4 @@
-package com.example.demo.owner;
+package com.example.demo.owner.store;
 
 
 import jakarta.persistence.Column;
