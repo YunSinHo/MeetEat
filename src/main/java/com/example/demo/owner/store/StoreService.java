@@ -32,4 +32,14 @@ public class StoreService {
         return images;
     }
 
+    // 기존 등록된 사진 삭제
+    public void deleteByImageName(String imageName) {
+        storeImageRepository.deleteByImageName(imageName);
+
+    }
+    public void saveUserImage(Long ownerId, String imageName, String imagePath, boolean isMain) {
+        StoreImage images = new StoreImage(ownerId, imageName, imagePath, isMain);
+        storeImageRepository.save(images);
+    }
+
 }

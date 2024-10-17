@@ -37,5 +37,12 @@ public class StoreImage {
         this.imageName = imageName;
         this.isMain = isMain;
     }
+    
+    public StoreImage(Long ownerId, String imagePath, String imageName, Boolean isMain){
+        this.ownerId = ownerId;
+        this.imagePath = imagePath;
+        this.imageName = imageName;
+        this.isMain = isMain;
+    }
 
 }

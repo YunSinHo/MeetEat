@@ -109,7 +109,7 @@ public class StoreController {
                 if(!prevImages[i].equals("noImage.png"))
                 deleteImage(uploadDir + prevImages[i]);
                 // DB 데이터 삭제
-                // storeService.deleteByImageName(prevImages[i]);
+                storeService.deleteByImageName(prevImages[i]);
 
                 saveImage(images[i], ownerId, uploadDir, false);
             }
@@ -119,7 +119,7 @@ public class StoreController {
             if(!prevMainImage.equals("noImage.png"))
             deleteImage(uploadDir + prevMainImage);
 
-            // storeService.deleteByImageName(prevMainImage);
+            storeService.deleteByImageName(prevMainImage);
 
             saveImage(mainImage, ownerId, uploadDir, true);
         }
@@ -146,7 +146,7 @@ public class StoreController {
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             // 이미지 정보 저장 (isMain 값에 따라 메인 이미지 여부 구분)
-            // storeService.saveUserImage(userId, newFileName, "/images/store/" + newFileName, isMain);
+            storeService.saveUserImage(userId, newFileName, "/images/store/" + newFileName, isMain);
         } catch (IOException e) {
             e.printStackTrace();
         }
