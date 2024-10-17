@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 사진</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .icon.small {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        #sub-images {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>마지막으로 실제 음식점 사진 부탁드릴게요!</h2>
+        <form action="/store/image/set-store" method="POST" enctype="multipart/form-data">
+            <img src="/images/logo.png" class="logo">
+            <!-- 대표 이미지 -->
+            <div id="main-image" class="icon" th:style="'background-image: url(' + ${mainImage.imagePath} + ');'">
+            </div>
+            <input type="hidden" name="prevMainImage" th:value="${mainImage.imageName}">
+            <input type="file" name="mainImage" id="main-file-input" class="file-input" accept="image/*">
+            <!-- 서브 이미지들 -->
+            <div id="sub-images">
+                <div th:each="subImage, iterStat : ${subImages}">
+                    <div th:class="'icon small'" id="sub-image-[[${iterStat.index}]]"
+                        th:style="'background-image: url(' + ${subImage.imagePath} + ');'">
+                    </div>
+                    <input type="file" id="sub-file-input-[[${iterStat.index}]]" name="images" class="file-input"
+                        accept="image/*">
+                    <input type="hidden" name="prevImages" th:value="${subImage.imageName}">
+                </div>
+
+                <!-- 비어 있는 서브 이미지 슬롯 -->
+                <div th:if="${subImages.size() < 4}" th:each="i : ${#numbers.sequence(subImages.size() + 1, 4)}">
+                    <div class="icon small" id="sub-image-[[${i - 1}]]"></div>
+                    <input type="file" id="sub-file-input-[[${i - 1}]]" name="images" class="file-input"
+                        accept="image/*">
+                    <input type="hidden" name="prevImages" th:value="${subImages[i - 1].imageName}">
+                </div>
+            </div>
+
+            <p>멋진 사진일수록 예약률이 올라가요 :)</p>
+
+            <button type="submit">다음</button>
+        </form>
+    </div>
+
+    <script>
+        // 대표 이미지 업로드
+        const mainImage = document.getElementById('main-image');
+        const mainFileInput = document.getElementById('main-file-input');
+
+        mainImage.addEventListener('click', () => {
+            mainFileInput.click();
+        });
+
+        mainFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    mainImage.style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 서브 이미지 업로드
+        const subImageElements = document.querySelectorAll('.icon.small');
+        const subFileInputs = document.querySelectorAll('input[name="images"]');
+
+        subImageElements.forEach((subImage, index) => {
+            subImage.addEventListener('click', () => {
+                subFileInputs[index].click();
+            });
+
+            subFileInputs[index].addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        subImage.style.backgroundImage = `url(${e.target.result})`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.demo.role.Role;
 import com.example.demo.role.RoleService;
 
+import jakarta.transaction.Transactional;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -35,8 +37,8 @@ public class UserController {
     private final UserService userService;
     @Autowired
     private final RoleService roleService;
-    // @Autowired
-    // private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
@@ -76,60 +78,7 @@ public class UserController {
         model.addAttribute("email", email);
         return "/user/next-join";
     }
-
-    // 회원가입 처리
-    @PostMapping("/join")
-    public String join(@ModelAttribute UserDTO userDTO) {
-
-        userDTO.setUsername(userDTO.getEmail()); // 이메일을 아이디로 사용
-        userService.saveUser(userDTO);
-        Users user = userService.findByUsername(userDTO.getUsername()); // 저장한 사용자를 다시 조회
-        Role userRole = roleService.findByName("ROLE_USER"); // 일반 유저 롤
-        user.getRoles().add(userRole); // 롤 추가
-
-        // 변경 사항 저장
-        userService.saveUser(user);
-        if (!passwordEncoder.matches("12341234", user.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
-        }
-
-        // authenticateUser(user.getUsername(), user.getPassword()); // 로그인 처리
-        // SecurityContext에 직접 인증
-        // security 절차 로그인 방법은 아니지만 추후에 수정할 것
-        // 사용자 권한 설정
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-
-        // 인증 객체 생성 (아이디,비밀번호, 권한)
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword(), authorities);
-
-        // SecurityContext에 인증 설정
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authenticated user: " + auth.getName());
-        System.out.println("Is authenticated: " + auth.isAuthenticated());
-        System.out.println("Authorities: " + auth.getAuthorities());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-        System.out.println(userService.getLoggedInUserId());
-        // return "redirect:/join/profile/set-user";
-        return "/user/profile/basic-information";
-    }
-
     
-    // 회원가입 이후 로그인 처리
-    // public void authenticateUser(String username, String password) {
-    //     try {
-    //         Authentication authentication = authenticationManager.authenticate(
-    //             new UsernamePasswordAuthenticationToken(username, password)
-    //         );
-    //         SecurityContextHolder.getContext().setAuthentication(authentication);
-    //     } catch (AuthenticationException e) {
-    //         throw new BadCredentialsException("Invalid username or password");
-    //     }
-    // }
-
     // 아이디 중복 확인(일단 이메일로)
     @PostMapping("/isExist-username")
     public ResponseEntity<Map<String, Boolean>> isExistUsername(@RequestParam("username") String username) {
@@ -148,5 +97,24 @@ public class UserController {
         response.put("exist", exist);
         return ResponseEntity.ok(response);
     }
+
+    // 회원가입 처리
+    @Transactional
+    @PostMapping("/join")
+    public String join(@ModelAttribute UserDTO userDTO) {
+        // String rawPassword = userDTO.getPassword();
+        userDTO.setUsername(userDTO.getEmail()); // 이메일을 아이디로 사용
+        userService.saveUser(userDTO);
+        Users user = userService.findByUsername(userDTO.getUsername()); // 저장한 사용자를 다시 조회
+        Role userRole = roleService.findByName("ROLE_USER"); // 일반 유저 롤
+        user.getRoles().add(userRole); // 롤 추가
+
+        // 변경 사항 저장
+        userService.saveUser(user);
+
+        return "redirect:/login";
+    }
+
+
 
 }

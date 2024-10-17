@@ -1,4 +1,4 @@
-package com.example.demo.owner;
+package com.example.demo.owner.store;
 
 
 import jakarta.persistence.Column;
@@ -22,7 +22,7 @@ public class Categories {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "categories_id")
-    private Long category_id;
+    private Long categoryId;
 
     
     @Column(name = "name", nullable = false, length = 40)

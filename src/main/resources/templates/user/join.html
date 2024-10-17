@@ -127,41 +127,13 @@
                 <div id="nameError" class="error-message">이름을 입력해주세요.</div>
             </div>
 
-            <!-- <div class="form-group">
-                <label for="gender">성별</label>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="gender" id="gender" value="M">
-                        <div class="custom-radio"></div>
-                        <span>남성</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="gender" id="gender" value="F">
-                        <div class="custom-radio"></div>
-                        <span>여성</span>
-                    </label>
-                </div>
-            </div> -->
-
-
 
             <div class="form-group">
                 <label for="phoneNumber">전화번호</label>
                 <input type="text" id="phoneNumber" name="phoneNumber" placeholder="010-1234-5678">
                 <div id="phoneError" class="error-message">올바른 전화번호를 입력하세요.</div>
             </div>
-<!-- 
-            <div class="form-group">
-                <label for="email">이메일</label>
-                <input type="text" id="email" name="email" placeholder="example@domain.com"><br />
-                <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
-                <input type="text" id="code" name="code" placeholder="인증번호 입력" style="display:none;">
-                <a href="#" id="resendLink" style="display:none;">재전송</a>
-                <div id="confirmCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
-                <button type="button" id="confirmCodeBtn" style="display:none;">인증하기</button>
-            </div> -->
 
-            <!-- <button type="button" id="sendBtn" disabled>이메일 인증번호 전송</button> -->
             <button type="submit" id="submitBtn" disabled>가입하기</button>
         </form>
     </div>
@@ -206,15 +178,6 @@
             }
             checkFormValidity();
         });
-        // 성별 체크 확인
-        // genderButtons.forEach(radio => {
-        //     radio.addEventListener('change', () => {
-        //         if (radio.checked) {
-        //             checkGender = true;
-        //             checkFormValidity();;
-        //         }
-        //     });
-        // });
 
 
         function checkPasswordMatch() {

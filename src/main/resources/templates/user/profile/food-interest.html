@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,25 +17,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 350px; /* 박스 최대 너비 설정 */
-            margin: 0 auto; /* 중앙 정렬을 위한 마진 설정 */
+            max-width: 350px;
+            /* 박스 최대 너비 설정 */
+            margin: 0 auto;
+            /* 중앙 정렬을 위한 마진 설정 */
             border-radius: 20px;
         }
+
         .subtitle2 {
             font-size: 18px;
             margin-top: 140px;
             margin-bottom: 15px;
             font-weight: bold;
         }
+
         .checkbox {
             width: 20px;
             height: 20px;
         }
+
         .pagination {
             margin-top: 20px;
             display: flex;
             justify-content: center;
         }
+
         .pagination span {
             display: inline-block;
             width: 10px;
@@ -44,35 +51,54 @@
             margin: 0 5px;
             cursor: pointer;
         }
+
         .pagination span.active {
             background-color: #f39c12;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <img src="/images/logo.png" class="logo">
         <div class="title">
-            (OO)님은 어떤 음식 취향을<br>
+            <p th:text="${profile.name}"></p>님은 어떤 음식 취향을<br>
             가지고 있으세요?
         </div>
-        <div class="subtitle">한식<input type="checkbox" class="checkbox" id="culture"></div>
-        <div class="subtitle">중식<input type="checkbox" class="checkbox" id="travel"></div>
-        <div class="subtitle">일식<input type="checkbox" class="checkbox" id="community"></div>
-        <div class="subtitle">양식<input type="checkbox" class="checkbox" id="hobby"></div>
-        <div class="subtitle">아무거나<input type="checkbox" class="checkbox" id="language"></div>
+        <form action="/user-profile/food/set-user" method="post" id="formId">
+            <div class="subtitle">한식<input type="checkbox" class="checkbox" name="food" value="한식"></div>
+            <div class="subtitle">중식<input type="checkbox" class="checkbox" name="food" value="중식">
+            </div>
+            <div class="subtitle">일식<input type="checkbox" class="checkbox" name="food" value="일식"></div>
+            <div class="subtitle">양식<input type="checkbox" class="checkbox" name="food" value="양식"></div>
+            <div class="subtitle">아무거나<input type="checkbox" class="checkbox" name="food" value="아무거나">
+            </div>
+            <p id="error-message" style="color:red; display:none;">3개 이상의 옵션을 선택해야 합니다.</p>
+            <div class="pagination">
+                <span class="active" onclick="changePage(1)"></span>
+                <span onclick="changePage(2)"></span>
+                <span onclick="changePage(3)"></span>
+            </div>
 
-        <div class="pagination">
-            <span class="active" onclick="changePage(1)"></span>
-            <span onclick="changePage(2)"></span>
-            <span onclick="changePage(3)"></span>
-        </div>
-
-        <div class="subtitle2">관심사는 [프로필>설정>관심사]에서 변경해요</div>
+            <div class="subtitle2">관심사는 [프로필>설정>관심사]에서 변경해요</div>
     </div>
 
-    <button class="button-next" onclick="window.location.href='profile-picture.html'">다 음</button>
-
+    <button type="submit" class="button-next">다 음</button>
+    </form>
     <script src="/js/scripts.js"></script> <!-- 외부 JS 연결 -->
+    <script>
+        document.getElementById("formId").addEventListener("submit", function (event) {
+            // 선택된 체크박스의 개수 확인
+            const checkboxes = document.querySelectorAll('input[name="food"]:checked');
+            if (checkboxes.length < 3) {
+                event.preventDefault(); // 폼 제출 막기
+                document.getElementById("error-message").style.display = "block"; // 에러 메시지 표시
+            } else {
+                document.getElementById("error-message").style.display = "none"; // 에러 메시지 숨기기
+            }
+        });
+
+    </script>
 </body>
+
 </html>
