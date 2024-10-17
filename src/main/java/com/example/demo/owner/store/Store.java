@@ -47,7 +47,7 @@ public class Store {
     }
     public Store(Long ownerId, StoreDTO ownerProfileDTO){
         this.ownerId = ownerId;
-        this.storeName = ownerProfileDTO.getName();
+        this.storeName = ownerProfileDTO.getStoreName();
         this.bizRegNo = ownerProfileDTO.getBizRegNo();
         this.business = ownerProfileDTO.getBusiness();
         this.category = ownerProfileDTO.getCategory();

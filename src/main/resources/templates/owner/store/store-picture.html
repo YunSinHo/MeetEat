@@ -42,8 +42,8 @@
 <body>
 
     <div class="container">
-        <h2>마지막으로 <p th:text="${store.name}"></p>님의 실제 음식점 사진 부탁드릴게요!</h2>
-        <form action="/user-profile/image/set-user" method="POST" enctype="multipart/form-data">
+        <h2>마지막으로 실제 음식점 사진 부탁드릴게요!</h2>
+        <form action="/store/image/set-store" method="POST" enctype="multipart/form-data">
             <img src="/images/logo.png" class="logo">
             <!-- 대표 이미지 -->
             <div id="main-image" class="icon" th:style="'background-image: url(' + ${mainImage.imagePath} + ');'">

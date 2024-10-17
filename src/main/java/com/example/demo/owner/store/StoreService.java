@@ -1,6 +1,7 @@
 package com.example.demo.owner.store;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,16 @@ public class StoreService {
         this.storeRepository = storeRepository;
         this.storeImageRepository = storeImageRepository;
     }
+
+    // id로 가게 찾기
+    public Store findByOwnerId(Long ownerId) {
+        Store store = storeRepository.findById(ownerId)
+                                   .orElseThrow(() -> new RuntimeException("store not found with ID: " + ownerId));
+
+        return store;
+    }
+
+    // 가게 정보가 있는지
     public boolean isExistProfile(Long ownerId) {
         boolean isExist = storeRepository.existsByOwnerId(ownerId);
         return isExist;

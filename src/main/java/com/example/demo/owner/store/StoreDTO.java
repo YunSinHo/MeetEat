@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StoreDTO {
-    private String name;
+    private String storeName;
 
     private String bizRegNo;
 
