@@ -60,7 +60,9 @@ public class LoginController {
         boolean isExistProfile = storeService.isExistProfile(ownerId);
 
         // 기본 프로필이 존재하면 메인페이지로
-        if(isExistProfile) return "/owner/main";
+        if(isExistProfile) {
+            return "/owner/main";
+        }
         
         return "redirect:/store/set-store";
     }

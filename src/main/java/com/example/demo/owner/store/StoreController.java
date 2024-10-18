@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.owner.Owner;
 import com.example.demo.owner.OwnerService;
-import com.example.demo.owner.profile.StoreImage;
+import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.user.Users;
 import com.example.demo.user.profile.image.UserProfileImage;
 
@@ -125,9 +125,8 @@ public class StoreController {
         }
 
         List<StoreImage> image = storeService.findByOwnerIdFromImage(ownerId);
-        model.addAttribute("images", image);
 
-        return "owner/main";
+        return "redirect:/login/owner/main";
     }
 
     // 이미지 저장 메소드
@@ -146,7 +145,7 @@ public class StoreController {
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             // 이미지 정보 저장 (isMain 값에 따라 메인 이미지 여부 구분)
-            storeService.saveUserImage(userId, newFileName, "/images/store/" + newFileName, isMain);
+            storeService.saveStoreImage(userId, newFileName, "/images/store/" + newFileName, isMain);
         } catch (IOException e) {
             e.printStackTrace();
         }

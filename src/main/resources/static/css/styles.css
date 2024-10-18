@@ -1,29 +1,32 @@
-/* 기본적인 설정 */
 html, body {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
+    overflow-x: hidden; /* 가로 스크롤 금지 */
     font-family: Arial, sans-serif;
     background-color: #f5f5f5; /* 전체 배경색 */
 }
 
 .container {
-    width: 65%; /* 적절한 너비를 위해 설정 */
-    max-width: 1000px; /* 최대 너비 제한 */
-    min-width: 500px; /* 최소 너비 제한 */
-    height: 100vh; /* 화면 높이에 딱 맞게 설정 */
+    width: 617px;
+    min-height: 90vh;
+    height: auto; /* 높이를 자동으로 설정 */
     padding: 40px; /* 컨텐츠 여백 */
     background-color: white; /* 배경색 */
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
     border-radius: 15px; /* 모서리 둥글게 */
+    margin: 40px auto; /* 컨테이너를 상단으로부터 여백을 주고 중앙 정렬 */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative; /* 자식 요소 위치 지정 */
+    align-items: center;
 }
+
+.logo {
+    display: block; /* 블록 요소로 설정 */
+    margin: 0 auto 40px;  /* 위쪽 여백 제거 및 아래쪽 여백 추가 */
+    max-width: 200px; /* 로고 최대 너비 설정 */
+}
+
 
 .title {
     font-size: 32px;
@@ -33,61 +36,75 @@ html, body {
 }
 
 .subtitle, .subtitle2 {
+    
     font-size: 18px;
     margin-bottom: 15px;
     text-align: center;
 }
 
-.input, .button-next {
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
     width: 100%;
     max-width: 500px;
+    margin-bottom: 40px; /* 인증 요청 버튼과 확인 버튼 사이의 여백 */
+    align-items: flex-start;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input {
+    width: 60%;
     padding: 15px;
     font-size: 16px;
     border: 2px solid #f39c12;
     border-radius: 5px;
     box-sizing: border-box;
-    margin-bottom: 20px;
+    text-align: left;
 }
-.input-group {
-    display: flex; /* Flexbox 사용 */
-    flex-direction: column; /* 세로 방향 정렬 */
-    align-items: flex-start; /* 왼쪽 정렬 */
-    position: relative; /* 절대 위치 조정 가능하도록 설정 */
+
+.button-request {
+    position: absolute;
+    bottom: -71px;
+    left: 0;
+    padding: 10px 25px;
+    background-color: #f39c12;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button-request:hover {
+    background-color: #e67e22;
 }
 
 .button-next {
-    background-color: #f39c12;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 20px;
-    padding: 15px;
     width: 100%;
     max-width: 500px;
-    margin-top: auto;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #f39c12;
+    color: black; /* 확인 버튼의 색상 */
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 70px; /* 인증 요청 버튼과 확인 버튼 사이의 여백 */
 }
 
 .button-next:hover {
     background-color: #e67e22;
 }
 
-.button-request {
-    right: 0;
-    top: 0;
-    padding: 0 20px;
-    background-color: #f39c12;
-    color: black;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: bold;
-}
-.button-request:hover {
-    background-color: #e67e22;
-}
+
 .error-message, .success-message {
     color: red; /* 에러 메시지 색상 설정 */
     font-size: 14px;
@@ -139,11 +156,7 @@ button:disabled {
     color: white;
 }
 
-.logo {
-    display: block; /* 블록 요소로 설정 */
-    margin: 0 auto 200px;  /* 아래쪽 여백 추가 및 가운데 정렬 */
-    max-width: 200px; /* 로고 최대 너비 설정 */
-}
+
 
 /* 반응형 스타일 */
 @media (max-width: 600px) {

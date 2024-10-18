@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.owner.profile.StoreImage;
-import com.example.demo.owner.profile.StoreImageRepository;
+import com.example.demo.owner.store.image.StoreImage;
+import com.example.demo.owner.store.image.StoreImageRepository;
 
 @Service
 public class StoreService {
@@ -48,7 +48,7 @@ public class StoreService {
         storeImageRepository.deleteByImageName(imageName);
 
     }
-    public void saveUserImage(Long ownerId, String imageName, String imagePath, boolean isMain) {
+    public void saveStoreImage(Long ownerId, String imageName, String imagePath, boolean isMain) {
         StoreImage images = new StoreImage(ownerId, imageName, imagePath, isMain);
         storeImageRepository.save(images);
     }
