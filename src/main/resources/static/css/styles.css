@@ -60,7 +60,7 @@ html, body {
 }
 
 .input {
-    width: 60%;
+    width: 100%;
     padding: 15px;
     font-size: 16px;
     border: 2px solid #f39c12;

@@ -100,6 +100,13 @@ public class OwnerController {
         return "redirect:/login";
     }
 
+    // 전체 설정 메뉴 이동
+    @GetMapping("/menu")
+    public String menu() {
+        return "owner/menu";
+    }
+    
+
 
     
 }

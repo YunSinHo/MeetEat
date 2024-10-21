@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.owner.store.Categories;
 import com.example.demo.user.UserService;
 import com.example.demo.user.Users;
+import com.example.demo.user.profile.foodinterest.UserFoodCategory;
 import com.example.demo.user.profile.image.UserProfileImage;
+import com.example.demo.user.profile.interest.Interest;
+import com.example.demo.user.profile.interest.UserInterest;
 
 import jakarta.transaction.Transactional;
 
@@ -84,6 +88,12 @@ public class UserProfileController {
     // interest 폼
     @GetMapping("/interest/form")
     public String interestForm(Model model) {
+        Long userId = userService.getLoggedInUserId();
+        List<Interest> interests = userProfileService.findAllInterest();
+        Users user = userService.findById(userId);
+        List<Long> userInterestId = userProfileService.findUserInterests(user); 
+        model.addAttribute("userInterestId", userInterestId);
+        model.addAttribute("interests", interests);
         return "user/profile/personal-interest";
     }
 
@@ -105,6 +115,13 @@ public class UserProfileController {
     // food-category 폼
     @GetMapping("/food/form")
     public String foodForm(Model model) {
+        Long userId = userService.getLoggedInUserId();
+        Users user = userService.findById(userId);
+
+        List<Categories> categories = userProfileService.findAllCategory();
+        List<Long> userCategoryId = userProfileService.findUserCategories(user); 
+        model.addAttribute("categories", categories);
+        model.addAttribute("userCategoryId", userCategoryId);
         return "user/profile/food-interest";
     }
 

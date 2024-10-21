@@ -1,6 +1,7 @@
 package com.example.demo.user.profile;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,16 @@ public class UserProfileService {
 
         userInterestRepository.save(userInterest);
     }
+    // 유저의 취향 가져오기
+    public List<Long> findUserInterests(Users user) {
+        List<UserInterest> interests = userInterestRepository.findAllByUser(user);
+        
+        List<Long> interestId = new ArrayList<>();
+        for(UserInterest interest : interests) {
+            interestId.add(interest.getInterest().getInterestId());
+        }
+        return interestId;
+    }
 
     // 이전에 있었던 취향 삭제
     public void deleteByUserIdUserInterests(Users user) {
@@ -96,6 +107,16 @@ public class UserProfileService {
                 .orElseThrow(() -> new RuntimeException("food not found with name" + food));
 
         return category.getCategoryId();
+    }
+    // 유저의 food category 가져오기
+    public List<Long> findUserCategories(Users user) {
+        List<UserFoodCategory> categories = userFoodCategoryRepository.findAllByUser(user);
+        
+        List<Long> categorytId = new ArrayList<>();
+        for(UserFoodCategory category : categories) {
+            categorytId.add(category.getCategory().getCategoryId());
+        }
+        return categorytId;
     }
 
     // food save
@@ -147,6 +168,22 @@ public class UserProfileService {
     public void deleteByImageName(String imageName) {
         userProfileImageRepository.deleteByImageName(imageName);
     }
+
+    // db 취미 목록 가져오기
+    public List<Interest> findAllInterest() {
+        List<Interest> interests = interestRepository.findAll();
+
+        return interests;
+    }
+
+    // db 음식 카테고리 가져오기
+    public List<Categories> findAllCategory() {
+        List<Categories> categories = categoriesRepository.findAll();
+
+        return categories;
+    }
+
+   
 
 
 }
