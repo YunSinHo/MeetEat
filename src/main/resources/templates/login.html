@@ -39,12 +39,23 @@
             <div class="input-group">
                 <input type="text" name="username" class="input" placeholder="아이디">
                 <input type="password" name="password" class="input" placeholder="비밀번호">
+                <div id="error-message" style="display: none;"><p th:text="${errorMessage}" style="color: red;"></p></div>
                 <button type="submit" class="button-next"> 로그인</button>
             </div>
             
         </div>
+        <input type="hidden" th:value="${error}" id="error">
         
     </form>
+    <script>
+        const error = document.getElementById("error");
+        function errorMessage(error){
+            if(error.value === "true") {
+                document.getElementById("error-message").style.display = 'block';
+            }
+        }
+        errorMessage(error);
+    </script>
 </body>
 
 </html>

@@ -20,7 +20,7 @@ public class StoreService {
 
     // id로 가게 찾기
     public Store findByOwnerId(Long ownerId) {
-        Store store = storeRepository.findById(ownerId)
+        Store store = storeRepository.findByOwnerId(ownerId)
                                    .orElseThrow(() -> new RuntimeException("store not found with ID: " + ownerId));
 
         return store;

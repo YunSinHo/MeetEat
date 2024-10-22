@@ -33,3 +33,26 @@ html, body {
     position: relative;
     top: -20px;
 }
+.input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #f39c12;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: left;
+}
+.button-next {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #f39c12;
+    color: black; /* 확인 버튼의 색상 */
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 70px; /* 인증 요청 버튼과 확인 버튼 사이의 여백 */
+}
+.button-next:hover {
+    background-color: #e67e22;
+}

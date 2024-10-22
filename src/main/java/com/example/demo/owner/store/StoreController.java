@@ -42,6 +42,13 @@ public class StoreController {
         this.ownerService = ownerService;
     }
 
+    @ModelAttribute
+    public void storeModel(Model model) {
+        Long ownerId = ownerService.getLoggedInOwnerId();
+        Store store = storeService.findByOwnerId(ownerId);
+        model.addAttribute("store", store);
+        
+    }
     @GetMapping("/set-store")
     public String setStore() {
 
