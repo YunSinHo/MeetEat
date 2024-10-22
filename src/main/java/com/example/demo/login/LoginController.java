@@ -1,15 +1,15 @@
 package com.example.demo.login;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.user.UserService;
 import com.example.demo.user.profile.UserProfileService;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @Controller
 @RequestMapping("/login")
@@ -21,7 +21,7 @@ public class LoginController {
     private final StoreService storeService;
 
     public LoginController(UserService userService, UserProfileService userProfileService,
-                           OwnerService ownerService, StoreService storeService){
+            OwnerService ownerService, StoreService storeService) {
         this.userService = userService;
         this.userProfileService = userProfileService;
         this.ownerService = ownerService;
@@ -29,13 +29,17 @@ public class LoginController {
     }
 
     @GetMapping("")
-    public String login() {
+    public String login(@RequestParam(value = "error", required = false) Boolean error, Model model) {
+        if (error == null) {
+            error = false;
+        }
+        model.addAttribute("errorMessage", "아이디나 비밀번호가 틀렸습니다.");
+        model.addAttribute("error", error);
         return "/login";
     }
-    
+
     // -------------------------------------유저
     // 유저 로그인폼
-    
 
     // 로그인 성공시 메인페이지로 이동
     @GetMapping("/user/main")
@@ -44,13 +48,13 @@ public class LoginController {
         boolean isExistProfile = userProfileService.isExistBasicProfile(userId);
 
         // 기본 프로필이 존재하면 메인페이지로
-        if(isExistProfile) return "/user/main";
-        
+        if (isExistProfile)
+            return "/user/main";
+
         return "redirect:/user-profile/set-user";
     }
 
     // ------------------------------------오너
-
 
     // 로그인 성공시 메인페이지로 이동
     @GetMapping("/owner/main")
@@ -60,8 +64,10 @@ public class LoginController {
         boolean isExistProfile = storeService.isExistProfile(ownerId);
 
         // 기본 프로필이 존재하면 메인페이지로
-        if(isExistProfile) return "/owner/main";
-        
+        if (isExistProfile) {
+            return "/owner/main";
+        }
+
         return "redirect:/store/set-store";
     }
 

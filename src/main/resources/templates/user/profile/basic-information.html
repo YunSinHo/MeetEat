@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
@@ -50,20 +50,25 @@
         }
 
         .input-group {
-            max-width: 300px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 50px;
         }
 
         .birth-input {
             flex: 1;
-            width: 50%;
             padding: 15px;
             font-size: 16px;
             border: 2px solid #f39c12;
-            /* 주황색 테두리 */
-            margin-bottom: 50px;
-            padding-right: 0px;
-            /* 버튼 공간 */
+            margin-right: 10px;
             border-radius: 15px;
+            text-align: center;
+        }
+
+        .birth-input:last-child {
+            margin-right: 0;
         }
     </style>
 </head>
@@ -104,8 +109,9 @@
                     <option value="">일</option>
                 </select>
             </div>
+            <button type="submit" class="button-next">다 음</button>
         </div>
-        <button type="submit" class="button-next">다 음</button>
+
     </form>
     <script src="/js/scripts.js"></script> <!-- 외부 JS 연결 -->
     <script>

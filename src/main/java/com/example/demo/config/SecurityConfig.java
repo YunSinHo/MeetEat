@@ -79,6 +79,7 @@ public class SecurityConfig {
                                                         response.sendRedirect("/"); // 그 외 경우
                                                 }
                                         })
+                                        .failureUrl("/login?error=true")
                                         .permitAll())
                         .logout(logout -> logout
                                         .logoutUrl("/logout")

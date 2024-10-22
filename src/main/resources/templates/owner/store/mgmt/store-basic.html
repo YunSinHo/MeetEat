@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/owner-main.css">
+    <script src="/js/owner-nav.js"></script>
+    <style>
+        label {
+            margin-top: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin-bottom: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/mgmt/save-basic" method="post">
+        <div class="container">
+            <div id="header"></div>
+            <h2 th:text="${store.storeName}"></h2>
+            <label for="representative">대표자</label>
+            <input type="text" class="input" id="representative" name="ownerName" th:value="${basic.ownerName}"
+                placeholder="성함을 입력해주세요">
+
+            <label for="phone">가게 전화번호(숫자만 입력)</label>
+            <input type="tel" class="input" id="phone" name="phoneNumber" placeholder="02-1234-5678"
+                th:value="${basic.phoneNumber}">
+
+            <!-- <label for="hours">영업시간</label>
+            <input type="text" class="input" id="hours"  name="weekdayBizHour" placeholder="평일 12:00 ~ 22:00"
+                th:value="${basic.weekdayStartTime}~${basic.weekdayEndTime}"  maxlength="11" oninput="formatTime(this)">
+            <input type="text" class="input" id="weekend-hours" name="weekendBizHour" placeholder="주말 15:00 ~ 23:30"
+            th:value="${basic.weekendStartTime}:${basic.weekendEndTime}"  maxlength="11" oninput="formatTime(this)"> -->
+            <h3>평일 오픈 시간</h3>
+            <label for="weekday-start-hour">시작 시간</label>
+            <select id="weekday-start-hour" name="weekdayStartHour" class="input" >
+                <option th:value="00" th:selected="${weekdayStartTime[0] == '00'}">00</option>
+                <option th:value="01" th:selected="${weekdayStartTime[0] == '01'}">01</option>
+                <option th:value="02" th:selected="${weekdayStartTime[0] == '02'}">02</option>
+                <option th:value="03" th:selected="${weekdayStartTime[0] == '03'}">03</option>
+                <option th:value="04" th:selected="${weekdayStartTime[0] == '04'}">04</option>
+                <option th:value="05" th:selected="${weekdayStartTime[0] == '05'}">05</option>
+                <option th:value="06" th:selected="${weekdayStartTime[0] == '06'}">06</option>
+                <option th:value="07" th:selected="${weekdayStartTime[0] == '07'}">07</option>
+                <option th:value="08" th:selected="${weekdayStartTime[0] == '08'}">08</option>
+                <option th:value="09" th:selected="${weekdayStartTime[0] == '09'}">09</option>
+                <option th:value="10" th:selected="${weekdayStartTime[0] == '10'}">10</option>
+                <option th:value="11" th:selected="${weekdayStartTime[0] == '11'}">11</option>
+                <option th:value="12" th:selected="${weekdayStartTime[0] == '12'}">12</option>
+                <option th:value="13" th:selected="${weekdayStartTime[0] == '13'}">13</option>
+                <option th:value="14" th:selected="${weekdayStartTime[0] == '14'}">14</option>
+                <option th:value="15" th:selected="${weekdayStartTime[0] == '15'}">15</option>
+                <option th:value="16" th:selected="${weekdayStartTime[0] == '16'}">16</option>
+                <option th:value="17" th:selected="${weekdayStartTime[0] == '17'}">17</option>
+                <option th:value="18" th:selected="${weekdayStartTime[0] == '18'}">18</option>
+                <option th:value="19" th:selected="${weekdayStartTime[0] == '19'}">19</option>
+                <option th:value="20" th:selected="${weekdayStartTime[0] == '20'}">20</option>
+                <option th:value="21" th:selected="${weekdayStartTime[0] == '21'}">21</option>
+                <option th:value="22" th:selected="${weekdayStartTime[0] == '22'}">22</option>
+                <option th:value="23" th:selected="${weekdayStartTime[0] == '23'}">23</option>
+                <option th:value="24" th:selected="${weekdayStartTime[0] == '24'}">24</option>
+            </select>
+
+            <label for="weekday-start-minute">분</label>
+            <select id="weekday-start-minute" name="weekdayStartMinute" class="input">
+                <option th:value="00" th:selected="${weekdayStartTime[1] == '00'}">00</option>
+                <option th:value="05" th:selected="${weekdayStartTime[1] == '05'}">05</option>
+                <option th:value="10" th:selected="${weekdayStartTime[1] == '10'}">10</option>
+                <option th:value="15" th:selected="${weekdayStartTime[1] == '15'}">15</option>
+                <option th:value="20" th:selected="${weekdayStartTime[1] == '20'}">20</option>
+                <option th:value="25" th:selected="${weekdayStartTime[1] == '25'}">25</option>
+                <option th:value="30" th:selected="${weekdayStartTime[1] == '30'}">30</option>
+                <option th:value="35" th:selected="${weekdayStartTime[1] == '35'}">35</option>
+                <option th:value="40" th:selected="${weekdayStartTime[1] == '40'}">40</option>
+                <option th:value="45" th:selected="${weekdayStartTime[1] == '45'}">45</option>
+                <option th:value="50" th:selected="${weekdayStartTime[1] == '50'}">50</option>
+                <option th:value="55" th:selected="${weekdayStartTime[1] == '55'}">55</option>
+            </select>
+
+            <label for="weekday-end-hour">종료 시간</label>
+            <select id="weekday-end-hour" name="weekdayEndHour" class="input">
+                <option th:value="00" th:selected="${weekdayEndTime[0] == '00'}">00</option>
+                <option th:value="01" th:selected="${weekdayEndTime[0] == '01'}">01</option>
+                <option th:value="02" th:selected="${weekdayEndTime[0] == '02'}">02</option>
+                <option th:value="03" th:selected="${weekdayEndTime[0] == '03'}">03</option>
+                <option th:value="04" th:selected="${weekdayEndTime[0] == '04'}">04</option>
+                <option th:value="05" th:selected="${weekdayEndTime[0] == '05'}">05</option>
+                <option th:value="06" th:selected="${weekdayEndTime[0] == '06'}">06</option>
+                <option th:value="07" th:selected="${weekdayEndTime[0] == '07'}">07</option>
+                <option th:value="08" th:selected="${weekdayEndTime[0] == '08'}">08</option>
+                <option th:value="09" th:selected="${weekdayEndTime[0] == '09'}">09</option>
+                <option th:value="10" th:selected="${weekdayEndTime[0] == '10'}">10</option>
+                <option th:value="11" th:selected="${weekdayEndTime[0] == '11'}">11</option>
+                <option th:value="12" th:selected="${weekdayEndTime[0] == '12'}">12</option>
+                <option th:value="13" th:selected="${weekdayEndTime[0] == '13'}">13</option>
+                <option th:value="14" th:selected="${weekdayEndTime[0] == '14'}">14</option>
+                <option th:value="15" th:selected="${weekdayEndTime[0] == '15'}">15</option>
+                <option th:value="16" th:selected="${weekdayEndTime[0] == '16'}">16</option>
+                <option th:value="17" th:selected="${weekdayEndTime[0] == '17'}">17</option>
+                <option th:value="18" th:selected="${weekdayEndTime[0] == '18'}">18</option>
+                <option th:value="19" th:selected="${weekdayEndTime[0] == '19'}">19</option>
+                <option th:value="20" th:selected="${weekdayEndTime[0] == '20'}">20</option>
+                <option th:value="21" th:selected="${weekdayEndTime[0] == '21'}">21</option>
+                <option th:value="22" th:selected="${weekdayEndTime[0] == '22'}">22</option>
+                <option th:value="23" th:selected="${weekdayEndTime[0] == '23'}">23</option>
+                <option th:value="24" th:selected="${weekdayEndTime[0] == '24'}">24</option>
+            </select>
+
+            <label for="weekday-end-minute">분</label>
+            <select id="weekday-end-minute" name="weekdayEndMinute" class="input">
+                <option th:value="00" th:selected="${weekdayEndTime[1] == '00'}">00</option>
+                <option th:value="05" th:selected="${weekdayEndTime[1] == '05'}">05</option>
+                <option th:value="10" th:selected="${weekdayEndTime[1] == '10'}">10</option>
+                <option th:value="15" th:selected="${weekdayEndTime[1] == '15'}">15</option>
+                <option th:value="20" th:selected="${weekdayEndTime[1] == '20'}">20</option>
+                <option th:value="25" th:selected="${weekdayEndTime[1] == '25'}">25</option>
+                <option th:value="30" th:selected="${weekdayEndTime[1] == '30'}">30</option>
+                <option th:value="35" th:selected="${weekdayEndTime[1] == '35'}">35</option>
+                <option th:value="40" th:selected="${weekdayEndTime[1] == '40'}">40</option>
+                <option th:value="45" th:selected="${weekdayEndTime[1] == '45'}">45</option>
+                <option th:value="50" th:selected="${weekdayEndTime[1] == '50'}">50</option>
+                <option th:value="55" th:selected="${weekdayEndTime[1] == '55'}">55</option>
+            </select>
+            <h3>주말 오픈 시간</h3>
+            <label for="weekend-start-hour">시작 시간</label>
+            <select id="weekend-start-hour" name="weekendStartHour" class="input">
+                <option th:value="00" th:selected="${weekendStartTime[0] == '00'}">00</option>
+                <option th:value="01" th:selected="${weekendStartTime[0] == '01'}">01</option>
+                <option th:value="02" th:selected="${weekendStartTime[0] == '02'}">02</option>
+                <option th:value="03" th:selected="${weekendStartTime[0] == '03'}">03</option>
+                <option th:value="04" th:selected="${weekendStartTime[0] == '04'}">04</option>
+                <option th:value="05" th:selected="${weekendStartTime[0] == '05'}">05</option>
+                <option th:value="06" th:selected="${weekendStartTime[0] == '06'}">06</option>
+                <option th:value="07" th:selected="${weekendStartTime[0] == '07'}">07</option>
+                <option th:value="08" th:selected="${weekendStartTime[0] == '08'}">08</option>
+                <option th:value="09" th:selected="${weekendStartTime[0] == '09'}">09</option>
+                <option th:value="10" th:selected="${weekendStartTime[0] == '10'}">10</option>
+                <option th:value="11" th:selected="${weekendStartTime[0] == '11'}">11</option>
+                <option th:value="12" th:selected="${weekendStartTime[0] == '12'}">12</option>
+                <option th:value="13" th:selected="${weekendStartTime[0] == '13'}">13</option>
+                <option th:value="14" th:selected="${weekendStartTime[0] == '14'}">14</option>
+                <option th:value="15" th:selected="${weekendStartTime[0] == '15'}">15</option>
+                <option th:value="16" th:selected="${weekendStartTime[0] == '16'}">16</option>
+                <option th:value="17" th:selected="${weekendStartTime[0] == '17'}">17</option>
+                <option th:value="18" th:selected="${weekendStartTime[0] == '18'}">18</option>
+                <option th:value="19" th:selected="${weekendStartTime[0] == '19'}">19</option>
+                <option th:value="20" th:selected="${weekendStartTime[0] == '20'}">20</option>
+                <option th:value="21" th:selected="${weekendStartTime[0] == '21'}">21</option>
+                <option th:value="22" th:selected="${weekendStartTime[0] == '22'}">22</option>
+                <option th:value="23" th:selected="${weekendStartTime[0] == '23'}">23</option>
+                <option th:value="24" th:selected="${weekendStartTime[0] == '24'}">24</option>
+            </select>
+
+            <label for="weekend-start-minute">분</label>
+            <select id="weekend-start-minute" name="weekendStartMinute" class="input">
+                <option th:value="00" th:selected="${weekendStartTime[1] == '00'}">00</option>
+                <option th:value="05" th:selected="${weekendStartTime[1] == '05'}">05</option>
+                <option th:value="10" th:selected="${weekendStartTime[1] == '10'}">10</option>
+                <option th:value="15" th:selected="${weekendStartTime[1] == '15'}">15</option>
+                <option th:value="20" th:selected="${weekendStartTime[1] == '20'}">20</option>
+                <option th:value="25" th:selected="${weekendStartTime[1] == '25'}">25</option>
+                <option th:value="30" th:selected="${weekendStartTime[1] == '30'}">30</option>
+                <option th:value="35" th:selected="${weekendStartTime[1] == '35'}">35</option>
+                <option th:value="40" th:selected="${weekendStartTime[1] == '40'}">40</option>
+                <option th:value="45" th:selected="${weekendStartTime[1] == '45'}">45</option>
+                <option th:value="50" th:selected="${weekendStartTime[1] == '50'}">50</option>
+                <option th:value="55" th:selected="${weekendStartTime[1] == '55'}">55</option>
+            </select>
+
+            <label for="weekend-end-hour">종료 시간</label>
+            <select id="weekend-end-hour" name="weekendEndHour" class="input">
+                <option th:value="00" th:selected="${weekendEndTime[0] == '00'}">00</option>
+                <option th:value="01" th:selected="${weekendEndTime[0] == '01'}">01</option>
+                <option th:value="02" th:selected="${weekendEndTime[0] == '02'}">02</option>
+                <option th:value="03" th:selected="${weekendEndTime[0] == '03'}">03</option>
+                <option th:value="04" th:selected="${weekendEndTime[0] == '04'}">04</option>
+                <option th:value="05" th:selected="${weekendEndTime[0] == '05'}">05</option>
+                <option th:value="06" th:selected="${weekendEndTime[0] == '06'}">06</option>
+                <option th:value="07" th:selected="${weekendEndTime[0] == '07'}">07</option>
+                <option th:value="08" th:selected="${weekendEndTime[0] == '08'}">08</option>
+                <option th:value="09" th:selected="${weekendEndTime[0] == '09'}">09</option>
+                <option th:value="10" th:selected="${weekendEndTime[0] == '10'}">10</option>
+                <option th:value="11" th:selected="${weekendEndTime[0] == '11'}">11</option>
+                <option th:value="12" th:selected="${weekendEndTime[0] == '12'}">12</option>
+                <option th:value="13" th:selected="${weekendEndTime[0] == '13'}">13</option>
+                <option th:value="14" th:selected="${weekendEndTime[0] == '14'}">14</option>
+                <option th:value="15" th:selected="${weekendEndTime[0] == '15'}">15</option>
+                <option th:value="16" th:selected="${weekendEndTime[0] == '16'}">16</option>
+                <option th:value="17" th:selected="${weekendEndTime[0] == '17'}">17</option>
+                <option th:value="18" th:selected="${weekendEndTime[0] == '18'}">18</option>
+                <option th:value="19" th:selected="${weekendEndTime[0] == '19'}">19</option>
+                <option th:value="20" th:selected="${weekendEndTime[0] == '20'}">20</option>
+                <option th:value="21" th:selected="${weekendEndTime[0] == '21'}">21</option>
+                <option th:value="22" th:selected="${weekendEndTime[0] == '22'}">22</option>
+                <option th:value="23" th:selected="${weekendEndTime[0] == '23'}">23</option>
+                <option th:value="24" th:selected="${weekendEndTime[0] == '24'}">24</option>
+            </select>
+
+            <label for="weekend-end-minute">분</label>
+            <select id="weekend-end-minute" name="weekendEndMinute" class="input">
+                <option th:value="00" th:selected="${weekendEndTime[1] == '00'}">00</option>
+                <option th:value="05" th:selected="${weekendEndTime[1] == '05'}">05</option>
+                <option th:value="10" th:selected="${weekendEndTime[1] == '10'}">10</option>
+                <option th:value="15" th:selected="${weekendEndTime[1] == '15'}">15</option>
+                <option th:value="20" th:selected="${weekendEndTime[1] == '20'}">20</option>
+                <option th:value="25" th:selected="${weekendEndTime[1] == '25'}">25</option>
+                <option th:value="30" th:selected="${weekendEndTime[1] == '30'}">30</option>
+                <option th:value="35" th:selected="${weekendEndTime[1] == '35'}">35</option>
+                <option th:value="40" th:selected="${weekendEndTime[1] == '40'}">40</option>
+                <option th:value="45" th:selected="${weekendEndTime[1] == '45'}">45</option>
+                <option th:value="50" th:selected="${weekendEndTime[1] == '50'}">50</option>
+                <option th:value="55" th:selected="${weekendEndTime[1] == '55'}">55</option>
+            </select>
+
+            <label for="min-order">배달 최소 금액(숫자만 입력)</label>
+            <input type="text" class="input" id="min-order" name="delMinCost" placeholder="원 이상 주문 가능"
+                th:value="${basic.delMinCost}">
+
+            <label for="delivery-tip">고객님에게 받을 배달팁 (선택, 숫자만 입력)</label>
+            <input type="text" class="input" id="delivery-tip" name="delCost" placeholder="원"
+                th:value="${basic.delCost}">
+
+            <label for="description">음식점 소개</label>
+            <textarea id="description" class="input" name="introduction" placeholder="고객님들에게 음식점을 소개해주세요!"
+                th:value="${basic.introduction}" th:text="${basic.introduction}"></textarea>
+            <button type="submit" id="submitBtn" class="button-next">저장</button>
+        </div>
+    </form>
+    <script>
+        function validateTimeSelection1() {
+            const startHour = document.getElementById("weekday-start-hour").value;
+            const startMinute = document.getElementById("weekday-start-minute").value;
+            const endHour = document.getElementById("weekday-end-hour").value;
+            const endMinute = document.getElementById("weekday-end-minute").value;
+
+            // 24:00 초과 검사
+            if ((startHour === "24" && startMinute === "00") || (endHour === "24" && endMinute === "00")) {
+                alert("시간은 24:00을 초과할 수 없습니다.");
+                return false;
+            }
+
+
+            return true;
+        }
+        function validateTimeSelection2() {
+            const startHour = document.getElementById("weekend-start-hour").value;
+            const startMinute = document.getElementById("weekend-start-minute").value;
+            const endHour = document.getElementById("weekend-end-hour").value;
+            const endMinute = document.getElementById("weekend-end-minute").value;
+
+            // 24:00 초과 검사
+            if ((startHour === "24" && startMinute === "00") || (endHour === "24" && endMinute === "00")) {
+                alert("시간은 24:00을 초과할 수 없습니다.");
+                return false;
+            }
+
+            return true;
+        }
+
+        // 예를 들어, 폼을 제출할 때 validateTimeSelection 함수를 호출
+        document.getElementById("submitBtn").onclick = function () {
+            if (validateTimeSelection1() && validateTimeSelection2()) {
+                // 유효성 검사 통과 후 폼 제출
+                document.getElementById("submitBtn").submit();
+            }
+        };
+
+    </script>
+</body>
+
+</html>

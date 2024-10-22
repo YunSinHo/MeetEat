@@ -1,4 +1,4 @@
-package com.example.demo.owner.profile;
+package com.example.demo.owner.store.image;
 
 import com.example.demo.user.Users;
 
@@ -38,10 +38,10 @@ public class StoreImage {
         this.isMain = isMain;
     }
     
-    public StoreImage(Long ownerId, String imagePath, String imageName, Boolean isMain){
+    public StoreImage(Long ownerId, String imageName, String imagePath, Boolean isMain){
         this.ownerId = ownerId;
-        this.imagePath = imagePath;
         this.imageName = imageName;
+        this.imagePath = imagePath;
         this.isMain = isMain;
     }
 

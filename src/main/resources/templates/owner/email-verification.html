@@ -12,19 +12,22 @@
 <body>
     <form action="/owner/next-join" method="post">
         <div class="container">
-            <img src="/images/logo.png" class="logo">
+            <img src="/images/logo.png" class="logo" alt="로고">
             <div class="title">이메일로 가입해주세요</div>
             <div class="subtitle">신뢰할 수 있는 커뮤니티를 위해 필요해요!</div>
             <div class="input-group">
-                <input type="text" id="email" name="email" class="input" placeholder="example@domain.com">
+                <div class="input-wrapper">
+                    <input type="text" id="email" name="email" class="input" placeholder="example@domain.com">
+                    <button type="button" id="sendBtn" class="button-request" disabled>인증 요청</button>
+                </div>
                 <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
-                <button type="button" id="sendBtn" class="button-request" disabled>인증 요청</button>
-                <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력" style="display:none;">
+                <div class="success-message" id="successMessage">인증 요청이 성공적으로 전송되었습니다.</div>
+                <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력" style="display:none;margin-top: 21px;">
                 <a href="#" id="resendLink" style="display:none;">재전송</a>
                 <div id="verifyCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
             </div>
+            <button type="submit" class="button-next" id="verifyCodeBtn" disabled>확인</button>
         </div>
-        <button type="submit" class="button-next" id="verifyCodeBtn" disabled>확인</button>
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

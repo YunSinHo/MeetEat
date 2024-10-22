@@ -38,7 +38,7 @@ public class OwnerBankController {
 
         ownerBankService.saveBank(bank);
         
-        return "owner/store/store-picture";
+        return "redirect:/login/owner/main";
     }
     
     

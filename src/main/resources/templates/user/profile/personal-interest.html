@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/styles.css"> <!-- 외부 CSS 연결 -->
     <style>
         .subtitle {
+            height: 30px;
             font-size: 18px;
             color: black;
             margin-bottom: 15px;
@@ -27,7 +28,6 @@
 
         .subtitle2 {
             font-size: 18px;
-            margin-top: 140px;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -67,28 +67,48 @@
             관심이 있으세요?
         </div>
         <form action="/user-profile/interest/set-user" method="post" id="formId">
-            <div class="subtitle">문화 & 예술<input type="checkbox" class="checkbox" name="interest" value="문화 & 예술"></div>
-            <div class="subtitle">여행<input type="checkbox" class="checkbox" id="travel" name="interest" value="여행">
+            <div class="subtitle" th:each="interest : ${interests}">
+                <p th:text="${interest.name}"></p>
+                <input type="checkbox" class="checkbox" name="interest" th:id="${interest.interestId}"
+                    th:value="${interest.name}">
+                <input type="hidden" th:value="${interest.interestId}" class="interests">
             </div>
-            <div class="subtitle">동네 친목<input type="checkbox" class="checkbox" id="community" name="interest"
-                    value="동네 친목"></div>
-            <div class="subtitle">취미<input type="checkbox" class="checkbox" id="hobby" name="interest" value="취미"></div>
-            <div class="subtitle">외국어<input type="checkbox" class="checkbox" id="language" name="interest" value="외국어">
-            </div>
+
             <p id="error-message" style="color:red; display:none;">3개 이상의 옵션을 선택해야 합니다.</p>
             <div class="pagination">
                 <span class="active" onclick="changePage(1)"></span>
                 <span onclick="changePage(2)"></span>
                 <span onclick="changePage(3)"></span>
             </div>
-
             <div class="subtitle2">관심사는 [프로필>설정>관심사]에서 변경해요</div>
+            <button type="submit" class="button-next" id="nextPage">다 음</button>
     </div>
 
-    <button type="submit" class="button-next" >다 음</button>
+
     </form>
+    <input type="hidden" th:value="${userInterestId}" id="userInterestId">
+
     <script src="/js/scripts.js"></script> <!-- 외부 JS 연결 -->
     <script>
+        const userInterestElements = document.getElementById("userInterestId").value;
+        const userInterest = userInterestElements.replaceAll(",", "").replaceAll("[", "").replaceAll("]", "").split(" ");
+
+        const interestElements = document.querySelectorAll(".interests");
+        const interests = Array.from(interestElements).map(input => input.value);
+        function checkedBox(userInterest, interests) {
+            for (let i = 0; i < userInterest.length; i++) {
+                for (let j = 0; j < interests.length; j++) {
+                    let currUserInterest = Number(userInterest[i]);
+                    let currInterest = Number(interests[j]);
+                    if (currInterest === currUserInterest) {
+                        document.getElementById(currInterest).checked = true;
+                        break;
+                    }
+                }
+
+            }
+        }
+        checkedBox(userInterest, interests);
         document.getElementById("formId").addEventListener("submit", function (event) {
             // 선택된 체크박스의 개수 확인
             const checkboxes = document.querySelectorAll('input[name="interest"]:checked');
@@ -100,6 +120,9 @@
             }
         });
 
+        function page(pageNum) {
+
+        }
     </script>
 </body>
 
