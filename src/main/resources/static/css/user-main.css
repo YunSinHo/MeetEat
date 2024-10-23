@@ -11,7 +11,6 @@ html, body {
     width: 617px;
     min-height: 90vh;
     height: auto; /* 높이를 자동으로 설정 */
-    padding: 40px; /* 컨텐츠 여백 */
     background-color: white; /* 배경색 */
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
     border-radius: 15px; /* 모서리 둥글게 */
@@ -19,7 +18,6 @@ html, body {
     display: flex;
     flex-direction: column;
 }
-
 .logo {
     display: block; /* 블록 요소로 설정 */
     /* margin: 0 auto 40px;  위쪽 여백 제거 및 아래쪽 여백 추가 */
@@ -56,4 +54,35 @@ html, body {
 }
 .button-next:hover {
     background-color: #e67e22;
+}
+
+footer {
+    height: 30px;
+    transform : translateY(-100%);
+    position: relative;
+    width: 617px; /* 헤더와 동일한 너비로 설정 */
+    background-color: white;
+    left: 50%; /* 화면 중앙 정렬 */
+    transform: translateX(-50%); /* 중앙 정렬을 위한 X축 이동 */
+}
+
+.footer-container {
+    padding-bottom: 30px;
+    min-height: 100%;
+    height: auto; /* 높이를 자동으로 설정 */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.icon {
+    font-size: 24px;
+    color: black;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }

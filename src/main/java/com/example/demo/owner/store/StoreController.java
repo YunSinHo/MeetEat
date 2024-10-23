@@ -14,6 +14,8 @@ import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.user.Users;
 import com.example.demo.user.profile.image.UserProfileImage;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 
 import java.io.File;
@@ -26,29 +28,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.springframework.web.bind.annotation.PostMapping;
-
 
 @Controller
 @Transactional
 @RequestMapping("/store")
 public class StoreController {
-    
+
     private final StoreService storeService;
     private final OwnerService ownerService;
+
     public StoreController(StoreService storeService, OwnerService ownerService) {
         this.storeService = storeService;
         this.ownerService = ownerService;
     }
 
     @ModelAttribute
-    public void storeModel(Model model) {
+    public String storeModel(Model model) throws IOException {
         Long ownerId = ownerService.getLoggedInOwnerId();
         Store store = storeService.findByOwnerId(ownerId);
+        if (store == null) {
+            return "redirect:/store/set-store";  // 리다이렉트 경로를 반환
+        }
         model.addAttribute("store", store);
-        
+
+        return "";
+
     }
+
     @GetMapping("/set-store")
     public String setStore() {
 
@@ -63,7 +70,6 @@ public class StoreController {
         Store store = new Store(ownerId, storeDTO);
         storeService.saveStore(store);
 
-        
         return "redirect:/owner-bank/form-set";
     }
 
@@ -85,15 +91,16 @@ public class StoreController {
         }
 
         // 비어있는 이미지 슬롯은 noImage를 넣어준다
-        if(mainImage.getImagePath() == null) mainImage = new StoreImage(
-            0L, ownerId ,"/images/store/noImage.png", "noImage.png", true);
+        if (mainImage.getImagePath() == null)
+            mainImage = new StoreImage(
+                    0L, ownerId, "/images/store/noImage.png", "noImage.png", true);
 
         int initialSubImageSize = subImages.size();
-        for(int i = 0; i < 4 - initialSubImageSize; i++) {
+        for (int i = 0; i < 4 - initialSubImageSize; i++) {
             subImages.add(new StoreImage(
-                0L, ownerId ,"/images/store/noImage.png", "noImage.png", false));
+                    0L, ownerId, "/images/store/noImage.png", "noImage.png", false));
         }
-        
+
         model.addAttribute("mainImage", mainImage);
         model.addAttribute("subImages", subImages);
         return "owner/store/store-picture";
@@ -115,8 +122,8 @@ public class StoreController {
             if (images.length > i && images[i] != null && !images[i].isEmpty()) {
                 // 새 파일로 업데이트
                 // 기존 파일 삭제
-                if(!prevImages[i].equals("noImage.png"))
-                deleteImage(uploadDir + prevImages[i]);
+                if (!prevImages[i].equals("noImage.png"))
+                    deleteImage(uploadDir + prevImages[i]);
                 // DB 데이터 삭제
                 storeService.deleteByImageName(prevImages[i]);
 
@@ -125,8 +132,8 @@ public class StoreController {
         }
         if (mainImage != null && !mainImage.isEmpty()) {
             // 새 파일이 업로드되면 기존 파일 삭제
-            if(!prevMainImage.equals("noImage.png"))
-            deleteImage(uploadDir + prevMainImage);
+            if (!prevMainImage.equals("noImage.png"))
+                deleteImage(uploadDir + prevMainImage);
 
             storeService.deleteByImageName(prevMainImage);
 
@@ -178,8 +185,4 @@ public class StoreController {
         }
     }
 
-    
-
-
-    
 }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴 설정</title>
+    <link rel="stylesheet" href="/css/owner-main.css">
+    <script src="/js/owner-nav.js"></script>
+    <style>
+        h2 {
+            color: #e67e22;
+        }
+
+        label {
+            margin-top: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin-bottom: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <h2>메뉴 등록</h2>
+        <label for="menuName">메뉴명</label>
+        <input type="text" class="input" id="menuName" name="ownerName" placeholder="ex: 불고기 정식 2인">
+
+        <label for="isMain">대표(체크)</label>
+        <input type="checkbox" name="isMain" id="isMain" value="true" style="position: relative; margin-left: -595px; height: 20px;">
+
+        <label for="composition">메뉴 구성</label>
+        <input type="text" class="input" id="composition" name="composition" placeholder="ex: 불고기 600g, 광어초밥 10피스">
+
+        <label for="cost">가격</label>
+        <input type="text" class="input" id="cost" name="cost" placeholder="숫자만 입력해주세요.">
+
+        <label for="introduction">메뉴 설명</label>
+        <textarea id="introduction" class="input" name="introduction" placeholder="고객님들에게 메뉴를 소개해주세요!"></textarea>
+        <label for="image">사진 등록</label>
+        <input type="file" name="image" id="image" class="file-input" accept="image/*">
+        <div>
+            <img id="image-preview" src="" alt="미리보기 이미지" style="max-width: 300px; max-height: 300px; display: block;" />
+        </div>
+        <button type="submit" class="button-next">등록하기</button>
+    </div>
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('image-preview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block"; // 이미지를 보이게 설정
+                }
+
+                reader.readAsDataURL(input.files[0]); // 파일을 읽어 미리보기 설정
+            } else {
+                preview.src = "";
+                preview.style.display = "none"; // 파일이 없으면 미리보기를 숨김
+            }
+        }
+    </script>
+</body>
+
+</html>
