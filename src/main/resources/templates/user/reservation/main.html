@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 메인페이지</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <style>
+        #head {
+            font-size: 35px;
+            font-weight: bold;
+            color: #e67e22;
+            position: relative;
+            top: 40px;
+            left: 67px;
+        }
+
+        #dish {
+            position: relative;
+            bottom: 50px;
+            size: 30px;
+        }
+
+        #mainHead {
+            position: absolute;
+
+        }
+
+        #address {
+            position: relative;
+            bottom: 109px;
+            left: 300px;
+        }
+
+        #setAddres {
+            position: relative;
+            bottom: 169px;
+            left: 564px;
+            color: gray;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 740px;
+            margin: auto;
+            margin-left: -58px;
+            position: relative;
+            top: -150px;
+            color: dimgray;
+            gap: 5px; 
+        }
+
+        .word {
+            text-align: center;
+            /* 단어 중앙 정렬 */
+            padding: 5px;
+            /* 패딩 추가 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <div id="mainHead">
+
+            <p id="head">맛집 예약</p>
+            <img src="/images/dish.png" alt="" id="dish">
+            <p id="address">서울특별시 xxx xxx</p>
+            <p id="setAddres">재설정</p>
+
+            <div class="word-grid">
+                <span class="word">단어1</span>
+                <span class="word">단어2</span>
+                <span class="word">단어3</span>
+                <span class="word">단어4</span>
+                <span class="word">단어4</span>
+                <span class="word">단어4</span>
+                <span class="word">단어4</span>
+            </div>
+
+        </div>
+
+        <div id="footer"></div>
+
+    </div>
+    <script src="/js/user-nav.js"></script>
+</body>
+
+</html>
