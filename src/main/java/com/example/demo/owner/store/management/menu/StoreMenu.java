@@ -48,5 +48,8 @@ public class StoreMenu {
     private Boolean isActive = true;
 
     public StoreMenu(){}
+    public StoreMenu(String imagePath){
+        this.imagePath = imagePath;
+    }
     
 }

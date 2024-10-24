@@ -4,19 +4,47 @@ html, body {
     height: 100%;
     overflow-x: hidden; /* 가로 스크롤 금지 */
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5; /* 전체 배경색 */
+    background-color: #f5f5f5;
 }
 
 .container {
     width: 617px;
-    min-height: 90vh;
-    height: auto; /* 높이를 자동으로 설정 */
-    background-color: white; /* 배경색 */
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-    border-radius: 15px; /* 모서리 둥글게 */
-    margin: 40px auto; /* 컨테이너를 상단으로부터 여백을 주고 중앙 정렬 */
+    overflow-x: hidden;
+    height: 90vh; /* 컨테이너 높이를 고정 */
+    background-color: white;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    margin: 40px auto;
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    width: 100%; /* 컨테이너 너비에 맞춤 */
+    height: 70px;
+    background-color: white;
+    z-index: 1000;
+}
+
+footer {
+    position: sticky;
+    bottom: 0;
+    width: 100%; /* 컨테이너 너비에 맞춤 */
+    height: 50px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
 }
 .logo {
     display: block; /* 블록 요소로 설정 */
@@ -56,27 +84,7 @@ html, body {
     background-color: #e67e22;
 }
 
-footer {
-    height: 30px;
-    transform : translateY(-100%);
-    position: relative;
-    width: 617px; /* 헤더와 동일한 너비로 설정 */
-    background-color: white;
-    left: 50%; /* 화면 중앙 정렬 */
-    transform: translateX(-50%); /* 중앙 정렬을 위한 X축 이동 */
-}
 
-.footer-container {
-    padding-bottom: 30px;
-    min-height: 100%;
-    height: auto; /* 높이를 자동으로 설정 */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    position: relative;
-    top: 700px;
-}
 
 .icon {
     font-size: 24px;
@@ -88,4 +96,6 @@ footer {
     height: 50px;
     border-radius: 50%;
 }
+
+
 

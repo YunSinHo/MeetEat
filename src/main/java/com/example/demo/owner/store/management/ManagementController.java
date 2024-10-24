@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.ImageService;
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreService;
@@ -26,10 +27,13 @@ public class ManagementController {
     private final StoreService storeService;
     private final OwnerService ownerService;
     private final ManagementService managementService;
-    public ManagementController(StoreService storeService, OwnerService ownerService, ManagementService managementService) {
+    private final ImageService imageService;
+    public ManagementController(StoreService storeService, OwnerService ownerService, 
+    ManagementService managementService, ImageService imageService) {
         this.storeService = storeService;
         this.ownerService = ownerService;
         this.managementService = managementService;
+        this.imageService = imageService;
     }
 
     @ModelAttribute
@@ -90,23 +94,36 @@ public class ManagementController {
     // 메뉴 이동
     @GetMapping("/food-menu")
     public String foodMenu(Model model) {
-        Long ownerId = ownerService.getLoggedInOwnerId();
-        Store store = storeService.findByOwnerId(ownerId);
-        List<StoreMenu> menus = managementService.findAllStoreMenu(store.getStoreId());
+        List<StoreMenu> menus = managementService.findAllStoreMenu();
         model.addAttribute("menus", menus);
         return "owner/store/mgmt/food-menu";
     }
-    // 메뉴 등록(수정) 페이지
+    // 메뉴 등록 페이지
     @GetMapping("/form/food-register")
-    public String formFoodRegister() {
+    public String formFoodRegister(Model model) {
+        model.addAttribute("menu", new StoreMenu("/images/user/noImage.png"));
+        return "owner/store/mgmt/food-register";
+    }
+
+    // 메뉴 수정 페이지
+    @PostMapping("/form/food-register")
+    public String formFoodUpdate(Model model, @RequestParam("storeMenuId") Long storeMenuId) {
+        StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId);
+        if(menu.getImagePath() == null) menu.setImagePath("/images/user/noImage.png");
+        model.addAttribute("menu", menu);
         return "owner/store/mgmt/food-register";
     }
     
     // 메뉴 등록(수정)
     @PostMapping("/food-register")
     public String foodRegister(@ModelAttribute StoreMenuDTO storeMenuDTO,
-                               @RequestParam(value = "image", required = false) MultipartFile image) {
-        managementService.saveStoreMenu(storeMenuDTO, image);
+                               @RequestParam(value = "image", required = false) MultipartFile image,
+                               @RequestParam(value = "preImageName", required = false) String preImageName) {
+        // 기존 이미지 파일 삭제
+        if(!image.isEmpty())
+        imageService.deleteImage("/images/store/food/" + preImageName);
+        System.out.println("이름"+preImageName+"이름");
+        managementService.saveStoreMenu(storeMenuDTO, image, preImageName);
         return "redirect:/mgmt/food-menu";
     }
     

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +11,36 @@
         h2 {
             color: #e67e22;
         }
+
+        button {
+            background-color: lemonchiffon;
+            color: black;
+            font-weight: bold;
+            height: 40px;
+            width: 60px;
+        }
     </style>
 </head>
+
 <body>
+
     <div class="container">
         <div id="header"></div>
         <h2>메뉴판 관리</h2>
-        
+
+        <div th:each="menu : ${menus}">
+            <form action="/mgmt/form/food-register" method="post">
+            <h3 th:text="${menu.name}"></h3>
+            <p th:text="${menu.composition}"></p>
+            <input type="hidden" name="storeMenuId" th:value="${menu.storeMenuId}">
+            <button type="submit">수 정</button>
+            <hr>
+            </form>
+        </div>
+
+
     </div>
-    
+
 </body>
+
 </html>

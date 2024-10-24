@@ -2,19 +2,11 @@ package com.example.demo.user;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
-import java.util.stream.Collectors;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,8 +29,7 @@ public class UserController {
     private final UserService userService;
     @Autowired
     private final RoleService roleService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+ 
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
