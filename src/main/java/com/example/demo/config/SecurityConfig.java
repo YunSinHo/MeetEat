@@ -28,30 +28,6 @@ public class SecurityConfig {
                                 .sessionManagement(management -> management
                                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
-                // 모든 요청을 허용합니다.
-                // 요청에 대한 권한 설정
-                // httpSecurity.authorizeHttpRequests((authorize) -> authorize
-                // .requestMatchers("/login/user/main")
-                // .hasRole("USER") // 이 경로들은 USER 권한 필요
-                // .requestMatchers("/login/owner/main")
-                // .hasRole("OWNER") // 이 경로들은 OWNER 권한 필요
-                // .anyRequest().permitAll()); // 그 외 요청은 모두 허용
-
-                // httpSecurity.formLogin(formLogin -> formLogin
-                // .loginPage("/login/user-login")
-                // .defaultSuccessUrl("/login/user/main")
-                // .failureHandler((request, response, exception) -> {
-                // System.out.println("Login failed: " + exception.getMessage());
-                // response.sendRedirect("/login/user-login?error=true");
-                // }))
-                // .formLogin(formLogin -> formLogin
-                // .loginPage("/login/owner-login")
-                // .defaultSuccessUrl("/login/owner/main")
-                // .failureHandler((request, response, exception) -> {
-                // System.out.println("Login failed: " + exception.getMessage());
-                // response.sendRedirect("/login/owner-login?error=true");
-                // }));
-
               
                 httpSecurity
                         .authorizeHttpRequests((authorize) -> authorize

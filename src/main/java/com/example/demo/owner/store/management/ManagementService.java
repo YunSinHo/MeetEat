@@ -6,11 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.ImageService;
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreService;
@@ -25,13 +27,15 @@ public class ManagementService {
     private final StoreMenuRepository storeMenuRepository;
     private final OwnerService ownerService;
     private final StoreService storeService;
+    private final ImageService imageService;
 
     public ManagementService(StoreBasicRepository storeBasicRepository, StoreMenuRepository storeMenuRepository,
-                             OwnerService ownerService, StoreService storeService) {
+                             OwnerService ownerService, StoreService storeService, ImageService imageService) {
         this.storeBasicRepository = storeBasicRepository;
         this.storeMenuRepository = storeMenuRepository;
         this.ownerService = ownerService;
         this.storeService = storeService;
+        this.imageService = imageService;
     }
 
     // 가게 id로 가게 구성 찾기
@@ -71,29 +75,40 @@ public class ManagementService {
         storeBasicRepository.save(basic);
     }
     // 등록된 메뉴 리스트
-    public List<StoreMenu> findAllStoreMenu(Long storeId) {
-        List<StoreMenu> menu = storeMenuRepository.findAllByStoreId(storeId);
+    public List<StoreMenu> findAllStoreMenu() {
+        
+        Long ownerId = ownerService.getLoggedInOwnerId();
+        Store store = storeService.findByOwnerId(ownerId);
+        List<StoreMenu> menu = storeMenuRepository.findAllByStoreId(store.getStoreId());
 
         return menu;
     }
 
     // 메뉴 등록하기
-    public void saveStoreMenu(StoreMenuDTO storeMenuDTO, MultipartFile image) {
-        String uploadDir = "src/main/resources/static/images/store/food";
+    public void saveStoreMenu(StoreMenuDTO storeMenuDTO, MultipartFile image, String preImageName) {
+        String uploadDir = "/images/store/food/";
         Long ownerId = ownerService.getLoggedInOwnerId();
         Store store = storeService.findByOwnerId(ownerId);
-
-        String newFileName = saveImage(image ,uploadDir);
-
+        String newFileName;
         StoreMenu menu = new StoreMenu();
+        
+        menu.setStoreMenuId(storeMenuDTO.getStoreMenuId());
         menu.setStoreId(store.getStoreId());
         menu.setName(storeMenuDTO.getName());
         menu.setCost(storeMenuDTO.getCost());
         menu.setIntroduction(storeMenuDTO.getIntroduction());
         menu.setComposition(storeMenuDTO.getComposition());
         menu.setIsMain(storeMenuDTO.getIsMain());
-        menu.setImageName(newFileName);
-        menu.setImagePath(uploadDir + newFileName);
+        
+        if(!image.isEmpty()){
+            newFileName = saveImage(image ,uploadDir);
+            menu.setImageName(newFileName);
+            menu.setImagePath(uploadDir + newFileName);
+        } else if(preImageName != null){
+            menu.setImageName(preImageName);
+            menu.setImagePath(uploadDir + preImageName);
+        }
+       
         storeMenuRepository.save(menu);
     }
 
@@ -109,7 +124,7 @@ public class ManagementService {
             String newFileName = uuid + extension;
 
             // 파일 저장 경로 설정
-            Path path = Paths.get(uploadDir + newFileName);
+            Path path = Paths.get("src/main/resources/static" + uploadDir + newFileName);
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             return newFileName;
         } catch (IOException e) {
@@ -117,6 +132,14 @@ public class ManagementService {
             return "";
         }
 
+    }
+
+    // 등록된 메뉴 id로 찾기
+    public StoreMenu findByMenuIdFromStoreMenu(Long menuId) {
+        StoreMenu menu = storeMenuRepository.findByStoreMenuId(menuId)
+                                                      .orElseThrow(() -> new RuntimeException("menu not found with ID: " + menuId));
+        
+        return menu;
     }
 
     

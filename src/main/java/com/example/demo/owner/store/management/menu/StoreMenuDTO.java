@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StoreMenuDTO {
+    private Long storeMenuId;
 
     private Long storeId;
 
@@ -23,4 +24,6 @@ public class StoreMenuDTO {
     private String imagePath;
 
     private Boolean isMain = false;
+
+    private Boolean isActive = true;
 }

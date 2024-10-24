@@ -113,7 +113,7 @@ public class StoreController {
             @RequestParam(value = "images", required = false) MultipartFile[] images,
             @RequestParam(value = "prevImages", required = false) String[] prevImages,
             Model model) {
-        String uploadDir = "src/main/resources/static/images/store/";
+        String uploadDir = "/images/store/";
         Long ownerId = ownerService.getLoggedInOwnerId();
 
         // 서브 이미지 파일 처리
@@ -157,7 +157,7 @@ public class StoreController {
             String newFileName = uuid + extension;
 
             // 파일 저장 경로 설정
-            Path path = Paths.get(uploadDir + newFileName);
+            Path path = Paths.get("src/main/resources/static" + uploadDir + newFileName);
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             // 이미지 정보 저장 (isMain 값에 따라 메인 이미지 여부 구분)
@@ -170,7 +170,7 @@ public class StoreController {
     // 이미지 삭제 메소드
     private void deleteImage(String filePath) {
         try {
-            File file = new File(filePath);
+            File file = new File("src/main/resources/static" + filePath);
             if (file.exists()) {
                 if (file.delete()) {
                     System.out.println("File deleted successfully: " + filePath);
