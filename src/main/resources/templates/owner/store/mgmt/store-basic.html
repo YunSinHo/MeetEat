@@ -37,11 +37,6 @@
             <input type="tel" class="input" id="phone" name="phoneNumber" placeholder="02-1234-5678"
                 th:value="${basic.phoneNumber}">
 
-            <!-- <label for="hours">영업시간</label>
-            <input type="text" class="input" id="hours"  name="weekdayBizHour" placeholder="평일 12:00 ~ 22:00"
-                th:value="${basic.weekdayStartTime}~${basic.weekdayEndTime}"  maxlength="11" oninput="formatTime(this)">
-            <input type="text" class="input" id="weekend-hours" name="weekendBizHour" placeholder="주말 15:00 ~ 23:30"
-            th:value="${basic.weekendStartTime}:${basic.weekendEndTime}"  maxlength="11" oninput="formatTime(this)"> -->
             <h3>평일 오픈 시간</h3>
             <label for="weekday-start-hour">시작 시간</label>
             <select id="weekday-start-hour" name="weekdayStartHour" class="input" >
