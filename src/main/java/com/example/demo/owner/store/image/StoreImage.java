@@ -17,8 +17,8 @@ public class StoreImage {
     @Column(name = "store_image_id")
     private Long storeImageId;
 
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @Column(name = "store_id", nullable = false)
+    private Long storeId;
 
     @Column(name = "image_path", nullable = false)
     private String imagePath;
@@ -30,16 +30,16 @@ public class StoreImage {
     private Boolean isMain = false;
     public StoreImage(){}
 
-    public StoreImage(Long storeImageId, Long ownerId, String imagePath, String imageName, Boolean isMain){
+    public StoreImage(Long storeImageId, Long storeId, String imagePath, String imageName, Boolean isMain){
         this.storeImageId = storeImageId;
-        this.ownerId = ownerId;
+        this.storeId = storeId;
         this.imagePath = imagePath;
         this.imageName = imageName;
         this.isMain = isMain;
     }
     
-    public StoreImage(Long ownerId, String imageName, String imagePath, Boolean isMain){
-        this.ownerId = ownerId;
+    public StoreImage(Long storeId, String imageName, String imagePath, Boolean isMain){
+        this.storeId = storeId;
         this.imageName = imageName;
         this.imagePath = imagePath;
         this.isMain = isMain;

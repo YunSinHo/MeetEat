@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.user.UserDTO;
 import com.example.demo.user.Users;
 
+import java.util.List;
 @Service
 public class OwnerService {
 
@@ -23,6 +24,11 @@ public class OwnerService {
                                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + ownerId));
 
         return owner;
+    }
+    // 오너 아이디 값 가져오기
+    public List<Long> findAllOwnerId() {
+        List<Long> ownerIds = ownerRepository.findAllIds();
+        return ownerIds;
     }
 
     // 회원 아이디로 유저 찾기

@@ -22,10 +22,6 @@
             size: 30px;
         }
 
-        #mainHead {
-            position: absolute;
-
-        }
 
         #address {
             position: relative;
@@ -43,20 +39,71 @@
         .word-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            width: 740px;
-            margin: auto;
-            margin-left: -58px;
+            /* 각 열의 크기를 자동으로 설정 */
+            width: 100%;
+            /* container에 맞게 width를 조정 */
+            /* 간격을 줄임 */
             position: relative;
-            top: -150px;
-            color: dimgray;
-            gap: 5px; 
+            gap: 38px;
+            bottom: 143px;
+            font-size: 20px;
         }
 
         .word {
             text-align: center;
-            /* 단어 중앙 정렬 */
-            padding: 5px;
-            /* 패딩 추가 */
+            padding: 2px;
+            /* 패딩을 줄임 */
+            margin: 0;
+            /* 마진을 없앰 */
+            min-width: 0;
+            color: darkgray
+                /* 최소 너비를 없앰 */
+        }
+
+        .category {
+            text-decoration-line: none;
+        }
+
+        #arrange-button {
+            display: flex;
+            bottom: 142px;
+            position: relative;
+        }
+
+        .ag-button {
+            margin-left: 48px;
+            border-radius: 10px;
+            font-size: 20px;
+            border-color: #D3D3D3;
+            background-color: #D3D3D3;
+        }
+
+        .store {
+            width: 300px;
+            /* 너비 지정 */
+            height: 200px;
+            /* 높이 지정 */
+            border: 2px solid black;
+            /* 테두리 지정: 두께, 스타일, 색상 */
+            padding: 10px;
+            /* 내용과 테두리 사이의 여백 */
+            margin: 20px;
+            /* 외부 여백 */
+        }
+
+        #mainHead {
+            margin-bottom: -133px;
+            /* mainHead와 middle div 사이의 간격 추가 */
+        }
+
+        #middle {
+            overflow-y: auto;
+            /* 세로 스크롤 활성화 */
+            overflow-x: hidden;
+            flex-grow: 1;
+            /* middle div가 가능한 공간을 모두 차지하게 설정 */
+            padding: 10px;
+            /* 여백 추가 */
         }
     </style>
 </head>
@@ -72,16 +119,40 @@
             <p id="setAddres">재설정</p>
 
             <div class="word-grid">
-                <span class="word">단어1</span>
-                <span class="word">단어2</span>
-                <span class="word">단어3</span>
-                <span class="word">단어4</span>
-                <span class="word">단어4</span>
-                <span class="word">단어4</span>
-                <span class="word">단어4</span>
-            </div>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
+                <a href="" class="category"><span class="word">단어1</span></a>
 
+
+            </div>
+            <hr style="color:gray;position: relative;bottom: 143px;">
+            <div id="arrange-button">
+                <button class="ag-button">랭킹순</button>
+                <button class="ag-button">쿠폰</button>
+                <button class="ag-button">최소합석금액</button>
+                <button class="ag-button">별점</button>
+
+            </div>
         </div>
+
+        <div id="middle">
+            <div th:each="store : ${stores}">
+                <div class="store">
+                    <img th:src="${store.storeImagePath}" alt="">
+                    <p th:text="${store.storeName}"></p>
+                    <p th:text="${store.category}"></p>
+                    <p th:text="${store.address}"></p>
+                    <p th:text="${store.rank}"></p>
+                    <p th:text="${store.heart}"></p>
+                </div>
+            </div>
+        </div>
+
+
 
         <div id="footer"></div>
 
