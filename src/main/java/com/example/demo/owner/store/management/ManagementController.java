@@ -44,7 +44,7 @@ public class ManagementController {
         model.addAttribute("store", store);
         StoreBasic basic = managementService.findByStoreId(store.getStoreId());
         
-        if(basic.getStoreId() == null){
+        if(basic == null){
             model.addAttribute("basic", new StoreBasic());
             model.addAttribute("weekdayStartTime", new String[]{"00","00"});
             model.addAttribute("weekdayEndTime", new String[]{"00:00","00"});

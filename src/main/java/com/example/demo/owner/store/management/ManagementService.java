@@ -60,7 +60,7 @@ public class ManagementService {
         Long ownerId = ownerService.getLoggedInOwnerId();
         Store store = storeService.findByOwnerId(ownerId);
         StoreBasic basic = findByStoreId(store.getStoreId());
-
+        if(basic == null) basic = new StoreBasic();
         basic.setStoreId(store.getStoreId());
         basic.setPhoneNumber(storeBasicDTO.getPhoneNumber());
         basic.setWeekdayStartTime(weekdayStartHour + ":" + weekdayStartMinute);

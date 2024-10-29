@@ -17,7 +17,6 @@ public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
 
-
     public ReservationService(OwnerService ownerService, StoreService storeSerivce) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
@@ -30,16 +29,18 @@ public class ReservationService {
         List<StoreCombineDTO> list = new ArrayList<>();
         for (Long ownerId : ownerIds) {
             Store store = storeSerivce.findByOwnerId(ownerId);
-            if(store == null) continue;
+            if (store == null)
+                continue;
             storeIds.add(store.getStoreId());
         }
         for (Long storeId : storeIds) {
             Store store = storeSerivce.findById(storeId);
             StoreCombineDTO dto = new StoreCombineDTO();
             dto.setAddress(store.getAddress());
+            dto.setStoreName(store.getStoreName());
             dto.setCategory(store.getCategory());
-            dto.setHeart("0");
-            dto.setRank("0");
+            dto.setHeart("4.5");
+            dto.setRank("4.3");
             dto.setStoreId(storeId);
             List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
             for (StoreImage image : storeImages) {
@@ -48,6 +49,39 @@ public class ReservationService {
                     break;
                 }
             }
+            list.add(dto);
+        }
+        return list;
+    }
+
+    // 카테고리에 따른 분류
+    public List<StoreCombineDTO> getStoreInformation(String category) {
+        List<Long> ownerIds = ownerService.findAllOwnerId();
+        List<Long> storeIds = new ArrayList<>();
+        List<StoreCombineDTO> list = new ArrayList<>();
+        for (Long ownerId : ownerIds) {
+            Store store = storeSerivce.findByOwnerId(ownerId);
+            if (store == null)
+                continue;
+            storeIds.add(store.getStoreId());
+        }
+        for (Long storeId : storeIds) {
+            Store store = storeSerivce.findById(storeId);
+            StoreCombineDTO dto = new StoreCombineDTO();
+            dto.setAddress(store.getAddress());
+            dto.setStoreName(store.getStoreName());
+            dto.setCategory(store.getCategory());
+            dto.setHeart("4.5");
+            dto.setRank("4.3");
+            dto.setStoreId(storeId);
+            List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
+            for (StoreImage image : storeImages) {
+                if (image.getIsMain() == true) {
+                    dto.setStoreImagePath(image.getImagePath());
+                    break;
+                }
+            }
+            if(category.equals(dto.getCategory()))
             list.add(dto);
         }
         return list;
