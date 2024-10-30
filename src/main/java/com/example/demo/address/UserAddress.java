@@ -1,4 +1,4 @@
-package com.example.demo.user;
+package com.example.demo.address;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +23,17 @@ public class UserAddress {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lng")
+    private Double lng;
+
 
     @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
-    private Boolean isActive = true;
+    private Boolean isActive = false;
     
 }

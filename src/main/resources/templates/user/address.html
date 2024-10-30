@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주소 설정</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <style>
+        #go_back {
+            font-size: 35px;
+            border: none;
+            background-color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        h3 {
+            font-size: 30px;
+            position: relative;
+            top: -72px;
+            left: 253px;
+        }
+
+        #middle {
+            position: absolute;
+            top: 91px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            /* 밑으로 10px 간격 */
+            cursor: pointer;
+        }
+        hr{
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="header"></div>
+        <div id="middle">
+            <button id="go_back">&lt;</button>
+            <h3>주소 검색</h3>
+            <div id="search" style="position: relative;
+            width: 615px;
+        top: -93px;
+        ">
+                <input type="text" id="addressInput" class="input" style="position: relative;">
+                <button type="button" id="searchButton" style="position: relative;
+                left: 560px;
+                top: -38px;
+                border: none;
+                background-color: white;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 19px;
+                ">검색</button>
+            </div>
+            <div id="searchResults" style="position: absolute; top: 106px;"></div>
+            <div id="user_address" th:each="address : ${addresses}">
+                <p th:text="${address.name}"></p>
+                <hr>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+
+    </div>
+    
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchButton = document.getElementById("searchButton");
+            searchButton.addEventListener("click", function () {
+                const address = document.getElementById("addressInput").value;
+                const encodedAddress = encodeURIComponent(address);  // 인코딩된 주소
+
+                console.log("인코딩된 주소:", encodedAddress);  // 인코딩된 주소 로그 출력
+
+                fetch(`/geocode?address=${encodedAddress}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsDiv = document.getElementById("searchResults");
+                        resultsDiv.innerHTML = '';  // 기존 검색 결과 초기화
+
+                        data.forEach((result, index) => {
+                            const resultElement = document.createElement("div");
+                            resultElement.classList.add("result-item");
+                            resultElement.textContent = result.roadAddress;
+
+                            resultElement.addEventListener("click", function () {
+                                const latitude = result.latitude;
+                                const longitude = result.longitude;
+                                const name = result.roadAddress;
+
+                                // 좌표값을 데이터베이스에 저장하는 API 호출
+                                saveCoordinatesToDB(latitude, longitude, name);
+                            });
+
+                            resultsDiv.appendChild(resultElement);
+                        });
+                    })
+                    .catch(error => console.error("주소 검색 중 오류:", error));
+            });
+        });
+
+
+
+        function saveCoordinatesToDB(lat, lng, name) {
+            fetch('/save-coordinates', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude: lat, longitude: lng, name: name })
+            })
+                .then(response => response.json())
+                .then(data => console.log("좌표값이 데이터베이스에 저장되었습니다:", data),
+                 location.href="/update-map");
+        }
+       
+    </script>
+
+</body>
+
+</html>

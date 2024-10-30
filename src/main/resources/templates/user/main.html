@@ -7,6 +7,19 @@
     <title>유저 메인페이지</title>
     <link rel="stylesheet" href="/css/user-main.css">
     <style>
+        #searchResults {
+            margin-top: 10px;
+            /* 여백 추가 */
+            border: 1px solid #ccc;
+            /* 경계선 추가 */
+            max-height: 150px;
+            /* 최대 높이 설정 */
+            overflow-y: auto;
+            /* 스크롤 가능 */
+            position: relative;
+            top: 55px;
+        }
+
         .main-go {
             font-weight: bold;
             color: black;
@@ -87,23 +100,61 @@
 
 <body>
     <div class="container">
+        <!-- <div id="searchResults"></div> -->
         <div id="header"></div>
         <div id="middle">
-            <input type="text" class="input" placeholder="찾는 메뉴 이름이 뭐에요?" style="    position: relative;
-        top: -239px;">
-
             <a href="/reservation/main" class="main-go" id="reservation">맛집 예약</a>
+
             <a href="" class="main-go" id="join">합석</a>
+
+            <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="position: relative;
+            top: -220px;
+            width: 586px;
+            left: 12px;">
+            <button type="button" id="searchButton" style="position: relative;
+            top: -258px;
+            left: 547px;
+            border: none;
+            background-color: white;
+            font-weight: bold;
+            cursor: pointer;
+            ">검색</button>
             <div id="map_template">
 
             </div>
+
         </div>
 
         <div id="footer"></div>
 
     </div>
+    <input type="hidden" th:value="${lat}" id="lat">
+    <input type="hidden" th:value="${lng}" id="lng">
     <script src="/js/user-nav.js"></script>
     <script src="/js/map.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+    <script>
+        const lat = document.getElementById("lat").value;
+        const lng = document.getElementById("lng").value;
+        const addressInput = document.getElementById("addressInput");
+        addressInput.addEventListener("click", function () {
+            window.location.href = "/address-set";
+        });
+
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     // initMap이 호출된 후 지도가 완전히 로드된 후에 좌표 설정
+        //         const defaultLat = 37.5665; // 기본 위도 (예: 서울시청)
+        //         const defaultLng = 126.9780; // 기본 경도
+
+        //         // lat과 lng 값이 null이거나 빈 문자열일 경우 기본 값을 사용
+        //         const latitude = lat && lat !== "null" ? lat : defaultLat;
+        //         const longitude = lng && lng !== "null" ? lng : defaultLng;
+        //         updateMapCenter(parseFloat(lat), parseFloat(lng));
+        // });
+        
+
+    </script>
+
 </body>
 
 </html>
