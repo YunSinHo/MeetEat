@@ -134,24 +134,14 @@
     <script src="/js/map.js"></script>
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script>
-        const lat = document.getElementById("lat").value;
-        const lng = document.getElementById("lng").value;
+        let lat = document.getElementById("lat").value;
+        let lng = document.getElementById("lng").value;
         const addressInput = document.getElementById("addressInput");
         addressInput.addEventListener("click", function () {
-            window.location.href = "/address-set";
+            window.location.href = "/user/address-set";
         });
+       
 
-        // document.addEventListener("DOMContentLoaded", function () {
-        //     // initMap이 호출된 후 지도가 완전히 로드된 후에 좌표 설정
-        //         const defaultLat = 37.5665; // 기본 위도 (예: 서울시청)
-        //         const defaultLng = 126.9780; // 기본 경도
-
-        //         // lat과 lng 값이 null이거나 빈 문자열일 경우 기본 값을 사용
-        //         const latitude = lat && lat !== "null" ? lat : defaultLat;
-        //         const longitude = lng && lng !== "null" ? lng : defaultLng;
-        //         updateMapCenter(parseFloat(lat), parseFloat(lng));
-        // });
-        
 
     </script>
 

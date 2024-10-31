@@ -26,14 +26,15 @@
         #address {
             position: relative;
             bottom: 109px;
-            left: 300px;
+            left: 220px;
         }
 
-        #setAddres {
+        #setAddress {
             position: relative;
             bottom: 169px;
             left: 564px;
             color: gray;
+            cursor: pointer;
         }
 
         .word-grid {
@@ -118,8 +119,8 @@
 
             <p id="head">맛집 예약</p>
             <img src="/images/dish.png" alt="" id="dish">
-            <p id="address">서울특별시 xxx xxx</p>
-            <p id="setAddres">재설정</p>
+            <p id="address" th:text="${address.name}"></p>
+            <p id="setAddress">재설정</p>
 
             <div class="word-grid">
                 <a href="/reservation/sort?category=전체" class="category" id="all_a" onclick="categoryColor('all')"><span
@@ -208,6 +209,12 @@
     </div>
     <script src="/js/user-nav.js"></script>
     <script>
+
+        // 주소 설정 클릭시 설정 페이지 이동
+        const setAddress = document.getElementById("setAddress");
+        setAddress.addEventListener("click", function(){
+            window.location.href = "/user/address-set?goReserveMain=true"
+        });
         let lastClickedCategory = localStorage.getItem('selectedCategory');
 
         function categoryColor(categoryId) {

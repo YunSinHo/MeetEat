@@ -14,6 +14,8 @@ import com.example.demo.owner.store.StoreService;
 import com.example.demo.user.UserService;
 import com.example.demo.user.profile.UserProfileService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 @Controller
 @RequestMapping("/login")
@@ -49,14 +51,22 @@ public class LoginController {
 
     // 로그인 성공시 메인페이지로 이동
     @GetMapping("/user/main")
-    @Transactional
-    public String userMain(Model model) {
+    public String userMain(Model model, HttpServletResponse response) {
+        // 캐싱 방지
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         Long userId = userService.getLoggedInUserId();
         boolean isExistProfile = userProfileService.isExistBasicProfile(userId);
         Double latValue = null;
         Double lngValue = null;
         String name = null;
-        
+        try {
+            Thread.sleep(100); // 100ms = 0.1초
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         List<UserAddress> addresses = addressService.getUserAddress();
         for(UserAddress address : addresses) {
             if(address.getIsActive() == true) {
@@ -66,7 +76,6 @@ public class LoginController {
                 break;
             }
         }
-        
         
         System.out.println("1위도 : " + latValue) ;
         System.out.println("1경도 : " + lngValue) ;

@@ -82,20 +82,23 @@ public class AddressController {
         return results;
     }
 
+    // -------------------------유저-------------------------------
     // 주소 설정
-    @GetMapping("/address-set")
-    public String setAddress(Model model) {
+    @GetMapping("/user/address-set")
+    public String setAddress(Model model, @RequestParam(value = "goReserveMain", required = false) Boolean goReserveMain) {
         // 유저 주소 가져오기
-        System.out.println("ddd");
         List<UserAddress> addresses = addressService.getUserAddress();
         model.addAttribute("addresses", addresses);
+        model.addAttribute("goReserveMain", goReserveMain);
+
         return "user/address";
     }
 
-    @PostMapping("/save-coordinates")
+    // 데이터베이스에 저장
+    @PostMapping("/user/save-coordinates")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> saveCoordinates(@RequestBody Map<String, String> coordinates) {
+    public ResponseEntity<String> saveUserCoordinates(@RequestBody Map<String, String> coordinates) {
 
         System.out.println("위도 : " + coordinates.get("latitude"));
         System.out.println("경도 : " + coordinates.get("longitude"));
@@ -106,10 +109,26 @@ public class AddressController {
     }
 
     // 주소 선택 이후 메인 페이지 이동
-    @GetMapping("/update-map")
-    public String updateMap() {
-      
+    @GetMapping("/user/update-map")
+    public String updateMap(@RequestParam(value = "goReserveMain", required = false) Boolean goReserveMain) {
+        if(goReserveMain) {
+            return "redirect:/reservation/main";
+        }
         return "redirect:/login/user/main";
     }
+
+    // 기존 주소 활성화
+    @PostMapping("/user/map/change-active")
+    public String changeActiveUserMap(@RequestParam("lat") String lat, @RequestParam("lng") String lng, 
+    @RequestParam("name") String name, @RequestParam("addressId") String addressId) {
+        System.out.println("lat : " + lat );
+        System.out.println("lng : " + lng);
+        System.out.println("name : " + name);
+        System.out.println("addressId : " + addressId);
+        addressService.changeActiveUserMap(lat, lng, name, addressId);
+        
+        return "redirect:/login/user/main";
+    }
+    
 
 }

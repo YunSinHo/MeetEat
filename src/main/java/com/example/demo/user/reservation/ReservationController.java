@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.address.AddressService;
+import com.example.demo.address.UserAddress;
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.StoreCombineDTO;
 
@@ -18,16 +20,29 @@ public class ReservationController {
 
     private final OwnerService ownerService;
     private final ReservationService reservationService;
+    private final AddressService addressService;
 
-    public ReservationController(OwnerService ownerService, ReservationService reservationService) {
+    public ReservationController(OwnerService ownerService, ReservationService reservationService, AddressService addressService) {
         this.ownerService = ownerService;
         this.reservationService = reservationService;
+        this.addressService = addressService;
     }
 
     @GetMapping("/main")
     public String mainReservation(Model model) {
         List<StoreCombineDTO> stores = reservationService.getStoreInformation();
-        
+        List<UserAddress> addresses = addressService.getUserAddress();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for(UserAddress address : addresses) {
+            if(address.getIsActive() == true) {
+                model.addAttribute("address", address);
+                break;
+            }
+        }
         model.addAttribute("stores", stores);
         return "user/reservation/main";
     }

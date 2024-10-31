@@ -29,14 +29,7 @@ public class AddressService {
 
         Long userId = userService.getLoggedInUserId();
         
-        List<UserAddress> addresses = userAddressRepository.findAllByUserId(userId); // 활성화된 주소 변경
-        for(UserAddress address : addresses) {
-            if(address.getIsActive() == true) {
-                address.setIsActive(false);
-                userAddressRepository.save(address);
-                break;
-            }
-        }
+        resetActiveMap();
 
         Double latValue = Double.parseDouble(lat);
         Double lngValue = Double.parseDouble(lng);
@@ -47,9 +40,35 @@ public class AddressService {
         newAddress.setName(name);
         newAddress.setIsActive(true);
         userAddressRepository.save(newAddress);
+    }
 
-       
+    // 활성화된 주소 변경
+    public void changeActiveUserMap(String lat, String lng, String name, String addressId) {
+        UserAddress address = new UserAddress();
+        resetActiveMap();
+        Long userId = userService.getLoggedInUserId();
+        
+        address.setAddressId(Long.parseLong(addressId));
+        address.setIsActive(true);
+        address.setLat(Double.parseDouble(lat));
+        address.setLng(Double.parseDouble(lng));
+        address.setUserId(userId);
+        address.setName(name);
+        userAddressRepository.save(address);
+    }
 
+    // 활성화된 주소 초기화
+    public void resetActiveMap(){
+        Long userId = userService.getLoggedInUserId();
+        
+        List<UserAddress> addresses = userAddressRepository.findAllByUserId(userId); 
+        for(UserAddress address : addresses) {
+            if(address.getIsActive() == true) {
+                address.setIsActive(false);
+                userAddressRepository.save(address);
+                break;
+            }
+        }
     }
 
 }

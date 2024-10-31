@@ -25,15 +25,38 @@
         #middle {
             position: absolute;
             top: 91px;
+
         }
 
         .result-item {
-            margin-bottom: 10px;
             /* 밑으로 10px 간격 */
             cursor: pointer;
         }
-        hr{
+
+        .no-address {
+            color: red;
+
+        }
+
+        hr {
             position: absolute;
+        }
+
+        #user_address {
+            cursor: pointer;
+        }
+
+        .address_container {
+            margin-bottom: 23px;
+            border: 1px solid black;
+            border-radius: 0.3em;
+        }
+
+        p {
+            margin: 0px;
+        }
+        .address_name{
+            font-size: 19px;
         }
     </style>
 </head>
@@ -60,21 +83,64 @@
                 font-size: 19px;
                 ">검색</button>
             </div>
-            <div id="searchResults" style="position: absolute; top: 106px;"></div>
-            <div id="user_address" th:each="address : ${addresses}">
-                <p th:text="${address.name}"></p>
+            <div style="overflow-y: auto;
+            overflow-x: hidden;height: 483px;">
+                <div id="searchResults" style="position: absolute; top: 106px; border: 2px solid black;width: 611px;
+                border-radius: 0.4em;"></div>
                 <hr>
+                <div id="user_address" th:each="address , stat : ${addresses}" class="user_addr">
+                    <form action="/user/map/change-active" method="post" th:id="'form_' + ${stat.index}">
+                        <div th:id="'submitDiv_' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'"
+                            class="address_container">
+                            <p th:text="${address.name}" th:id="'name' + ${stat.index}" class="address_name"></p>&ensp;&ensp;
+                            <p th:id="'active' + ${stat.index}" style="display: none;
+                            top: -2px;
+                            position: relative;
+                            width: 121px;
+                            background-color: lightskyblue;
+                            font-weight: bold;
+                            color: darkorange;">현재
+                                설정된 주소</p>
+                            <input type="hidden" th:value="${address.isActive}" th:id="'isActive' + ${stat.index}">
+                            <input type="hidden" th:value="${address.addressId}" name="addressId">
+                            <input type="hidden" th:value="${address.lat}" name="lat">
+                            <input type="hidden" th:value="${address.lng}" name="lng">
+                            <input type="hidden" th:value="${address.name}" name="name">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div id="footer"></div>
+    <div id="footer"></div>
 
     </div>
-    
+
     <script src="/js/user-nav.js"></script>
     <script src="/js/map.js"></script>
     <script>
 
+        function submitForm(index) {
+            document.getElementById("form_" + index).submit();
+        }
+        const addresses = document.getElementsByClassName("user_addr");
+        function isActive(addresses) {
+            for (let i = 0; i < addresses.length; i++) {
+                if (document.getElementById("isActive" + i).value === "true") {
+                    document.getElementById("name" + i).style.fontWeight = "bold";
+                    document.getElementById("active" + i).style.display = 'block';
+                    break;
+                }
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log(document.getElementById("isActive0").value);
+            isActive(addresses);
+        });
+
+
+        // 검색 결과 가져오기
         document.addEventListener("DOMContentLoaded", function () {
             const searchButton = document.getElementById("searchButton");
             searchButton.addEventListener("click", function () {
@@ -83,12 +149,20 @@
 
                 console.log("인코딩된 주소:", encodedAddress);  // 인코딩된 주소 로그 출력
 
+
                 fetch(`/geocode?address=${encodedAddress}`)
                     .then(response => response.json())
                     .then(data => {
                         const resultsDiv = document.getElementById("searchResults");
                         resultsDiv.innerHTML = '';  // 기존 검색 결과 초기화
-
+                        if (data.length === 0) {
+                            // 검색 결과가 없을 때 메시지 추가
+                            const resultElement = document.createElement("div");
+                            resultElement.classList.add("no-address");
+                            resultElement.textContent = "해당 주소가 존재하지 않습니다. 자세히 입력해주세요.";
+                            resultsDiv.appendChild(resultElement);
+                            return;
+                        }
                         data.forEach((result, index) => {
                             const resultElement = document.createElement("div");
                             resultElement.classList.add("result-item");
@@ -112,8 +186,9 @@
 
 
 
+        // 데이터베이스에 새 주소 저장
         function saveCoordinatesToDB(lat, lng, name) {
-            fetch('/save-coordinates', {
+            fetch('/user/save-coordinates', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -122,9 +197,9 @@
             })
                 .then(response => response.json())
                 .then(data => console.log("좌표값이 데이터베이스에 저장되었습니다:", data),
-                 location.href="/update-map");
+                    location.href = "/user/update-map");
         }
-       
+
     </script>
 
 </body>

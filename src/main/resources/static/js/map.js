@@ -11,8 +11,8 @@ function initMap() {
         console.log("지도 초기화 완료:", map); // 초기화 확인
 
         // 지도가 초기화된 후 좌표가 있는 경우에만 업데이트
-        const lat = document.getElementById("lat").value;
-        const lng = document.getElementById("lng").value;
+        let lat = document.getElementById("lat").value;
+        let lng = document.getElementById("lng").value;
         if (lat && lng) {
             updateMapCenter(lat, lng);
         }

@@ -1,5 +1,6 @@
 package com.example.demo.owner.store;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,8 @@ public class StoreDTO {
     private String category;
 
     private String address;
+
+    private Double lat;
+
+    private Double lng;
 }
