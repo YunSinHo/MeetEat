@@ -37,12 +37,22 @@ public class ReservationController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        int addCnt = 0;
         for(UserAddress address : addresses) {
+            addCnt++;
             if(address.getIsActive() == true) {
                 model.addAttribute("address", address);
                 break;
-            }
+            } else if(addCnt == addresses.size()){
+                address.setName("주소를 설정해주세요.");
+                model.addAttribute("address", address);
+            } 
         }
+        if(addresses.isEmpty()){
+            UserAddress address = new UserAddress();
+            address.setName("주소를 설정해주세요");
+            model.addAttribute("address", address);
+        }  
         model.addAttribute("stores", stores);
         return "user/reservation/main";
     }
@@ -51,7 +61,23 @@ public class ReservationController {
     public String sortByCategory(@RequestParam("category") String category, Model model) {
         if(category.equals("전체"))
         return "redirect:/reservation/main";
-
+        List<UserAddress> addresses = addressService.getUserAddress();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int addCnt = 0;
+        for(UserAddress address : addresses) {
+            addCnt++;
+            if(address.getIsActive() == true) {
+                model.addAttribute("address", address);
+                break;
+            } else if(addCnt == addresses.size()){
+                address.setName("주소를 설정해주세요.");
+                model.addAttribute("address", address);
+            } 
+        }
         System.out.println(category);
         List<StoreCombineDTO> stores = reservationService.getStoreInformation(category);
         model.addAttribute("stores", stores);

@@ -58,6 +58,13 @@ public class StoreService {
         return store;
     }
 
+    // 가게 전부 가져오기
+    public List<Store> findAll() {
+        List<Store> stores = storeRepository.findAll();
+        
+        return stores;
+    }
+
     
 
 }

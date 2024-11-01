@@ -1,9 +1,14 @@
 package com.example.demo.address;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.owner.store.Store;
+import com.example.demo.owner.store.StoreService;
 import com.example.demo.user.UserService;
 
 @Service
@@ -11,10 +16,12 @@ public class AddressService {
 
     private final UserService userService;
     private final UserAddressRepository userAddressRepository;
+    private final StoreService storeService;
 
-    public AddressService(UserService userService, UserAddressRepository userAddressRepository){
+    public AddressService(UserService userService, UserAddressRepository userAddressRepository, StoreService storeService){
         this.userService = userService;
         this.userAddressRepository = userAddressRepository;
+        this.storeService = storeService;
     }
     // 유저의 등록된 주소목록 가져오기
     public List<UserAddress> getUserAddress() {
@@ -69,6 +76,32 @@ public class AddressService {
                 break;
             }
         }
+    }
+    // 유저의 활성화된 주소 가져오기
+    public UserAddress findActiveUserAddress() {
+        Long userId = userService.getLoggedInUserId();
+        Optional<UserAddress> address = userAddressRepository.findByUserIdAndIsActive(userId, true);
+
+        return address.get();
+    }
+    public List<Map<String, Object>> mapMarking(List<Map<String, Object>> locInfos) {
+        // 가게 위치 정보들 가져오기
+        List<Store> stores = storeService.findAll();
+        for(Store store : stores) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("lat", store.getLat());
+            map.put("lng", store.getLng());
+            map.put("name", store.getStoreName());
+            locInfos.add(map);
+        }
+        UserAddress address = findActiveUserAddress();
+        Map<String, Object> map = new HashMap<>();
+        map.put("lat", address.getLat());
+        map.put("lng", address.getLng());
+        map.put("name", "현재 위치");
+        locInfos.add(map);
+        System.out.println("유저 활성화된 주소 : " + address.getName());
+        return locInfos;
     }
 
 }

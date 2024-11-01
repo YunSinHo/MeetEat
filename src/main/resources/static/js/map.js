@@ -33,13 +33,15 @@ function updateMapCenter(latitude, longitude) {
     if (map) {
         const newCenter = new naver.maps.LatLng(latitude, longitude);
         map.setCenter(newCenter);
-        map.setZoom(15);
+        map.setZoom(17);
         
         console.log("지도 중심이 업데이트되었습니다:", latitude, longitude);
     } else {
         console.error("지도 초기화가 완료되지 않았습니다.");
     }
 }
+
+
 
 fetch('/map.html')
     .then(response => response.text())

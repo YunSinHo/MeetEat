@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.example.demo.owner.store.Store;
+import com.example.demo.owner.store.StoreService;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AddressController {
 
     private final AddressService addressService;
+    private final StoreService storeService;
 
-    public AddressController(AddressService addressService) {
+
+    public AddressController(AddressService addressService, StoreService storeService) {
         this.addressService = addressService;
+        this.storeService = storeService;
     }
 
-    // 예시: Spring Boot에서 Geocoding API 호출 예제
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://naveropenapi.apigw.ntruss.com")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -81,6 +86,7 @@ public class AddressController {
 
         return results;
     }
+    
 
     // -------------------------유저-------------------------------
     // 주소 설정
@@ -111,13 +117,11 @@ public class AddressController {
     // 주소 선택 이후 메인 페이지 이동
     @GetMapping("/user/update-map")
     public String updateMap(@RequestParam(value = "goReserveMain", required = false) Boolean goReserveMain) {
-        if(goReserveMain) {
-            return "redirect:/reservation/main";
-        }
+        
         return "redirect:/login/user/main";
     }
 
-    // 기존 주소 활성화
+    // 주소 활성화
     @PostMapping("/user/map/change-active")
     public String changeActiveUserMap(@RequestParam("lat") String lat, @RequestParam("lng") String lng, 
     @RequestParam("name") String name, @RequestParam("addressId") String addressId) {
@@ -128,6 +132,16 @@ public class AddressController {
         addressService.changeActiveUserMap(lat, lng, name, addressId);
         
         return "redirect:/login/user/main";
+    }
+
+    // 유저 메인페이지 지도에 정보 마킹
+    @PostMapping("/marking-location")
+    public ResponseEntity<List<Map<String, Object>>> markLocation(){
+        List<Map<String, Object>> locInfos = new ArrayList<>();
+        locInfos = addressService.mapMarking(locInfos);
+        
+        return ResponseEntity.ok(locInfos);
+
     }
     
 

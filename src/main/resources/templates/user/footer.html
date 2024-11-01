@@ -1,0 +1,35 @@
+<div class="footer-container">
+  
+    <div class="icon">
+        <i class="fas fa-search"></i>
+    </div>
+    <div class="icon">
+        <i class="fas fa-clipboard"></i>
+    </div>
+    <div class="icon">
+        <i class="fas fa-heart"></i>
+    </div>
+    <div class="icon">
+        <i class="fas fa-user-friends"></i>
+    </div>
+    <div class="icon">
+        <img th:src="${imagePath}" alt="Profile" class="profile-pic" id="mainImage">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        setTimeout(function () {
+            console.log("Document is ready!"); // 이 로그가 출력되는지 확인
+            $.ajax({
+                url: '/user-profile/main-image',
+                type: 'POST',
+                success: function (imagePath) {
+                    document.getElementById("mainImage").src = imagePath;
+                },
+                error: function () {
+                    console.error("이미지 로드 실패");
+                }
+            });
+        }, 100); // 1초 후에 AJAX 요청 실행
+    </script>
+</div>
