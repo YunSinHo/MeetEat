@@ -7,7 +7,7 @@ fetch('/user/user-header.html')
 // fetch('/user/user-footer.html')
 // .then(response => response.text())
 // .then(data => {
-//     document.getElementById('footer').innerHTML = data;
+//     document.getElementById('footer').innerHTML = data;g
 // });
 $.ajax({
     url: '/user-profile/main-image',

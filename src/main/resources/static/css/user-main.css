@@ -10,7 +10,7 @@ html, body {
 .container {
     width: 617px;
     overflow-x: hidden;
-    height: 90vh; /* 컨테이너 높이를 고정 */
+    min-height: 85vh; /* 컨테이너 높이를 고정 */
     background-color: white;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -99,6 +99,7 @@ header {
     height: 50px;
     border-radius: 50%;
 }
+
 
 
 

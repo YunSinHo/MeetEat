@@ -92,6 +92,7 @@
             margin: 20px;
             /* 외부 여백 */
             border-radius: 0.5em;
+            cursor: pointer;
         }
 
         #mainHead {
@@ -152,8 +153,13 @@
         </div>
 
         <div id="middle">
-            <div th:each="store : ${stores}">
-                <div class="store">
+            <div th:each="store, stat : ${stores}">
+                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}" >
+                    <input type="hidden" name="storeId" th:value="${store.storeId}">
+
+                </form>
+                <div class="store" th:id="'store' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
+                    <input type="hidden" th:value="${store.isOpen}" th:id="'isOpen' + ${stat.index}">
                     <img th:src="${store.storeImagePath}" alt="" style="width: 163px;
                     height: 199px;
                     border-radius: 0.5em; border: 1px solid black;">
@@ -198,7 +204,7 @@
                      top: -412px;
                      width: 362px;
                      left: 86px;">
-                    <input type="hidden" name="storeId" th:value="${store.storeId}">
+                    
                 </div>
             </div>
         </div>
@@ -210,6 +216,19 @@
     </div>
     <script src="/js/user-nav.js"></script>
     <script>
+        // 오픈시간 체크 후 블러 처리
+        const stores = document.getElementsByClassName("store");
+        function checkOpen(stores) {
+            for(let i = 0; i < stores.length; i++) {
+                const isOpen = document.getElementById("isOpen" + i);
+                if(isOpen.value === "false") {
+                    document.getElementById("store" + i).style.opacity = "0.3";
+                    document.getElementById("store" + i).stylepointerEvents = "none";
+                    document.getElementById("store" + i).style.cursor = "default"; 
+                }
+            }
+        }
+        checkOpen(stores);
 
         // 주소 설정 클릭시 설정 페이지 이동
         const setAddress = document.getElementById("setAddress");
@@ -238,6 +257,11 @@
         // 페이지가 로드될 때 localStorage에 저장된 카테고리 색상 적용
         if (lastClickedCategory) {
             document.getElementById(lastClickedCategory).style.color = 'black';
+        }
+
+        // 가게 클릭시 세부 페이지 이동
+        function submitForm(index) {
+            document.getElementById("form_" + index).submit();
         }
     </script>
 </body>

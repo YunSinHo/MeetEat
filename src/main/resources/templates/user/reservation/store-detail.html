@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 상세정보</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        #banner {
+            border: 1px solid black;
+            width: 599px;
+            height: 260px;
+            margin-top: -10px;
+            margin-left: -4px;
+
+        }
+
+        #storeName {
+            margin-top: 2px;
+            margin-left: 8px;
+        }
+
+        .divWidth {
+            width: 599px;
+        }
+
+        #location {
+            margin-top: -17px;
+            margin-left: 8px;
+            color: darkgray;
+        }
+
+        #starAndReview {
+            margin-top: -14px;
+            margin-left: 6px;
+            display: flex;
+        }
+
+        .stars {
+            font-size: 1.3em;
+            color: #ccc;
+        }
+
+        .star.filled {
+            color: gold;
+        }
+
+        #explainText {
+            width: 623px;
+            word-wrap: break-word;
+            white-space: normal;
+            margin-top: -21px;
+        }
+
+        #callAndReservation {
+            display: flex;
+            margin-top: -5px;
+            /* 요소 간 여백 조정 */
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        #middle {
+            overflow-y: auto;
+            /* 세로 스크롤 활성화 */
+            overflow-x: hidden;
+            flex-grow: 1;
+            /* middle div가 가능한 공간을 모두 차지하게 설정 */
+            padding: 10px;
+            /* 여백 추가 */
+            height: 706px;
+            width: 637px;
+        }
+
+        hr {
+            width: 610px;
+        }
+
+        .date-container {
+            display: flex;
+            gap: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .date-item {
+            text-align: center;
+            color: #666;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-right: 32px;
+            height: 50px;
+            width: 56px;
+            cursor: pointer;
+            font-size: 19px;
+        }
+
+        .date-item.today {
+            background-color: #FFC107;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        #header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 95px;
+            background-color: white;
+            z-index: 1000;
+        }
+
+        .icon2 {
+            cursor: pointer;
+        }
+
+        #reservationTime {
+            display: flex;
+            border: 1px solid black;
+            margin-top: 16px;
+        }
+
+        #time {
+            border: 1px solid black;
+            width: 140px;
+            height: 100px;
+            background-color: #f7f7f7;
+            margin-right: 9px;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <div id="middle">
+            <div id="banner"></div>
+            <h2 id="storeName" class="divWidth">가게이름</h2>
+            <div id="location" class="divWidth">
+                <p>주송ㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
+            </div>
+            <div id="starAndReview" class="divWidth">
+                <div class="stars">
+                    <span class="star" data-index="1">★</span>
+                    <span class="star" data-index="2">★</span>
+                    <span class="star" data-index="3">★</span>
+                    <span class="star" data-index="4">★</span>
+                    <span class="star" data-index="5">★</span>
+                </div>
+                <p style="position: relative;
+                top: -15px;
+                left: 15px;
+                font-weight: bold;
+                font-size: 21px;">3.3</p>
+                <p style="position: relative;
+                top: -10px;
+                left: 34px;
+                color: darkgray;
+                cursor: pointer;">x개 리뷰&gt;</p>
+            </div>
+            <hr style="position: relative; top: -20px;    left: -5px;">
+            <div id="explain" class="divWidth">
+                <p id="explainText">가게설명ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+
+                    dddddddddddddddddddddddddddddddddasdhweioasgoiadffffffffffㅇㅇㅇㅇㅇㅇㅇㅇㅇ
+                </p>
+                <hr>
+            </div>
+            <div id="callAndReservation" class="divWidth">
+                <div style="cursor: pointer;">
+                    <img src="/images/phone.png" alt="" class="icon2" style="margin-left: 66px;">전화하기
+                </div>
+                <div style="cursor: pointer;top: 6px;position: relative;">
+                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">위치보기
+                </div>
+            </div>
+            <hr style="left: -5px;position: relative;">
+            <div class="date-container">
+                <div class="month" style="font-weight: bold; font-size: 20px;">11월</div>
+                <div id="dates" style="display: flex;"></div>
+            </div>
+            <div id="reservationTime" class="divWidth">
+                <div id="time">
+
+                </div>
+                <div id="time">
+
+                </div>
+                <div id="time">
+
+                </div>
+                <div id="time">
+
+                </div>
+            </div>
+        </div>
+
+
+        <div th:replace="user/footer" id="footer"></div>
+    </div>
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+    <script>
+        function fillStars(rating) {
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(star => {
+                const starIndex = parseInt(star.getAttribute('data-index'), 10);
+
+                // 별을 반만 채워야 할 경우
+                if (rating >= starIndex) {
+                    star.classList.add('filled');
+                    star.style.background = '';
+                } else if (rating >= starIndex - 0.5) {
+                    star.classList.add('filled');
+                    star.style.background = 'linear-gradient(to right, gold 50%, #ccc 50%)';
+                    star.style.webkitBackgroundClip = 'text';
+                    star.style.webkitTextFillColor = 'transparent';
+                } else {
+                    star.classList.remove('filled');
+                    star.style.background = '';
+                }
+            });
+        }
+
+        fillStars(3.3);
+
+        const today = new Date();
+        const dateContainer = document.getElementById('dates');
+        const monthDisplay = document.querySelector('.month');
+
+        // 현재 월 표시
+        monthDisplay.textContent = `${today.getMonth() + 1}월`;
+
+        // 요일 배열
+        const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+        // 날짜 클릭 시 today 스타일 적용 함수
+        function selectDate(event) {
+            // 모든 날짜 요소에서 'today' 클래스 제거
+            document.querySelectorAll('.date-item').forEach(item => {
+                item.classList.remove('today');
+            });
+
+            // 클릭한 요소에 'today' 클래스 추가
+            event.currentTarget.classList.add('today');
+        }
+
+        // 오늘부터 5일간의 날짜와 요일을 생성
+        for (let i = 0; i < 5; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+
+            const dateItem = document.createElement('div');
+            dateItem.classList.add('date-item');
+            if (i === 0) {
+                dateItem.classList.add('today'); // 처음에는 오늘 날짜에 스타일 적용
+            }
+
+            const day = i === 0 ? '오늘' : daysOfWeek[date.getDay()];
+            dateItem.innerHTML = `<div>${day}</div><div>${date.getDate()}</div>`;
+
+            // 클릭 이벤트 리스너 추가
+            dateItem.addEventListener('click', selectDate);
+
+            dateContainer.appendChild(dateItem);
+        }
+    </script>
+
+</body>
+
+</html>

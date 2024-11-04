@@ -146,6 +146,7 @@ public class UserProfileService {
     }
 
     // 유저 프로필 이미지 저장
+    @Transactional
     public void saveUserImage(Long userId, String imageName, String imagePath, boolean isMain) {
         UserProfileImage image = new UserProfileImage();
         image.setImageName(imageName);

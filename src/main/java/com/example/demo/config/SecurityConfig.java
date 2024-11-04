@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,44 +29,41 @@ public class SecurityConfig {
                                 .sessionManagement(management -> management
                                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
-              
                 httpSecurity
-                        .authorizeHttpRequests((authorize) -> authorize
-                                        .requestMatchers("/login/user/main").hasRole("USER")
-                                        .requestMatchers("/login/owner/main").hasRole("OWNER")
-                                        .anyRequest().permitAll())
-                        .formLogin(formLogin -> formLogin
-                                        .loginPage("/login") // 공통 로그인 페이지
-                                        .loginProcessingUrl("/process-login") // 공통 로그인 처리 URL
-                                        .successHandler((request, response, authentication) -> {
-                                                // 로그인 성공 후 권한에 따른 리다이렉트 처리
-                                                if (authentication.getAuthorities().stream()
-                                                                .anyMatch(grantedAuthority -> grantedAuthority
-                                                                                .getAuthority()
-                                                                                .equals("ROLE_USER"))) {
-                                                        response.sendRedirect("/login/user/main"); // ROLE_USER
-                                                                                                       
-                                                } else if (authentication.getAuthorities().stream()
-                                                                .anyMatch(grantedAuthority -> grantedAuthority
-                                                                                .getAuthority()
-                                                                                .equals("ROLE_OWNER"))) {
-                                                        response.sendRedirect("/login/owner/main"); // ROLE_OWNER
-                                                                                                        
-                                                } else {
-                                                        response.sendRedirect("/"); // 그 외 경우
-                                                }
-                                        })
-                                        .failureUrl("/login?error=true")
-                                        .permitAll())
-                        .logout(logout -> logout
-                                        .logoutUrl("/logout")
-                                        .logoutSuccessUrl("/index?logout=true"));
+                                .authorizeHttpRequests((authorize) -> authorize
+                                                .requestMatchers("/login/user/main").hasRole("USER")
+                                                .requestMatchers("/login/owner/main").hasRole("OWNER")
+                                                .anyRequest().permitAll())
+                                .formLogin(formLogin -> formLogin
+                                                .loginPage("/login") // 공통 로그인 페이지
+                                                .loginProcessingUrl("/process-login") // 공통 로그인 처리 URL
+                                                .successHandler((request, response, authentication) -> {
+                                                        // 로그인 성공 후 권한에 따른 리다이렉트 처리
+                                                        if (authentication.getAuthorities().stream()
+                                                                        .anyMatch(grantedAuthority -> grantedAuthority
+                                                                                        .getAuthority()
+                                                                                        .equals("ROLE_USER"))) {
+                                                                response.sendRedirect("/login/user/main"); // ROLE_USER
 
-                httpSecurity.exceptionHandling(handling -> handling
-                                .authenticationEntryPoint((request, response, authException) -> {
-                                        System.out.println("Authentication failed: " + authException.getMessage());
-                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                                }));
+                                                        } else if (authentication.getAuthorities().stream()
+                                                                        .anyMatch(grantedAuthority -> grantedAuthority
+                                                                                        .getAuthority()
+                                                                                        .equals("ROLE_OWNER"))) {
+                                                                response.sendRedirect("/login/owner/main"); // ROLE_OWNER
+
+                                                        } else {
+                                                                response.sendRedirect("/"); // 그 외 경우
+                                                        }
+                                                })
+                                                .failureUrl("/login?error=true")
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/index?logout=true"))
+                                .exceptionHandling(exception -> exception
+                                                .authenticationEntryPoint((request, response, authException) -> response
+                                                                .sendRedirect("/login")))
+                                .httpBasic(AbstractHttpConfigurer::disable); // httpBasic 비활성화
 
                 return httpSecurity.build();
 

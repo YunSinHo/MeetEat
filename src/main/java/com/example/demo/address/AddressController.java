@@ -96,7 +96,7 @@ public class AddressController {
         List<UserAddress> addresses = addressService.getUserAddress();
         model.addAttribute("addresses", addresses);
         model.addAttribute("goReserveMain", goReserveMain);
-
+        System.out.println(goReserveMain + " ddd");
         return "user/address";
     }
 
@@ -117,7 +117,9 @@ public class AddressController {
     // 주소 선택 이후 메인 페이지 이동
     @GetMapping("/user/update-map")
     public String updateMap(@RequestParam(value = "goReserveMain", required = false) Boolean goReserveMain) {
-        
+        if(goReserveMain != null && goReserveMain == true){
+            return "user/reservation/main";
+        }
         return "redirect:/login/user/main";
     }
 

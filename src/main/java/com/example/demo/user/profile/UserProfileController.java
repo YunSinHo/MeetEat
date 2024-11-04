@@ -210,7 +210,7 @@ public class UserProfileController {
         List<UserProfileImage> image = userProfileService.findByUserIdFromUserImages(user);
         model.addAttribute("images", image);
 
-        return "user/main";
+        return "redirect:/login/user/main";
     }
 
     // 이미지 저장 메소드
@@ -258,8 +258,8 @@ public class UserProfileController {
     public ResponseEntity<String> mainImage(Model model) {
         String imagePath = userProfileService.getMainImage();
         if(imagePath == null) imagePath = "/images/user/noImage.png";
-        model.addAttribute("imagePath", imagePath);
-        System.out.println("유저 메인 이미지 : " + imagePath);
+        // model.addAttribute("imagePath", imagePath);
+        // System.out.println("유저 메인 이미지 : " + imagePath);
         return ResponseEntity.ok(imagePath);
     }
     

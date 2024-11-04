@@ -66,7 +66,7 @@
 
         <div id="header"></div>
         <div id="middle">
-            <button id="go_back">&lt;</button>
+            <button id="go_back" onclick="goBack();">&lt;</button>
             <h3>주소 검색</h3>
             <div id="search" style="position: relative;
             width: 615px;
@@ -116,11 +116,14 @@
     <div id="footer"></div>
 
     </div>
-
+    <input type="hidden" th:value="goReserveMain" id="goReserveMain">
     <script src="/js/user-nav.js"></script>
     <script src="/js/map.js"></script>
     <script>
 
+        function goBack(){
+            history.back();
+        }
         function submitForm(index) {
             document.getElementById("form_" + index).submit();
         }
@@ -197,7 +200,7 @@
             })
                 .then(response => response.json())
                 .then(data => console.log("좌표값이 데이터베이스에 저장되었습니다:", data),
-                    location.href = "/user/update-map");
+                    location.href = "/user/update-map?goReserveMain=" + document.getElementById("goReserveMain").value);
         }
 
     </script>
