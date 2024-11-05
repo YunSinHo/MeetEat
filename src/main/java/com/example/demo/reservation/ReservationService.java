@@ -1,4 +1,4 @@
-package com.example.demo.user.reservation;
+package com.example.demo.reservation;
 
 import java.util.List;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +26,7 @@ public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
     private final ManagementService managementService;
+    
 
     public ReservationService(OwnerService ownerService, StoreService storeSerivce,
             ManagementService managementService) {
@@ -103,13 +105,19 @@ public class ReservationService {
         for (Long storeId : storeIds) {
             Store store = storeSerivce.findById(storeId);
             StoreCombineDTO dto = new StoreCombineDTO();
-            
+            StoreBasic basic = managementService.findByStoreId(storeId);
+            if(basic == null) basic = new StoreBasic();
             Map<String, Object> timeMap = checkOpen(storeId);
 
             dto.setStartTime((String)timeMap.get("startTime"));
             dto.setEndTime((String)timeMap.get("endTime"));
             dto.setIsOpen((Boolean)timeMap.get("isOpen"));
-          
+            
+            dto.setIntroduction(basic.getIntroduction());
+            dto.setPhoneNumber(basic.getPhoneNumber());
+            dto.setLat(store.getLat());
+            dto.setLng(store.getLng());
+            dto.setPhoneNumber(null);
             dto.setAddress(store.getAddress());
             dto.setStoreName(store.getStoreName());
             dto.setCategory(store.getCategory());
@@ -127,6 +135,44 @@ public class ReservationService {
             list.add(dto);
         }
         return list;
+    }
+    // 가게 클릭시 디테일 정보
+    public StoreCombineDTO getStoreInformation(Long storeId) {
+
+            Store store = storeSerivce.findById(storeId);
+            StoreCombineDTO dto = new StoreCombineDTO();
+            List<StoreImage> images = storeSerivce.findByStoreIdFromImage(storeId);
+            if(images.isEmpty()) images = new ArrayList<>();
+            StoreBasic basic = managementService.findByStoreId(storeId);
+            if(basic == null) basic = new StoreBasic();
+            Map<String, Object> timeMap = checkOpen(storeId);
+
+            dto.setStartTime((String)timeMap.get("startTime"));
+            dto.setEndTime((String)timeMap.get("endTime"));
+            dto.setIsOpen((Boolean)timeMap.get("isOpen"));
+            
+            dto.setStoreImages(images);
+            dto.setIntroduction(basic.getIntroduction());
+            dto.setPhoneNumber(basic.getPhoneNumber());
+            dto.setLat(store.getLat());
+            dto.setLng(store.getLng());
+            dto.setPhoneNumber(null);
+            dto.setAddress(store.getAddress());
+            dto.setStoreName(store.getStoreName());
+            dto.setCategory(store.getCategory());
+            dto.setHeart("4.5");
+            dto.setRank("4.3");
+            dto.setStoreId(storeId);
+            
+            List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
+            for (StoreImage image : storeImages) {
+                if (image.getIsMain() == true) {
+                    dto.setStoreImagePath(image.getImagePath());
+                    break;
+                }
+            }
+        
+        return dto;
     }
 
     // 카테고리에 따른 분류
@@ -166,5 +212,26 @@ public class ReservationService {
         }
         return list;
     }
+
+    // 예약 시간대 설정
+    public List<String> getReservationTime(String startTime, String endTime) {
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime openTime = LocalTime.parse(startTime, formatter);
+        LocalTime closeTime = LocalTime.parse(endTime, formatter);
+        LocalTime currentTime = LocalTime.now();
+
+        List<String> timeSlots = new ArrayList<>();
+        LocalTime time = openTime;
+
+        while (time.isBefore(closeTime.minusHours(0))) {
+            if (time.isAfter(currentTime) || time.equals(currentTime)) {
+                timeSlots.add(time.format(formatter));
+            }
+            time = time.plusHours(2); // 2시간 간격
+        }
+
+        return timeSlots;
+    }
+
 
 }

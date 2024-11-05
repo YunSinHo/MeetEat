@@ -1,5 +1,10 @@
 package com.example.demo.owner.store;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.demo.owner.store.image.StoreImage;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +21,12 @@ public class StoreCombineDTO{
     private String startTime;
     private String endTime;
     private Boolean isOpen;
+    private List<StoreImage> storeImages = new ArrayList<>();
+    private Double Lat; 
+    private Double Lng;
+    private String phoneNumber;
+    private String introduction;
+
 
     public StoreCombineDTO(){}
     public StoreCombineDTO(Long storeId, String storeName, String category,
