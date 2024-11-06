@@ -1,5 +1,6 @@
 package com.example.demo.reservation;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.management.ManagementService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,14 +29,16 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final AddressService addressService;
     private final ManagementService managementService;
+    private final DateService dateService;
 
     public ReservationController(OwnerService ownerService, ReservationService reservationService,
-            AddressService addressService,
+            AddressService addressService, DateService dateService, 
             ManagementService managementService) {
         this.ownerService = ownerService;
         this.reservationService = reservationService;
         this.addressService = addressService;
         this.managementService = managementService;
+        this.dateService = dateService;
     }
 
     // 예약 메인페이지
@@ -117,13 +121,21 @@ public class ReservationController {
 
         return "user/reservation/store-detail";
     }
+
+    // 선택한 날짜 뷰에 저장
     @PostMapping("/choice-date")
-    public String postMethodName(@RequestParam("date") String date) {
-        System.out.println("선택한 날짜: " + date);
-        // 여기서 날짜를 저장하거나 필요한 로직을 추가
-        return "success"; // 프론트에 성공 메시지를 반환
+    public ResponseEntity<String> choiceDate(@RequestParam("date") String date,
+            @RequestParam("storeId") String storeId) {
+        System.out.println("선택한 날짜: " + date + " id : " + storeId);
+        return ResponseEntity.ok(date);
     }
-    
-    
+
+    @PostMapping("/table-information")
+    public ResponseEntity<Map<String, Integer>> tableInformation(@RequestParam("storeId") String storeId,
+            @RequestParam("date") String date,
+            @RequestParam("time") String time) {
+        Map<String, Integer> timeMap = dateService.getTableInformation(storeId, date, time);
+        return ResponseEntity.ok(timeMap);
+    }
 
 }

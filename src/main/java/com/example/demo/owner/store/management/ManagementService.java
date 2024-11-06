@@ -25,17 +25,20 @@ public class ManagementService {
 
     private final StoreBasicRepository storeBasicRepository;
     private final StoreMenuRepository storeMenuRepository;
+    private final StoreTableRepository storeTableRepository;
     private final OwnerService ownerService;
     private final StoreService storeService;
     private final ImageService imageService;
+    
 
-    public ManagementService(StoreBasicRepository storeBasicRepository, StoreMenuRepository storeMenuRepository,
-                             OwnerService ownerService, StoreService storeService, ImageService imageService) {
+    public ManagementService(StoreBasicRepository storeBasicRepository, StoreMenuRepository storeMenuRepository, 
+    StoreTableRepository storeTableRepository, OwnerService ownerService, StoreService storeService, ImageService imageService) {
         this.storeBasicRepository = storeBasicRepository;
         this.storeMenuRepository = storeMenuRepository;
         this.ownerService = ownerService;
         this.storeService = storeService;
         this.imageService = imageService;
+        this.storeTableRepository = storeTableRepository;
     }
 
     // 가게 id로 가게 구성 찾기
@@ -140,6 +143,26 @@ public class ManagementService {
                                                       .orElseThrow(() -> new RuntimeException("menu not found with ID: " + menuId));
         
         return menu;
+    }
+
+    // 테이블 개수 세팅 찾기
+    public StoreTable getTable(Long storeId) {
+        StoreTable table = storeTableRepository.findById(storeId).orElse(new StoreTable());
+
+        return table;
+        
+    }
+
+    // 테이블 정보 저장
+    public void saveStoreTable(StoreTableDTO dto, Long storeId) {
+        StoreTable table = new StoreTable();
+        
+        table.setStoreId(storeId);
+        table.setOneTable(dto.getOneTable());
+        table.setTwoTable(dto.getTwoTable());
+        table.setFourTable(dto.getFourTable());
+        table.setPartyTable(dto.getPartyTable());
+        storeTableRepository.save(table);
     }
 
     

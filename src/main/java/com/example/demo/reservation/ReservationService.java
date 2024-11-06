@@ -26,7 +26,6 @@ public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
     private final ManagementService managementService;
-    
 
     public ReservationService(OwnerService ownerService, StoreService storeSerivce,
             ManagementService managementService) {
@@ -106,13 +105,14 @@ public class ReservationService {
             Store store = storeSerivce.findById(storeId);
             StoreCombineDTO dto = new StoreCombineDTO();
             StoreBasic basic = managementService.findByStoreId(storeId);
-            if(basic == null) basic = new StoreBasic();
+            if (basic == null)
+                basic = new StoreBasic();
             Map<String, Object> timeMap = checkOpen(storeId);
 
-            dto.setStartTime((String)timeMap.get("startTime"));
-            dto.setEndTime((String)timeMap.get("endTime"));
-            dto.setIsOpen((Boolean)timeMap.get("isOpen"));
-            
+            dto.setStartTime((String) timeMap.get("startTime"));
+            dto.setEndTime((String) timeMap.get("endTime"));
+            dto.setIsOpen((Boolean) timeMap.get("isOpen"));
+
             dto.setIntroduction(basic.getIntroduction());
             dto.setPhoneNumber(basic.getPhoneNumber());
             dto.setLat(store.getLat());
@@ -124,7 +124,7 @@ public class ReservationService {
             dto.setHeart("4.5");
             dto.setRank("4.3");
             dto.setStoreId(storeId);
-            
+
             List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
             for (StoreImage image : storeImages) {
                 if (image.getIsMain() == true) {
@@ -136,42 +136,45 @@ public class ReservationService {
         }
         return list;
     }
+
     // 가게 클릭시 디테일 정보
     public StoreCombineDTO getStoreInformation(Long storeId) {
 
-            Store store = storeSerivce.findById(storeId);
-            StoreCombineDTO dto = new StoreCombineDTO();
-            List<StoreImage> images = storeSerivce.findByStoreIdFromImage(storeId);
-            if(images.isEmpty()) images = new ArrayList<>();
-            StoreBasic basic = managementService.findByStoreId(storeId);
-            if(basic == null) basic = new StoreBasic();
-            Map<String, Object> timeMap = checkOpen(storeId);
+        Store store = storeSerivce.findById(storeId);
+        StoreCombineDTO dto = new StoreCombineDTO();
+        List<StoreImage> images = storeSerivce.findByStoreIdFromImage(storeId);
+        if (images.isEmpty())
+            images = new ArrayList<>();
+        StoreBasic basic = managementService.findByStoreId(storeId);
+        if (basic == null)
+            basic = new StoreBasic();
+        Map<String, Object> timeMap = checkOpen(storeId);
 
-            dto.setStartTime((String)timeMap.get("startTime"));
-            dto.setEndTime((String)timeMap.get("endTime"));
-            dto.setIsOpen((Boolean)timeMap.get("isOpen"));
-            
-            dto.setStoreImages(images);
-            dto.setIntroduction(basic.getIntroduction());
-            dto.setPhoneNumber(basic.getPhoneNumber());
-            dto.setLat(store.getLat());
-            dto.setLng(store.getLng());
-            dto.setPhoneNumber(null);
-            dto.setAddress(store.getAddress());
-            dto.setStoreName(store.getStoreName());
-            dto.setCategory(store.getCategory());
-            dto.setHeart("4.5");
-            dto.setRank("4.3");
-            dto.setStoreId(storeId);
-            
-            List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
-            for (StoreImage image : storeImages) {
-                if (image.getIsMain() == true) {
-                    dto.setStoreImagePath(image.getImagePath());
-                    break;
-                }
+        dto.setStartTime((String) timeMap.get("startTime"));
+        dto.setEndTime((String) timeMap.get("endTime"));
+        dto.setIsOpen((Boolean) timeMap.get("isOpen"));
+
+        dto.setStoreImages(images);
+        dto.setIntroduction(basic.getIntroduction());
+        dto.setPhoneNumber(basic.getPhoneNumber());
+        dto.setLat(store.getLat());
+        dto.setLng(store.getLng());
+        dto.setPhoneNumber(null);
+        dto.setAddress(store.getAddress());
+        dto.setStoreName(store.getStoreName());
+        dto.setCategory(store.getCategory());
+        dto.setHeart("4.5");
+        dto.setRank("4.3");
+        dto.setStoreId(storeId);
+
+        List<StoreImage> storeImages = storeSerivce.findByStoreIdFromImage(storeId);
+        for (StoreImage image : storeImages) {
+            if (image.getIsMain() == true) {
+                dto.setStoreImagePath(image.getImagePath());
+                break;
             }
-        
+        }
+
         return dto;
     }
 
@@ -191,9 +194,9 @@ public class ReservationService {
             StoreCombineDTO dto = new StoreCombineDTO();
             Map<String, Object> timeMap = checkOpen(storeId);
 
-            dto.setStartTime((String)timeMap.get("startTime"));
-            dto.setEndTime((String)timeMap.get("endTime"));
-            dto.setIsOpen((Boolean)timeMap.get("isOpen"));
+            dto.setStartTime((String) timeMap.get("startTime"));
+            dto.setEndTime((String) timeMap.get("endTime"));
+            dto.setIsOpen((Boolean) timeMap.get("isOpen"));
             dto.setAddress(store.getAddress());
             dto.setStoreName(store.getStoreName());
             dto.setCategory(store.getCategory());
@@ -213,9 +216,9 @@ public class ReservationService {
         return list;
     }
 
-    // 예약 시간대 설정
-    public List<String> getReservationTime(String startTime, String endTime) {
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    // 오늘 하루예약 시간대 설정
+    public List<String> getReservationTimeToday(String startTime, String endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime openTime = LocalTime.parse(startTime, formatter);
         LocalTime closeTime = LocalTime.parse(endTime, formatter);
         LocalTime currentTime = LocalTime.now();
@@ -233,5 +236,22 @@ public class ReservationService {
         return timeSlots;
     }
 
+    // 전체 시간 구하기
+    public List<String> getReservationTime(String startTime, String endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime openTime = LocalTime.parse(startTime, formatter);
+        LocalTime closeTime = LocalTime.parse(endTime, formatter);
+
+        List<String> timeSlots = new ArrayList<>();
+        LocalTime time = openTime;
+
+        while (time.isBefore(closeTime.minusHours(0))) {
+            timeSlots.add(time.format(formatter));
+
+            time = time.plusHours(2); // 2시간 간격
+        }
+
+        return timeSlots;
+    }
 
 }

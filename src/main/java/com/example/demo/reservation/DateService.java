@@ -1,6 +1,8 @@
 package com.example.demo.reservation;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -10,11 +12,14 @@ import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.StoreBasic;
+import com.example.demo.owner.store.management.StoreTable;
 
 import jakarta.annotation.PostConstruct;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +40,7 @@ public class DateService {
 
     }
 
+    // 12시가 지나면 날짜 업데이트
     @Scheduled(cron = "0 0 0 * * *")
     public void updateDates() {
         List<Store> stores = storeService.findAll();
@@ -47,12 +53,13 @@ public class DateService {
         srdRepository.deleteAllByDate(yesterday);
 
         for (Store store : stores) {
-            // 3주 후 날짜 추가, 이미 있는 경우는 추가하지 않음
             StoreCombineDTO storeDto = reservationService.getStoreInformation(store.getStoreId());
             List<String> reservationTimes = reservationService.getReservationTime(storeDto.getStartTime(),
                     storeDto.getEndTime());
+            StoreTable table = managementService.getTable(store.getStoreId());
             for (String time : reservationTimes) {
-                srdRepository.save(new StoreReservationDate(threeWeeksLater, store.getStoreId(), time));
+                srdRepository.save(new StoreReservationDate(threeWeeksLater, store.getStoreId(), time,
+                        table.getOneTable(), table.getTwoTable(), table.getFourTable(), table.getPartyTable()));
             }
 
         }
@@ -62,7 +69,7 @@ public class DateService {
     @PostConstruct
     public void initializeDates() {
         LocalDate today = LocalDate.now();
-        LocalDate endDate  = today.plusWeeks(3);
+        LocalDate endDate = today.plusWeeks(3);
 
         List<Store> stores = storeService.findAll();
         // 이미 있는 날짜는 제외하고 새로운 날짜만 추가
@@ -74,10 +81,12 @@ public class DateService {
             StoreCombineDTO storeDto = reservationService.getStoreInformation(store.getStoreId());
             List<String> reservationTimes = reservationService.getReservationTime(storeDto.getStartTime(),
                     storeDto.getEndTime());
+            StoreTable table = managementService.getTable(store.getStoreId());
             for (String time : reservationTimes) {
                 for (LocalDate date = today; !date.isAfter(endDate); date = date.plusDays(1)) {
                     if (!srdRepository.existsByDateAndStoreId(date, store.getStoreId())) {
-                        dateEntitiesToAdd.add(new StoreReservationDate(date, store.getStoreId(), time)); // 필요한 경우 초기값 설정
+                        dateEntitiesToAdd.add(new StoreReservationDate(date, store.getStoreId(), time,
+                                table.getOneTable(), table.getTwoTable(), table.getFourTable(), table.getPartyTable()));
                     }
                 }
             }
@@ -85,5 +94,24 @@ public class DateService {
         }
 
         srdRepository.saveAll(dateEntitiesToAdd);
+    }
+
+    public Map<String, Integer> getTableInformation(String storeId, String date, String time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        LocalDate date2 = LocalDate.parse(date, formatter);
+       
+        StoreReservationDate SRD = srdRepository.
+        findByIdAndDateAndTime(Long.parseLong(storeId), date2, time).orElse(new StoreReservationDate());
+
+        Map<String, Integer> timeMap = new HashMap<>();
+        timeMap.put("oneTable", SRD.getOneTable());
+        timeMap.put("twoTable", SRD.getTwoTable());
+        timeMap.put("fourTable", SRD.getFourTable());
+        timeMap.put("partyTable", SRD.getPartyTable());
+
+        return timeMap;
+
+
+
     }
 }

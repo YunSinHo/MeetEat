@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/owner-main.css">
+    <script src="/js/owner-nav.js"></script>
+    <style>
+        label {
+            margin-top: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin-bottom: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/mgmt/save-table" method="post">
+        <div class="container">
+            <div id="header"></div>
+            <h2>테이블 개수 설정</h2>
+            <label for="oneTable">1인 테이블</label>
+            <input type="text" class="input" id="oneTable" name="oneTable" th:value="${table.oneTable}"
+                placeholder="개수를 입력해주세요.(숫자)">
+            <label for="twoTable">2인 테이블</label>
+            <input type="text" class="input" id="twoTable" name="twoTable" th:value="${table.twoTable}"
+                placeholder="개수를 입력해주세요.(숫자)">
+            <label for="fourTable">4인 테이블</label>
+            <input type="text" class="input" id="fourTable" name="fourTable" th:value="${table.fourTable}"
+                placeholder="개수를 입력해주세요.(숫자)">
+            <label for="partyTable">단체 테이블</label>
+            <input type="text" class="input" id="partyTable" name="partyTable" th:value="${table.partyTable}"
+                placeholder="개수를 입력해주세요.(숫자)">
+
+
+            <button type="submit" id="submitBtn" class="button-next">저장</button>
+        </div>
+    </form>
+    <script>
+
+
+    </script>
+</body>
+
+</html>

@@ -68,7 +68,7 @@ public class ManagementController {
     }
 
     // 가게 기본 설정으로 이동
-    @GetMapping("/store-basic")
+    @GetMapping("/store-basic/form")
     public String storeBasic() {
         return "owner/store/mgmt/store-basic";
     }
@@ -126,6 +126,29 @@ public class ManagementController {
         managementService.saveStoreMenu(storeMenuDTO, image, preImageName);
         return "redirect:/mgmt/food-menu";
     }
+
+    // 테이블 개수 관리 페이지 이동
+    @GetMapping("/store-table/form")
+    public String storeTableForm(Model model) {
+        
+        Long ownerId = ownerService.getLoggedInOwnerId();
+        Store store = storeService.findByOwnerId(ownerId);
+        StoreTable table = managementService.getTable(store.getStoreId());
+
+        model.addAttribute("table", table);
+        return "owner/store/mgmt/store-table";
+    }
+
+    // 테이블 정보 저장
+    @PostMapping("/save-table")
+    public String saveTable(@ModelAttribute StoreTableDTO dto) {
+        Long ownerId = ownerService.getLoggedInOwnerId();
+        Store store = storeService.findByOwnerId(ownerId);
+
+        managementService.saveStoreTable(dto, store.getStoreId());
+        return "redirect:/owner/menu";
+    }
+    
     
     
 

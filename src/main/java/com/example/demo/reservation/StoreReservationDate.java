@@ -31,14 +31,30 @@ public class StoreReservationDate {
     @Column(name = "time")
     private String time;
 
+    @Column(name = "one_table")
+    private Integer oneTable;
+    @Column(name = "two_table")
+    private Integer twoTable;
+    @Column(name = "four_table")
+    private Integer fourTable;
+    @Column(name = "party_table")
+    private Integer partyTable;
+    
+
     public StoreReservationDate(){
 
     }
 
-    public StoreReservationDate(LocalDate date, Long storeId, String time) {
+    public StoreReservationDate(LocalDate date, Long storeId, String time, Integer oneTable, Integer twoTable,
+    Integer fourTable, Integer partyTable) {
         this.date = date;
         this.storeId = storeId;
         this.time = time;
+        this.oneTable = oneTable;
+        this.twoTable = twoTable;
+        this.fourTable = fourTable;
+        this.partyTable = partyTable;
+
     }
     
 }

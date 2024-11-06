@@ -24,46 +24,7 @@ function fillStars(rating) {
 
 fillStars(parseFloat(rank));
 
-const today = new Date();
-const dateContainer = document.getElementById('dates');
-const monthDisplay = document.querySelector('.month');
 
-// 현재 월 표시
-monthDisplay.textContent = `${today.getMonth() + 1}월`;
-
-// 요일 배열
-const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-
-// 날짜 클릭 시 today 스타일 적용 함수
-function selectDate(event) {
-    // 모든 날짜 요소에서 'today' 클래스 제거
-    document.querySelectorAll('.date-item').forEach(item => {
-        item.classList.remove('today');
-    });
-
-    // 클릭한 요소에 'today' 클래스 추가
-    event.currentTarget.classList.add('today');
-}
-
-// 오늘부터 5일간의 날짜와 요일을 생성
-for (let i = 0; i < 5; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-
-    const dateItem = document.createElement('div');
-    dateItem.classList.add('date-item');
-    if (i === 0) {
-        dateItem.classList.add('today'); // 처음에는 오늘 날짜에 스타일 적용
-    }
-
-    const day = i === 0 ? '오늘' : daysOfWeek[date.getDay()];
-    dateItem.innerHTML = `<div>${day}</div><div>${date.getDate()}</div>`;
-
-    // 클릭 이벤트 리스너 추가
-    dateItem.addEventListener('click', selectDate);
-
-    dateContainer.appendChild(dateItem);
-}
 let currentIndex = 0;
 
 function showSlide(index) {
@@ -84,7 +45,7 @@ function moveSlide(direction) {
 
 setInterval(() => {
     moveSlide(1); // 일정 시간이 지나면 자동으로 다음 슬라이드로 이동
-}, 5000); 
+}, 5000);
 
 
 let currentIndex2 = 0; // 현재 인덱스
@@ -94,15 +55,16 @@ const reservationTimes = JSON.parse(document.getElementById('reservationTimes').
 function renderTimes() {
     const timeContainer = document.getElementById('timeContainer');
     const totalItems = reservationTimes.length;
-    
+
     // 이전 요소들을 제거
     timeContainer.innerHTML = '';
-    
+
     // 현재 인덱스에 따라 5개 요소 추가
     for (let i = currentIndex2; i < Math.min(currentIndex2 + itemsPerPage, totalItems); i++) {
         const p = document.createElement('p');
         const div = document.createElement('div');
         div.classList.add('time');
+        div.id = 'time' + i;
         p.innerText = reservationTimes[i]; // 시간대 추가
         p.style.textAlign = 'center';
         p.style.fontSize = '31px';
@@ -111,7 +73,7 @@ function renderTimes() {
         p.classList.add('times');
         timeContainer.appendChild(div);
         div.appendChild(p);
-        
+
     }
 
     // 버튼 가시성 조정
@@ -137,3 +99,39 @@ function handleScrollRight() {
 // 초기 렌더링 호출
 renderTimes();
 
+// 시간 클릭시 서버에서 테이블 개수 가져오기
+const times = document.getElementsByClassName("time");
+for (let i = 0; i < times.length; i++) {
+    let timeElement = document.getElementById("time" + i);
+    if (timeElement) {
+        timeElement.addEventListener('click', function () {
+            let time = timeElement.querySelector("p").textContent; 
+            clickTime(time); 
+        });
+    }
+}
+
+function clickTime(time) {
+    let storeId = document.getElementById("storeId").value;
+    let date = document.getElementById("date").value;
+    if (date === null || date === "") {
+        alert('날짜를 선택해주세요.');
+        return;
+    }
+    else {
+        $.ajax({
+            url : "/reservation/table-information",
+            type : "post",
+            data : {storeId : storeId, date : date, time : time},
+            success : function (tableMap){
+                alert("4 : " + tableMap.fourTable);
+            },
+            error : function () {
+                alert("서버 오류가 발생했습니다.");
+            }
+
+
+        });
+    }
+   
+}

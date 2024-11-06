@@ -113,6 +113,7 @@ hr {
     display: flex;
     margin-top: 16px;
     margin-left: -3px;
+    transform: translateX(0%);
 }
 
 .time {
@@ -177,4 +178,16 @@ hr {
 
 .next {
     right: 10px;
+}
+
+
+#dateBtn{
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 620px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
 }

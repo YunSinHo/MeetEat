@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const nextMonthButton = document.getElementById('nextMonth');
 
     let today = new Date();
+    today.setHours(0, 0, 0, 0);
     let currentYear = today.getFullYear();
     let currentMonth = today.getMonth();
 
@@ -39,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (date >= today && date <= threeWeeksLater) {
                 dayCell.classList.add('clickable');
                 dayCell.addEventListener('click', function () {
+                    document.getElementById('dateBtn').textContent = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+                    document.getElementById("calendarWrapper").style.display = 'none';
                     const selectedDate = `${year}-${month + 1}-${day}`;
                     sendDateToServer(selectedDate);
                 });
@@ -50,23 +53,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 서버로 날짜 전송 함수
-    function sendDateToServer(date) {
-        fetch('/reservation/choice-date', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+    // 서버로 날짜 전송 함수(3주 까지)
+    function sendDateToServer(date, storeId) {
+        storeId = document.getElementById("storeId").value;
+        $.ajax({
+            url : "/reservation/choice-date",
+            type : "POST",
+            data : {date : date, storeId : storeId},
+            success : function(date) {
+                document.getElementById("date").value = date;
+                alert(date);
             },
-            body: new URLSearchParams({ date: date })
-        })
-        .then(response => response.text())
-        .then(result => {
-            console.log('서버 응답:', result); // 성공 시 서버 응답을 출력
-            alert(`날짜 ${date} 예약이 완료되었습니다.`);
-        })
-        .catch(error => {
-            console.error('날짜 전송 중 오류:', error);
-            alert("날짜 전송에 실패했습니다.");
+            error : function () {
+                alert("서버 오류가 발생했습니다.")
+            }
         });
     }
 

@@ -62,19 +62,23 @@
                 </div>
             </div>
             <hr style="left: -5px;position: relative;">
-            <div class="date-container">
-                <div class="month" style="font-weight: bold; font-size: 20px;">11월</div>
-                <div id="dates" style="display: flex;"></div>
+            <button type="button" id="dateBtn">날짜 선택</button>
+            <div class="month" id="calendarDiv">
+                <p id="selectedDate"></p>
+                <div id="calendarWrapper" style="display: none;">
+                    <div th:replace="calendar" id="calendar" style="display: none;"></div>
+                </div>
             </div>
             <div id="reservationTime" class="divWidth">
                 <button class="prev" id="scrollLeft" onclick="handleScrollLeft()"
-                 style="display: none;margin-top: 277px;margin-left: 15px;">&#10094;</button>
+                    style="display: none;left: -13px;">&#10094;</button>
                 <div id="timeContainer"></div>
                 <button class="next" id="scrollRight" onclick="handleScrollRight()"
-                 style="display: block;width: 28px;margin-top: 277px;margin-right: 8px;">
+                    style="display: block;right: -30px;">
                     &#10095;</button>
             </div>
-            <div th:replace="calendar" id="calendar"></div>
+
+
         </div>
 
 
@@ -82,13 +86,18 @@
     </div>
 
     <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
-
+    <input type="hidden" id="storeId" th:value="${store.storeId}">
+    <input type="hidden" id="date" name="date">
     <script src="/js/user-nav.js"></script>
     <script src="/js/map.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script src="/js/store-detail.js"></script>
-
+    <script>
+        document.getElementById("dateBtn").addEventListener('click', function () {
+            document.getElementById("calendarWrapper").style.display = 'block';
+        });
+    </script>
 </body>
 
 </html>
