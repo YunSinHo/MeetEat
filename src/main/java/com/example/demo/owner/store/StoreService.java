@@ -37,8 +37,8 @@ public class StoreService {
     }
 
     // 가게 등록된 사진 찾기(대문)
-    public List<StoreImage> findByOwnerIdFromImage(Long ownerId) {
-        List<StoreImage> images = storeImageRepository.findByOwnerId(ownerId);
+    public List<StoreImage> findByStoreIdFromImage(Long storeId) {
+        List<StoreImage> images = storeImageRepository.findByStoreId(storeId);
 
         return images;
     }
@@ -46,11 +46,25 @@ public class StoreService {
     // 기존 등록된 사진 삭제
     public void deleteByImageName(String imageName) {
         storeImageRepository.deleteByImageName(imageName);
-
     }
-    public void saveStoreImage(Long ownerId, String imageName, String imagePath, boolean isMain) {
-        StoreImage images = new StoreImage(ownerId, imageName, imagePath, isMain);
+    public void saveStoreImage(Long storeId, String imageName, String imagePath, boolean isMain) {
+        StoreImage images = new StoreImage(storeId, imageName, imagePath, isMain);
         storeImageRepository.save(images);
     }
+
+    // 스토어 아이디로 스토어 찾기
+    public Store findById(Long storeId) {
+        Store store = storeRepository.findById(storeId).get();
+        return store;
+    }
+
+    // 가게 전부 가져오기
+    public List<Store> findAll() {
+        List<Store> stores = storeRepository.findAll();
+        
+        return stores;
+    }
+
+    
 
 }

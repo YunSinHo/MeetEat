@@ -1,9 +1,13 @@
 <footer>
     <link rel="stylesheet" href="/css/user-main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
+    <style>
+        .icon {
+            cursor: pointer;
+        }
+    </style>
     <div class="footer-container">
-        
+
         <div class="icon">
             <i class="fas fa-search"></i>
         </div>
@@ -17,8 +21,24 @@
             <i class="fas fa-user-friends"></i>
         </div>
         <div class="icon">
-            <img src="/images/user/noImage.png" alt="Profile" class="profile-pic">
+            <img th:src="${imagePath}" alt="Profile" class="profile-pic" id="mainImage">
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        setTimeout(function () {
+            console.log("Document is ready!"); // 이 로그가 출력되는지 확인
+            $.ajax({
+                url: '/user-profile/main-image',
+                type: 'POST',
+                success: function (imagePath) {
+                    document.getElementById("mainImage").src = imagePath;
+                },
+                error: function () {
+                    console.error("이미지 로드 실패");
+                }
+            });
+        }, 100); // 1초 후에 AJAX 요청 실행
+    </script>
 
 </footer>

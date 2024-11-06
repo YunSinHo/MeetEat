@@ -23,7 +23,7 @@ public class StoreRank {
     @Column(name = "store_id")
     private Long storeId;
 
-    @Column(name = "rank")
+    @Column(name = "store_rank")
     private String rank;
 
     public StoreRank(){}

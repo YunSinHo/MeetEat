@@ -1,7 +1,7 @@
 package com.example.demo.user.profile;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.owner.store.Categories;
 import com.example.demo.user.UserService;
 import com.example.demo.user.Users;
-import com.example.demo.user.profile.foodinterest.UserFoodCategory;
 import com.example.demo.user.profile.image.UserProfileImage;
 import com.example.demo.user.profile.interest.Interest;
-import com.example.demo.user.profile.interest.UserInterest;
 
 import jakarta.transaction.Transactional;
 
@@ -32,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 @Controller
 @RequestMapping("/user-profile")
@@ -211,7 +210,7 @@ public class UserProfileController {
         List<UserProfileImage> image = userProfileService.findByUserIdFromUserImages(user);
         model.addAttribute("images", image);
 
-        return "user/main";
+        return "redirect:/login/user/main";
     }
 
     // 이미지 저장 메소드
@@ -253,5 +252,16 @@ public class UserProfileController {
             e.printStackTrace();
         }
     }
+
+    // 푸터에 메인 이미지
+    @PostMapping("/main-image")
+    public ResponseEntity<String> mainImage(Model model) {
+        String imagePath = userProfileService.getMainImage();
+        if(imagePath == null) imagePath = "/images/user/noImage.png";
+        // model.addAttribute("imagePath", imagePath);
+        // System.out.println("유저 메인 이미지 : " + imagePath);
+        return ResponseEntity.ok(imagePath);
+    }
+    
 
 }

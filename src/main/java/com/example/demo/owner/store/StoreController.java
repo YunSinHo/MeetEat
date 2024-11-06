@@ -77,7 +77,8 @@ public class StoreController {
     @GetMapping("/image/form")
     public String imageForm(Model model) {
         Long ownerId = ownerService.getLoggedInOwnerId();
-        List<StoreImage> images = storeService.findByOwnerIdFromImage(ownerId);
+        Store store = storeService.findByOwnerId(ownerId);
+        List<StoreImage> images = storeService.findByStoreIdFromImage(store.getStoreId());
 
         // 메인 이미지와 서브 이미지 나누기 (isMain 필드로 구분)
         StoreImage mainImage = new StoreImage();
@@ -93,12 +94,12 @@ public class StoreController {
         // 비어있는 이미지 슬롯은 noImage를 넣어준다
         if (mainImage.getImagePath() == null)
             mainImage = new StoreImage(
-                    0L, ownerId, "/images/store/noImage.png", "noImage.png", true);
+                    0L, store.getStoreId(), "/images/store/noImage.png", "noImage.png", true);
 
         int initialSubImageSize = subImages.size();
         for (int i = 0; i < 4 - initialSubImageSize; i++) {
             subImages.add(new StoreImage(
-                    0L, ownerId, "/images/store/noImage.png", "noImage.png", false));
+                    0L, store.getStoreId(), "/images/store/noImage.png", "noImage.png", false));
         }
 
         model.addAttribute("mainImage", mainImage);
@@ -115,7 +116,7 @@ public class StoreController {
             Model model) {
         String uploadDir = "/images/store/";
         Long ownerId = ownerService.getLoggedInOwnerId();
-
+        Store store = storeService.findByOwnerId(ownerId);
         // 서브 이미지 파일 처리
         for (int i = 0; i < prevImages.length; i++) {
             // images 배열에서 빈 값이나 null 체크
@@ -127,7 +128,7 @@ public class StoreController {
                 // DB 데이터 삭제
                 storeService.deleteByImageName(prevImages[i]);
 
-                saveImage(images[i], ownerId, uploadDir, false);
+                saveImage(images[i], store.getStoreId(), uploadDir, false);
             }
         }
         if (mainImage != null && !mainImage.isEmpty()) {
@@ -137,16 +138,15 @@ public class StoreController {
 
             storeService.deleteByImageName(prevMainImage);
 
-            saveImage(mainImage, ownerId, uploadDir, true);
+            saveImage(mainImage, store.getStoreId(), uploadDir, true);
         }
 
-        List<StoreImage> image = storeService.findByOwnerIdFromImage(ownerId);
 
         return "redirect:/login/owner/main";
     }
 
     // 이미지 저장 메소드
-    private void saveImage(MultipartFile image, Long userId, String uploadDir, boolean isMain) {
+    private void saveImage(MultipartFile image, Long storeId, String uploadDir, boolean isMain) {
         try {
             // 원래 파일 이름 및 확장자 추출
             String originalFileName = image.getOriginalFilename();
@@ -161,7 +161,7 @@ public class StoreController {
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             // 이미지 정보 저장 (isMain 값에 따라 메인 이미지 여부 구분)
-            storeService.saveStoreImage(userId, newFileName, "/images/store/" + newFileName, isMain);
+            storeService.saveStoreImage(storeId, newFileName, "/images/store/" + newFileName, isMain);
         } catch (IOException e) {
             e.printStackTrace();
         }

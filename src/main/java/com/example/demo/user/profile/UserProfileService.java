@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.owner.store.Categories;
 import com.example.demo.owner.store.CategoriesRepository;
+import com.example.demo.user.UserService;
 import com.example.demo.user.Users;
 import com.example.demo.user.profile.foodinterest.UserFoodCategory;
 import com.example.demo.user.profile.foodinterest.UserFoodCategoryRepository;
@@ -31,6 +32,7 @@ public class UserProfileService {
     private final InterestRepository interestRepository;
     private final CategoriesRepository categoriesRepository;
     private final UserProfileImageRepository userProfileImageRepository;
+    private final UserService userService;
 
     @Autowired
     public UserProfileService(UserFoodCategoryRepository userFoodCategoryRepository,
@@ -38,13 +40,15 @@ public class UserProfileService {
             UserProfileRepository userProfileRepository,
             InterestRepository interestRepository,
             CategoriesRepository categoriesRepository,
-            UserProfileImageRepository userProfileImageRepository) {
+            UserProfileImageRepository userProfileImageRepository,
+            UserService userService) {
         this.userProfileRepository = userProfileRepository;
         this.userFoodCategoryRepository = userFoodCategoryRepository;
         this.userInterestRepository = userInterestRepository;
         this.interestRepository = interestRepository;
         this.categoriesRepository = categoriesRepository;
         this.userProfileImageRepository = userProfileImageRepository;
+        this.userService = userService;
 
     }
 
@@ -142,6 +146,7 @@ public class UserProfileService {
     }
 
     // 유저 프로필 이미지 저장
+    @Transactional
     public void saveUserImage(Long userId, String imageName, String imagePath, boolean isMain) {
         UserProfileImage image = new UserProfileImage();
         image.setImageName(imageName);
@@ -181,6 +186,14 @@ public class UserProfileService {
         List<Categories> categories = categoriesRepository.findAll();
 
         return categories;
+    }
+
+    // 유저 메인이미지 경로
+    public String getMainImage() {
+        Long userId = userService.getLoggedInUserId();
+        String imagePath = userProfileImageRepository.findByUserIdAndIsMain(userId, true);
+
+        return imagePath;
     }
 
    

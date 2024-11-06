@@ -10,7 +10,7 @@ html, body {
 .container {
     width: 617px;
     overflow-x: hidden;
-    height: 90vh; /* 컨테이너 높이를 고정 */
+    min-height: 85vh; /* 컨테이너 높이를 고정 */
     background-color: white;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -31,7 +31,7 @@ header {
     z-index: 1000;
 }
 
-footer {
+#footer {
     position: sticky;
     bottom: 0;
     width: 100%; /* 컨테이너 너비에 맞춤 */
@@ -45,6 +45,9 @@ footer {
     justify-content: space-around;
     align-items: center;
     height: 100%;
+}
+.icon {
+    cursor: pointer;
 }
 .logo {
     display: block; /* 블록 요소로 설정 */
@@ -96,6 +99,7 @@ footer {
     height: 50px;
     border-radius: 50%;
 }
+
 
 
 

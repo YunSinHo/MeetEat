@@ -106,6 +106,13 @@ public class UserController {
         return "redirect:/login";
     }
 
+    // 유저 설정창 이동
+    @GetMapping("/config")
+    public String menu() {
+        return "user/config";
+    }
+    
+
 
 
 }

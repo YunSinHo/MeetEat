@@ -1,8 +1,5 @@
 package com.example.demo.owner.store;
 
-import java.time.LocalDateTime;
-
-import com.example.demo.user.profile.UserProfileDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,14 +40,26 @@ public class Store {
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lng")
+    private Double lng;
+
+
+    @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isActive = false;
+
     public Store() {
     }
-    public Store(Long ownerId, StoreDTO ownerProfileDTO){
+    public Store(Long ownerId, StoreDTO storeDTO){
         this.ownerId = ownerId;
-        this.storeName = ownerProfileDTO.getStoreName();
-        this.bizRegNo = ownerProfileDTO.getBizRegNo();
-        this.business = ownerProfileDTO.getBusiness();
-        this.category = ownerProfileDTO.getCategory();
-        this.address = ownerProfileDTO.getAddress();
+        this.storeName = storeDTO.getStoreName();
+        this.bizRegNo = storeDTO.getBizRegNo();
+        this.business = storeDTO.getBusiness();
+        this.category = storeDTO.getCategory();
+        this.address = storeDTO.getAddress();
+        this.lat = storeDTO.getLat();
+        this.lng = storeDTO.getLng();
     }
 }

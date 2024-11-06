@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 상세정보</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <div id="middle">
+            <div id="banner">
+                <div class="slider-container">
+                    <div class="slider">
+                        <div class="slide" th:each="storeImage : ${store.storeImages}"><img
+                                th:src="${storeImage.imagePath}" alt="Image 1" class="banner"></div>
+                    </div>
+                    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                    <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                </div>
+
+            </div>
+            <h2 id="storeName" class="divWidth" th:text="${store.storeName}"></h2>
+            <div id="location" class="divWidth">
+                <p th:text="${store.address}"></p>
+            </div>
+            <div id="starAndReview" class="divWidth">
+                <div class="stars">
+                    <span class="star" data-index="1">★</span>
+                    <span class="star" data-index="2">★</span>
+                    <span class="star" data-index="3">★</span>
+                    <span class="star" data-index="4">★</span>
+                    <span class="star" data-index="5">★</span>
+                </div>
+                <p th:text="${store.rank}" id="rank" th:value="${store.rank}" style="position: relative;
+                top: -15px;
+                left: 15px;
+                font-weight: bold;
+                font-size: 21px;"></p>
+                <p style="position: relative;
+                top: -10px;
+                left: 34px;
+                color: darkgray;
+                cursor: pointer;">x개 리뷰&gt;</p>
+            </div>
+            <hr style="position: relative; top: -20px;    left: -5px;">
+            <div id="explain" class="divWidth">
+                <p id="explainText" th:text="${store.introduction}"></p>
+                <hr>
+            </div>
+            <div id="callAndReservation" class="divWidth">
+                <div style="cursor: pointer;">
+                    <img src="/images/phone.png" alt="" class="icon2" style="margin-left: 66px;">전화하기
+                </div>
+                <div style="cursor: pointer;top: 6px;position: relative;">
+                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">위치보기
+                </div>
+            </div>
+            <hr style="left: -5px;position: relative;">
+            <button type="button" id="dateBtn">날짜 선택</button>
+            <div class="month" id="calendarDiv">
+                <p id="selectedDate"></p>
+                <div id="calendarWrapper" style="display: none;">
+                    <div th:replace="calendar" id="calendar" style="display: none;"></div>
+                </div>
+            </div>
+            <div id="reservationTime" class="divWidth">
+                <button class="prev" id="scrollLeft" onclick="handleScrollLeft()"
+                    style="display: none;left: -13px;">&#10094;</button>
+                <div id="timeContainer"></div>
+                <button class="next" id="scrollRight" onclick="handleScrollRight()"
+                    style="display: block;right: -30px;">
+                    &#10095;</button>
+            </div>
+
+
+        </div>
+
+
+        <div th:replace="user/footer" id="footer"></div>
+    </div>
+
+    <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
+    <input type="hidden" id="storeId" th:value="${store.storeId}">
+    <input type="hidden" id="date" name="date">
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+    <script src="/js/store-detail.js"></script>
+    <script>
+        document.getElementById("dateBtn").addEventListener('click', function () {
+            document.getElementById("calendarWrapper").style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

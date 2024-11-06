@@ -65,6 +65,9 @@
             /* 버튼 공간 */
             border-radius: 15px;
         }
+        .result-item{
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -87,14 +90,87 @@
             <div class="subtitle2">종목</div>
             <input type="text" id="name" name="category" class="input" placeholder="종목을 입력해주세요.ex:한식">
             <div class="subtitle2">주소</div>
-            <input type="text" id="name" name="address" class="input" placeholder="주소를 입력해주세요.">
+            <input type="text" id="addressInput" name="address" class="input" placeholder="도로명 주소를 입력해주세요.">
+            <button type="button" id="searchButton" style="position: relative;
+                    left: 275px;
+                    top: -88px;
+                border: none;
+                background-color: white;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 19px;
+                ">검색</button>
+            <div id="searchResults" style="position: relative;
+    top: -75px; border: 2px solid black;width: 611px;
+                border-radius: 0.4em;"></div>
             <button type="submit" class="button-next">다 음</button>
         </div>
-        
+        <input type="hidden"  name="lat" id="lat">
+        <input type="hidden"  name="lng" id="lng">
     </form>
     <script src="/js/scripts.js"></script> <!-- 외부 JS 연결 -->
+    <script src="/js/map.js"></script>
     <script>
+        // 검색 결과 가져오기
+        let lat = document.getElementById("lat");
+        let lng = document.getElementById("lng");
+        let addressInput = document.getElementById("addressInput");
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchButton = document.getElementById("searchButton");
+            searchButton.addEventListener("click", function () {
+                const address = document.getElementById("addressInput").value;
+                const encodedAddress = encodeURIComponent(address);  // 인코딩된 주소
 
+                console.log("인코딩된 주소:", encodedAddress);  // 인코딩된 주소 로그 출력
+
+
+                fetch(`/geocode?address=${encodedAddress}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsDiv = document.getElementById("searchResults");
+                        resultsDiv.innerHTML = '';  // 기존 검색 결과 초기화
+                        if (data.length === 0) {
+                            // 검색 결과가 없을 때 메시지 추가
+                            const resultElement = document.createElement("div");
+                            resultElement.classList.add("no-address");
+                            resultElement.textContent = "해당 주소가 존재하지 않습니다. 자세히 입력해주세요.";
+                            resultsDiv.appendChild(resultElement);
+                            return;
+                        }
+                        data.forEach((result, index) => {
+                            const resultElement = document.createElement("div");
+                            resultElement.classList.add("result-item");
+                            resultElement.textContent = result.roadAddress;
+
+                            resultElement.addEventListener("click", function () {
+                                lat.value = result.latitude;
+                                lng.value = result.longitude;
+                                addressInput.value = result.roadAddress;
+
+                            });
+
+                            resultsDiv.appendChild(resultElement);
+                        });
+                    })
+                    .catch(error => console.error("주소 검색 중 오류:", error));
+            });
+        });
+
+
+
+        // 데이터베이스에 새 주소 저장
+        function saveCoordinatesToDB(lat, lng, name) {
+            fetch('/owner/save-coordinates', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude: lat, longitude: lng, name: name })
+            })
+                .then(response => response.json())
+                .then(data => console.log("좌표값이 데이터베이스에 저장되었습니다:", data),
+                    location.href = "/user/update-map");
+        }
     </script>
 </body>
 

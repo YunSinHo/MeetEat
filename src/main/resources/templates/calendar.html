@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>달력</title>
+    <script src="/js/calendar.js"></script>
+    
+    <link rel="stylesheet" href="/css/calendar.css">
+</head>
+<body>
+    <div class="calendar">
+        <div class="header">
+            <button id="prevMonth" class="month-btn">◀</button>
+            <span class="today">오늘</span>
+            <span class="month-year" id="monthYear"></span>
+            <button id="nextMonth" class="month-btn">▶</button>
+        </div>
+        <div class="days-header">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+        </div>
+        <div class="days" id="days"></div>
+    </div>
+</body>
+</html>

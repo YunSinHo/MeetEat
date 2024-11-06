@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoreImageRepository extends JpaRepository<StoreImage, Long>{
-    List<StoreImage> findByOwnerId(Long ownerId);
 
     void deleteByImageName(String imageName);
+
+    List<StoreImage> findByStoreId(Long storeId);
 }

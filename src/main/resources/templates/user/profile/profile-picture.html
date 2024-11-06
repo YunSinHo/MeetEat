@@ -42,7 +42,7 @@
 <body>
 
     <div class="container">
-        <h2>마지막으로 <p th:text="${profile.name}"></p>님의 매력적인 사진 부탁드릴게요!</h2>
+        <h2><p th:text="${profile.name}"></p>님의 매력적인 사진 부탁드릴게요!</h2>
         <form action="/user-profile/image/set-user" method="POST" enctype="multipart/form-data">
             <img src="/images/logo.png" class="logo">
             <!-- 대표 이미지 -->
