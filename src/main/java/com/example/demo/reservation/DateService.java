@@ -2,17 +2,16 @@ package com.example.demo.reservation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.StoreService;
-import com.example.demo.owner.store.management.ManagementService;
-import com.example.demo.owner.store.management.StoreBasic;
 import com.example.demo.owner.store.management.StoreTable;
+import com.example.demo.owner.store.management.menu.ManagementInterface;
 
 import jakarta.annotation.PostConstruct;
 
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class DateService {
@@ -29,14 +26,15 @@ public class DateService {
     private final SRDRepository srdRepository;
     private final StoreService storeService;
     private final ReservationService reservationService;
-    private final ManagementService managementService;
+   
+    private final ManagementInterface managementInterface;
 
     public DateService(SRDRepository srdRepository, StoreService storeService, ReservationService reservationService,
-            ManagementService managementService) {
+    ManagementInterface managementInterface) {
         this.srdRepository = srdRepository;
         this.storeService = storeService;
         this.reservationService = reservationService;
-        this.managementService = managementService;
+        this.managementInterface = managementInterface;
 
     }
 
@@ -56,7 +54,7 @@ public class DateService {
             StoreCombineDTO storeDto = reservationService.getStoreInformation(store.getStoreId());
             List<String> reservationTimes = reservationService.getReservationTime(storeDto.getStartTime(),
                     storeDto.getEndTime());
-            StoreTable table = managementService.getTable(store.getStoreId());
+            StoreTable table = managementInterface.getTable(store.getStoreId());
             for (String time : reservationTimes) {
                 srdRepository.save(new StoreReservationDate(threeWeeksLater, store.getStoreId(), time,
                         table.getOneTable(), table.getTwoTable(), table.getFourTable(), table.getPartyTable()));
@@ -81,7 +79,7 @@ public class DateService {
             StoreCombineDTO storeDto = reservationService.getStoreInformation(store.getStoreId());
             List<String> reservationTimes = reservationService.getReservationTime(storeDto.getStartTime(),
                     storeDto.getEndTime());
-            StoreTable table = managementService.getTable(store.getStoreId());
+            StoreTable table = managementInterface.getTable(store.getStoreId());
             for (String time : reservationTimes) {
                 for (LocalDate date = today; !date.isAfter(endDate); date = date.plusDays(1)) {
                     if (!srdRepository.existsByDateAndStoreId(date, store.getStoreId())) {
@@ -114,4 +112,8 @@ public class DateService {
 
 
     }
+
+   
+
+    
 }

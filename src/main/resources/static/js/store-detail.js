@@ -71,9 +71,14 @@ function renderTimes() {
         p.style.marginLeft = '22px';
         p.style.marginTop = '22px';
         p.classList.add('times');
+
+        // 클릭 이벤트 추가
+        div.addEventListener('click', function () {
+            clickTime(reservationTimes[i]);
+        });
+
         timeContainer.appendChild(div);
         div.appendChild(p);
-
     }
 
     // 버튼 가시성 조정
@@ -100,38 +105,122 @@ function handleScrollRight() {
 renderTimes();
 
 // 시간 클릭시 서버에서 테이블 개수 가져오기
+let prevTime;
+let isExistPrev = false;
 const times = document.getElementsByClassName("time");
 for (let i = 0; i < times.length; i++) {
     let timeElement = document.getElementById("time" + i);
+
     if (timeElement) {
         timeElement.addEventListener('click', function () {
-            let time = timeElement.querySelector("p").textContent; 
-            clickTime(time); 
+            if (isExistPrev) {
+                prevTime.style.border = "1px solid black";
+            }
+            isExistPrev = true;
+            prevTime = timeElement;
+            let time = timeElement.querySelector("p").textContent;
+            timeElement.style.border = "1px solid orange";
+
+            document.getElementById("tableNumber").style.display = 'block';
+            clickTime(time);
         });
     }
 }
 
+let isRequestInProgress = false;
+
+// 시간 클릭
+let isVaildTable = true;
 function clickTime(time) {
+    if (isRequestInProgress) return;  // 요청 중복 방지
+    isRequestInProgress = true;
+
     let storeId = document.getElementById("storeId").value;
     let date = document.getElementById("date").value;
     if (date === null || date === "") {
+        document.getElementById("tableNumber").style.display = 'none';
         alert('날짜를 선택해주세요.');
+        isRequestInProgress = false;
         return;
     }
-    else {
-        $.ajax({
-            url : "/reservation/table-information",
-            type : "post",
-            data : {storeId : storeId, date : date, time : time},
-            success : function (tableMap){
-                alert("4 : " + tableMap.fourTable);
-            },
-            error : function () {
-                alert("서버 오류가 발생했습니다.");
+    document.getElementById("table").value = "";
+
+    if (isExistPrevTable) {
+        prevTable.style.border = "1px solid black";
+    }
+
+    $.ajax({
+        url: "/reservation/table-information",
+        type: "post",
+        data: { storeId: storeId, date: date, time: time },
+        success: function (tableMap) {
+            document.getElementById("time").value = time;
+            for (let i = 0; i < 4; i++) {
+
+                const div = document.getElementById('table' + i);
+                const p = document.getElementById('pTable' + i);
+                const pValue = p;
+                if (i === 0) {
+                    p.innerHTML = "<strong>1인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.oneTable;
+                    pValue.value = tableMap.oneTable;
+
+                }
+
+                else if (i === 1) {
+                    p.innerHTML = "<strong>2인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.twoTable;
+                    pValue.value = tableMap.twoTable;
+                }
+
+                else if (i === 2) {
+                    p.innerHTML = "<strong>4인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.fourTable;
+                    pValue.value = tableMap.fourTable;
+                }
+                else if (i === 3) {
+                    p.innerHTML = "<strong>단체 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.partyTable;
+                    pValue.value = tableMap.partyTable;
+                }
+                document.getElementById('table' + i).style.pointerEvents = 'auto';
+                document.getElementById('table' + i).style.cursor = 'pointer';
+                document.getElementById('table' + i).style.opacity = '1';
+                if (pValue.value === 0) {
+                    document.getElementById('table' + i).style.cursor = 'default';
+                    document.getElementById('table' + i).style.opacity = '0.5';
+                    document.getElementById('table' + i).style.pointerEvents = 'none';
+                }
+
+                
+
+
+                p.style.textAlign = "center";
+                p.style.fontSize = '16px';
+                p.style.marginLeft = '13px';
+                p.style.marginTop = '10px';
+                div.appendChild(p);
             }
 
+        },
+        error: function () {
+            alert("서버 오류가 발생했습니다.");
+        },
+        complete: function () {
+            isRequestInProgress = false;  // 요청 완료 후 플래그 리셋
+        }
+    });
+}
+let isExistPrevTable = false;
+let prevTable;
+const table = document.getElementsByClassName("table");
+for (let i = 0; i < table.length; i++) {
 
-        });
-    }
-   
+    document.getElementById("table" + i).addEventListener('click', function () {
+
+
+        document.getElementById("table").value = document.getElementById("table" + i).querySelector('input[type="hidden"]').value;
+        if (isExistPrevTable) {
+            prevTable.style.border = "1px solid black";
+        }
+        isExistPrevTable = true;
+        prevTable = document.getElementById("table" + i);
+        document.getElementById("table" + i).style.border = "1px solid orange";
+    });
 }

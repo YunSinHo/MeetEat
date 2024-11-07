@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.address.AddressService;
@@ -11,15 +12,19 @@ import com.example.demo.address.UserAddress;
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.management.ManagementService;
+import com.example.demo.owner.store.management.menu.StoreMenu;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/reservation")
@@ -130,6 +135,7 @@ public class ReservationController {
         return ResponseEntity.ok(date);
     }
 
+    // 선택 시간대 테이블 정보
     @PostMapping("/table-information")
     public ResponseEntity<Map<String, Integer>> tableInformation(@RequestParam("storeId") String storeId,
             @RequestParam("date") String date,
@@ -138,4 +144,25 @@ public class ReservationController {
         return ResponseEntity.ok(timeMap);
     }
 
+    @PostMapping("/choice-menu/form")
+    public String choiceMenuForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
+        session.setAttribute("dto", dto);
+        model.addAttribute("reservationBasic", dto);
+        List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(dto.getStoreId()));
+        List<StoreMenu> mainMenu = new ArrayList<>();
+        List<StoreMenu> subMenu = new ArrayList<>();
+        if(menus.isEmpty()) menus = new ArrayList<>();
+
+        for(StoreMenu menu : menus) {
+            if(menu.getIsMain() == true) 
+                mainMenu.add(menu);
+            else 
+                subMenu.add(menu);
+        }
+        model.addAttribute("mainMenu", mainMenu);
+        model.addAttribute("subMenu", subMenu);
+
+        return "user/reservation/menu-choice";
+    }
+    
 }

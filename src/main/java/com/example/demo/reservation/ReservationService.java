@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.owner.OwnerService;
@@ -20,18 +22,19 @@ import com.example.demo.owner.store.StoreService;
 import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.StoreBasic;
+import com.example.demo.owner.store.management.menu.ManagementInterface;
 
 @Service
 public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
-    private final ManagementService managementService;
+    private final ManagementInterface ManagementInterface;
 
     public ReservationService(OwnerService ownerService, StoreService storeSerivce,
-            ManagementService managementService) {
+    @Lazy ManagementInterface ManagementInterface) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
-        this.managementService = managementService;
+        this.ManagementInterface = ManagementInterface;
     }
 
     // 가게 오픈 시간 확인
@@ -42,7 +45,7 @@ public class ReservationService {
 
         boolean isWeekday = checkWeekday(); // 주말인지 평일인지
 
-        StoreBasic basic = managementService.findByStoreId(storeId);
+        StoreBasic basic = ManagementInterface.findByStoreId(storeId);
         if (basic == null) {
             timeMap.put("startTime", startTimeStr);
             timeMap.put("endTime", endTimeStr);
@@ -104,7 +107,7 @@ public class ReservationService {
         for (Long storeId : storeIds) {
             Store store = storeSerivce.findById(storeId);
             StoreCombineDTO dto = new StoreCombineDTO();
-            StoreBasic basic = managementService.findByStoreId(storeId);
+            StoreBasic basic = ManagementInterface.findByStoreId(storeId);
             if (basic == null)
                 basic = new StoreBasic();
             Map<String, Object> timeMap = checkOpen(storeId);
@@ -145,7 +148,7 @@ public class ReservationService {
         List<StoreImage> images = storeSerivce.findByStoreIdFromImage(storeId);
         if (images.isEmpty())
             images = new ArrayList<>();
-        StoreBasic basic = managementService.findByStoreId(storeId);
+        StoreBasic basic = ManagementInterface.findByStoreId(storeId);
         if (basic == null)
             basic = new StoreBasic();
         Map<String, Object> timeMap = checkOpen(storeId);

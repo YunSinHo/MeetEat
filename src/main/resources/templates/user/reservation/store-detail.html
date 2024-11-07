@@ -77,17 +77,45 @@
                     style="display: block;right: -30px;">
                     &#10095;</button>
             </div>
-
+            <div id="tableNumber" class="divWidth">
+                <div id="tableContainer" class="tableContainer">
+                    <div class="table" id="table0">
+                        <p id="pTable0" ></p>
+                        <input type="hidden" value="oneTable" id="oneTable">
+                    </div>
+                    <div class="table" id="table1">
+                        <p id="pTable1" ></p>
+                        <input type="hidden" value="twoTable" id="twoTable">
+                    </div>
+                    <div class="table" id="table2">
+                        <p id="pTable2" ></p>
+                        <input type="hidden" value="fourTable" id="fourTable">
+                    </div>
+                    <div class="table" id="table3">
+                        <p id="pTable3"></p>
+                        <input type="hidden" value="partyTable" id="partyTable">
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
+            <form action="/reservation/choice-menu/form" method="post" id="form">
+                
+                <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                <input type="hidden" id="date" name="date">
+                <input type="hidden" id="table" name="table">
+                <input type="hidden" id="time" name="time">
+                <button type="submit" id="submitBtn" class="button-next" >다 음</button>
+            </form>
 
         </div>
-
-
+        
         <div th:replace="user/footer" id="footer"></div>
+        
     </div>
-
-    <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
-    <input type="hidden" id="storeId" th:value="${store.storeId}">
-    <input type="hidden" id="date" name="date">
+   
+    
+    
+   
     <script src="/js/user-nav.js"></script>
     <script src="/js/map.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -96,6 +124,15 @@
     <script>
         document.getElementById("dateBtn").addEventListener('click', function () {
             document.getElementById("calendarWrapper").style.display = 'block';
+        });
+        document.getElementById("submitBtn").addEventListener('click', function(event){
+            event.preventDefault();
+            if(document.getElementById("table").value === "" || document.getElementById("table").value === null) {
+                alert("테이블을 선택해주세요.");
+                return;
+            } else {
+                document.getElementById("form").submit();
+            }
         });
     </script>
 </body>

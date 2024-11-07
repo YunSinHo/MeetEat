@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
             data : {date : date, storeId : storeId},
             success : function(date) {
                 document.getElementById("date").value = date;
-                alert(date);
             },
             error : function () {
                 alert("서버 오류가 발생했습니다.")
