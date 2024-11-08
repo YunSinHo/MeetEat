@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제창</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <div id="middle">
+            <p th:text="${reservation.storeName}"></p>
+            <p th:text="${reservation.date}"></p>
+            <p th:text="${reservation.time}"></p>
+            <p th:text="${reservation.totalCost}"></p>
+            
+
+        </div>
+        
+        <div th:replace="user/footer" id="footer"></div>
+        
+    </div>
+   
+    
+    
+   
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/store-detail.js"></script>
+  
+    </script>
+</body>
+
+</html>

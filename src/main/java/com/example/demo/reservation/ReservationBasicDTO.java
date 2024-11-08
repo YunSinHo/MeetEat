@@ -12,10 +12,10 @@ public class ReservationBasicDTO {
     
     private String userId;
     private String storeId;
+    private String storeName;
     private String date;
     private String time;
     private String table;
-    private Map<String, String> menu;
-    private String cost;
+    private Integer totalCost;
 
 }

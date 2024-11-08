@@ -37,7 +37,7 @@ public class ReservationController {
     private final DateService dateService;
 
     public ReservationController(OwnerService ownerService, ReservationService reservationService,
-            AddressService addressService, DateService dateService, 
+            AddressService addressService, DateService dateService,
             ManagementService managementService) {
         this.ownerService = ownerService;
         this.reservationService = reservationService;
@@ -146,17 +146,19 @@ public class ReservationController {
 
     @PostMapping("/choice-menu/form")
     public String choiceMenuForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
-        session.setAttribute("dto", dto);
+        session.setAttribute("ReservationBasicDTO", dto);
+        System.out.println("날짜 확인 "+  dto.getDate());
         model.addAttribute("reservationBasic", dto);
         List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(dto.getStoreId()));
         List<StoreMenu> mainMenu = new ArrayList<>();
         List<StoreMenu> subMenu = new ArrayList<>();
-        if(menus.isEmpty()) menus = new ArrayList<>();
+        if (menus.isEmpty())
+            menus = new ArrayList<>();
 
-        for(StoreMenu menu : menus) {
-            if(menu.getIsMain() == true) 
+        for (StoreMenu menu : menus) {
+            if (menu.getIsMain() == true)
                 mainMenu.add(menu);
-            else 
+            else
                 subMenu.add(menu);
         }
         model.addAttribute("mainMenu", mainMenu);
@@ -164,5 +166,16 @@ public class ReservationController {
 
         return "user/reservation/menu-choice";
     }
-    
+
+    @PostMapping("/payment/form")
+    public String paymentForm(@RequestParam("storeMenuId") List<Long> storeMenuId,
+            @RequestParam("number") List<String> number, HttpSession session, Model model) {
+
+        ReservationBasicDTO dto = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
+        Integer totalCost = reservationService.getTotalCost(storeMenuId, number);
+        dto.setTotalCost(totalCost);
+        model.addAttribute("reservation", dto);
+        return "user/reservation/payment";
+    }
+
 }

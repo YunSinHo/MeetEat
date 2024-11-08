@@ -23,18 +23,19 @@ import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.StoreBasic;
 import com.example.demo.owner.store.management.menu.ManagementInterface;
+import com.example.demo.owner.store.management.menu.StoreMenu;
 
 @Service
 public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
-    private final ManagementInterface ManagementInterface;
+    private final ManagementService managementService;
 
     public ReservationService(OwnerService ownerService, StoreService storeSerivce,
-    @Lazy ManagementInterface ManagementInterface) {
+    @Lazy ManagementService managementService) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
-        this.ManagementInterface = ManagementInterface;
+        this.managementService = managementService;
     }
 
     // 가게 오픈 시간 확인
@@ -45,7 +46,7 @@ public class ReservationService {
 
         boolean isWeekday = checkWeekday(); // 주말인지 평일인지
 
-        StoreBasic basic = ManagementInterface.findByStoreId(storeId);
+        StoreBasic basic = managementService.findByStoreId(storeId);
         if (basic == null) {
             timeMap.put("startTime", startTimeStr);
             timeMap.put("endTime", endTimeStr);
@@ -107,7 +108,7 @@ public class ReservationService {
         for (Long storeId : storeIds) {
             Store store = storeSerivce.findById(storeId);
             StoreCombineDTO dto = new StoreCombineDTO();
-            StoreBasic basic = ManagementInterface.findByStoreId(storeId);
+            StoreBasic basic = managementService.findByStoreId(storeId);
             if (basic == null)
                 basic = new StoreBasic();
             Map<String, Object> timeMap = checkOpen(storeId);
@@ -148,7 +149,7 @@ public class ReservationService {
         List<StoreImage> images = storeSerivce.findByStoreIdFromImage(storeId);
         if (images.isEmpty())
             images = new ArrayList<>();
-        StoreBasic basic = ManagementInterface.findByStoreId(storeId);
+        StoreBasic basic = managementService.findByStoreId(storeId);
         if (basic == null)
             basic = new StoreBasic();
         Map<String, Object> timeMap = checkOpen(storeId);
@@ -255,6 +256,22 @@ public class ReservationService {
         }
 
         return timeSlots;
+    }
+
+    // 총 결제 가격 구하기
+    public Integer getTotalCost(List<Long> storeMenuId, List<String> number) {
+        
+        List<StoreMenu> menus = new ArrayList<>();
+        Integer totalCost = 0;
+        for(int i = 0; i < storeMenuId.size(); i++) {
+            StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId.get(i));
+            totalCost += Integer.parseInt(menu.getCost()) * Integer.parseInt(number.get(i));
+        }
+
+        return totalCost;
+        
+        
+
     }
 
 }
