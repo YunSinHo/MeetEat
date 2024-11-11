@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreCombineDTO;
@@ -38,8 +39,10 @@ public class DateService {
 
     }
 
-    // 12시가 지나면 날짜 업데이트
+    // // 12시가 지나면 날짜 업데이트
     @Scheduled(cron = "0 0 0 * * *")
+    // @Lazy
+    // @PostConstruct
     public void updateDates() {
         List<Store> stores = storeService.findAll();
 
@@ -82,6 +85,7 @@ public class DateService {
             StoreTable table = managementInterface.getTable(store.getStoreId());
             for (String time : reservationTimes) {
                 for (LocalDate date = today; !date.isAfter(endDate); date = date.plusDays(1)) {
+                    System.out.println(date);
                     if (!srdRepository.existsByDateAndStoreId(date, store.getStoreId())) {
                         dateEntitiesToAdd.add(new StoreReservationDate(date, store.getStoreId(), time,
                                 table.getOneTable(), table.getTwoTable(), table.getFourTable(), table.getPartyTable()));

@@ -172,9 +172,12 @@ public class ReservationController {
             @RequestParam("number") List<String> number, HttpSession session, Model model) {
 
         ReservationBasicDTO dto = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
+        StoreCombineDTO store = reservationService.getStoreInformation(Long.parseLong(dto.getStoreId()));
+
         Integer totalCost = reservationService.getTotalCost(storeMenuId, number);
         dto.setTotalCost(totalCost);
         model.addAttribute("reservation", dto);
+        model.addAttribute("store", store);
         return "user/reservation/payment";
     }
 

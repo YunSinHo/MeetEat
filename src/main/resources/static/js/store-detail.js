@@ -50,6 +50,7 @@ setInterval(() => {
 
 let currentIndex2 = 0; // 현재 인덱스
 const itemsPerPage = 4; // 페이지당 요소 수
+let currentSelectedTime = null;
 const reservationTimes = JSON.parse(document.getElementById('reservationTimes').value); // 서버에서 받은 시간대 배열
 
 function renderTimes() {
@@ -75,6 +76,9 @@ function renderTimes() {
         // 클릭 이벤트 추가
         div.addEventListener('click', function () {
             clickTime(reservationTimes[i]);
+            if (currentSelectedTime) currentSelectedTime.style.border = '1px solid black';
+            currentSelectedTime = div;
+            currentSelectedTime.style.border = '1px solid orange';
         });
 
         timeContainer.appendChild(div);
