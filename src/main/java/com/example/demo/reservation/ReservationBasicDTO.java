@@ -1,6 +1,5 @@
 package com.example.demo.reservation;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import lombok.Getter;
@@ -17,5 +16,6 @@ public class ReservationBasicDTO {
     private String time;
     private String table;
     private Integer totalCost;
+    private Map<String, Integer> reservedMenu;
 
 }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제창</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        .headerText {
+            text-align: center;
+            color: orange;
+            margin-top: -23px;
+            margin-bottom: -10px;
+
+        }
+
+        .headerText hr {
+            margin-top: -21px;
+        }
+
+        .status_container {
+            border: 1px solid black;
+            margin-top: -2px;
+            width: 587px;
+            border-radius: 0.8em;
+        }
+
+        .date_time {
+            display: flex;
+        }
+
+        .detail_cancel_button {
+            display: flex;
+            gap: 79px;
+        }
+
+        #detailButton,
+        #cancelButton {
+            width: 241px;
+            left: 10px;
+            position: relative;
+            top: -6px;
+            font-weight: bold;
+            background-color: white;
+            cursor: pointer;
+            height: 42px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="header"></div>
+        <div class="headerText">
+            <h1>예약현황</h1>
+            <hr>
+        </div>
+        <div id="middle">
+            <div class="status_container" th:each="status, stat : ${status}">
+                <div th:id="'status' + ${stat.index}" class="status_inner">
+                    <h3 th:text="${status.storeName}"></h3>
+                    <p th:text="${status.totalCost} + '원'"></p>
+                    <div class="date_time">
+                        <p th:text="${status.date}"></p>&nbsp;<p th:text="${status.time}"></p>
+                    </div>
+                    <div class="detail_cancel_button">
+                        <button type="button" id="detailButton">상세보기</button>
+                        <button type="button" id="cancelButton">예약취소</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div th:replace="user/footer" id="footer"></div>
+
+    </div>
+
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/store-detail.js"></script>
+
+</body>
+
+</html>

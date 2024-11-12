@@ -2,6 +2,7 @@ package com.example.demo.reservation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -9,18 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.address.AddressService;
 import com.example.demo.address.UserAddress;
-import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.management.ManagementService;
+import com.example.demo.owner.store.management.SRDService;
 import com.example.demo.owner.store.management.menu.StoreMenu;
 
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,16 +31,16 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/reservation")
 public class ReservationController {
 
-    private final OwnerService ownerService;
     private final ReservationService reservationService;
     private final AddressService addressService;
     private final ManagementService managementService;
     private final DateService dateService;
+    private final SRDService srdService;
 
-    public ReservationController(OwnerService ownerService, ReservationService reservationService,
+    public ReservationController(SRDService srdService, ReservationService reservationService,
             AddressService addressService, DateService dateService,
             ManagementService managementService) {
-        this.ownerService = ownerService;
+        this.srdService = srdService;
         this.reservationService = reservationService;
         this.addressService = addressService;
         this.managementService = managementService;
@@ -144,10 +145,10 @@ public class ReservationController {
         return ResponseEntity.ok(timeMap);
     }
 
+    // 메뉴 고르는 페이지
     @PostMapping("/choice-menu/form")
     public String choiceMenuForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
         session.setAttribute("ReservationBasicDTO", dto);
-        System.out.println("날짜 확인 "+  dto.getDate());
         model.addAttribute("reservationBasic", dto);
         List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(dto.getStoreId()));
         List<StoreMenu> mainMenu = new ArrayList<>();
@@ -167,18 +168,43 @@ public class ReservationController {
         return "user/reservation/menu-choice";
     }
 
+    // 최종 결제 페이지
     @PostMapping("/payment/form")
     public String paymentForm(@RequestParam("storeMenuId") List<Long> storeMenuId,
             @RequestParam("number") List<String> number, HttpSession session, Model model) {
 
-        ReservationBasicDTO dto = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
-        StoreCombineDTO store = reservationService.getStoreInformation(Long.parseLong(dto.getStoreId()));
+        ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
+        StoreCombineDTO store = reservationService
+                .getStoreInformation(Long.parseLong(reservationBasicDTO.getStoreId()));
 
         Integer totalCost = reservationService.getTotalCost(storeMenuId, number);
-        dto.setTotalCost(totalCost);
-        model.addAttribute("reservation", dto);
+        Map<String, Integer> menu = reservationService.getReservedMenu(storeMenuId, number);
+        reservationBasicDTO.setTotalCost(totalCost);
+        reservationBasicDTO.setReservedMenu(new HashMap<>(menu));
+        model.addAttribute("reservation", reservationBasicDTO);
         model.addAttribute("store", store);
         return "user/reservation/payment";
     }
+
+    // 예약 내역 db저장
+    @PostMapping("/reservation-save")
+    @Transactional
+    public String saveReservation(@RequestParam("finalPayment") String finalPayment,
+            @RequestParam("isJoin") String isJoin, HttpSession session) {
+        ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
+        boolean isSave = reservationService.saveReservation(finalPayment, isJoin, reservationBasicDTO);
+        srdService.updateReservationTable(reservationBasicDTO);
+        return "redirect:/reservation/status";
+    }
+
+    // 예약 현황
+    @GetMapping("/status")
+    public String reservationStatus(Model model) {
+        List<StoreReservationInfo> infos = reservationService.findVaildReservaion();
+        model.addAttribute("status", infos);
+
+        return "user/reservation/status";
+    }
+    
 
 }

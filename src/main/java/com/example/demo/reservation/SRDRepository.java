@@ -24,7 +24,10 @@ public interface SRDRepository extends JpaRepository<StoreReservationDate, Long>
     Optional<StoreReservationDate> findByIdAndDateAndTime(@Param("storeId")long storeId,
      @Param("date")LocalDate date, @Param("time")String time);
 
-     
+    
+    
     List<StoreReservationDate> findAllByStoreId(Long storeId);
+
+    StoreReservationDate findByStoreIdAndDateAndTime(long long1, LocalDate localDate, String time);
 
 }

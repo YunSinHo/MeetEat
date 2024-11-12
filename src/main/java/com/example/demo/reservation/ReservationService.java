@@ -10,32 +10,42 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreCombineDTO;
-import com.example.demo.owner.store.StoreRepository;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.StoreBasic;
-import com.example.demo.owner.store.management.menu.ManagementInterface;
 import com.example.demo.owner.store.management.menu.StoreMenu;
+import com.example.demo.user.UserService;
 
 @Service
 public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
     private final ManagementService managementService;
+    private final UserService userService;
 
-    public ReservationService(OwnerService ownerService, StoreService storeSerivce,
-    @Lazy ManagementService managementService) {
+    private final StoreResInfoRepo storeResInfoRepo;
+    private final StoreResMenuRepo storeResMenuRepo;
+    
+
+    
+    
+
+    public ReservationService(OwnerService ownerService, StoreService storeSerivce, UserService userService,
+    @Lazy ManagementService managementService, StoreResMenuRepo storeResMenuRepo, StoreResInfoRepo storeResInfoRepo) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
         this.managementService = managementService;
+        this.storeResInfoRepo = storeResInfoRepo;
+        this.storeResMenuRepo = storeResMenuRepo;
+        this.userService = userService;
     }
 
     // 가게 오픈 시간 확인
@@ -261,7 +271,6 @@ public class ReservationService {
     // 총 결제 가격 구하기
     public Integer getTotalCost(List<Long> storeMenuId, List<String> number) {
         
-        List<StoreMenu> menus = new ArrayList<>();
         Integer totalCost = 0;
         for(int i = 0; i < storeMenuId.size(); i++) {
             StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId.get(i));
@@ -273,5 +282,84 @@ public class ReservationService {
         
 
     }
+
+    // 실제 예약한 메뉴
+    public Map<String, Integer> getReservedMenu(List<Long> storeMenuId, List<String> number) {
+        
+        Map<String, Integer> reservedMenu = new HashMap<>();
+        for(int i = 0 ; i < storeMenuId.size(); i++) {
+            if(number.get(i).equals("0")) continue;
+            else {
+                StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId.get(i));
+                reservedMenu.put(menu.getName(), Integer.parseInt(number.get(i)));
+            }
+        }
+        return reservedMenu;
+    }
+
+    // 예약 내역 데이터베이스 저장
+    @Transactional
+    public boolean saveReservation(String finalPayment, String isJoin, ReservationBasicDTO reservationBasicDTO) {
+        
+        StoreReservationInfo info = new StoreReservationInfo();
+        info.setDate(LocalDate.parse(reservationBasicDTO.getDate()));
+        info.setFinalPayment(finalPayment);
+        info.setIsComplete(false);
+        info.setIsJoin(Boolean.parseBoolean(isJoin));
+        info.setStoreId(Long.parseLong(reservationBasicDTO.getStoreId()));
+        info.setTime(reservationBasicDTO.getTime());
+        info.setTotalCost(String.valueOf(reservationBasicDTO.getTotalCost()));
+        info.setUserId(userService.getLoggedInUserId());
+        info.setStoreName(reservationBasicDTO.getStoreName());
+        storeResInfoRepo.save(info);
+
+        StoreReservationInfo newInfo = getStoreResInfo(info.getDate(), info.getTime(), info.getUserId());
+        Long infoId = newInfo.getInfoId();
+        for(String menu : reservationBasicDTO.getReservedMenu().keySet()) {
+            StoreReservationMenu SRM = new StoreReservationMenu();
+            SRM.setInfoId(infoId);
+            SRM.setMenuName(menu);
+            SRM.setQuantity(String.valueOf(reservationBasicDTO.getReservedMenu().get(menu)));
+            storeResMenuRepo.save(SRM);
+        }
+        
+
+        return true;
+    }
+    // 예약 내역 가져오기
+    public StoreReservationInfo getStoreResInfo(LocalDate date, String time, Long userId) {
+
+        StoreReservationInfo info = storeResInfoRepo.findByUserIdAndDateAndTime(userId, date, time)
+                                                    .orElseThrow(() -> new RuntimeException("info not found with ID: " + userId));
+        return info;
+    }
+
+    public List<StoreReservationInfo> findVaildReservaion() {
+        Long userId = userService.getLoggedInUserId();
+        List<StoreReservationInfo> infos = storeResInfoRepo.findAllByUserId(userId);
+
+        List<StoreReservationInfo> newInfos = new ArrayList<>();
+        for(StoreReservationInfo info : infos) {
+            LocalDate date = info.getDate();
+            String timeStr = info.getTime();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    
+            LocalTime time = LocalTime.parse(timeStr, timeFormatter);
+    
+            LocalDateTime dateTimeFromDB = LocalDateTime.of(date, time);
+    
+            LocalDateTime currentDateTime = LocalDateTime.now();
+    
+            // 비교
+            if (dateTimeFromDB.isAfter(currentDateTime)) {
+                newInfos.add(info);
+            } 
+        }
+        
+
+        return newInfos;
+
+    }
+
 
 }
