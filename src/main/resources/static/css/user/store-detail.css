@@ -45,26 +45,17 @@
 
 #callAndReservation {
     display: flex;
-    margin-top: -5px;
-    /* 요소 간 여백 조정 */
-    font-size: 25px;
-    font-weight: bold;
+    margin-top: -19px;
+    gap: 115px;
+    font-size: 19px;
+    margin-left: 37px;
+    margin-bottom: -20px;
 }
 
-#middle {
-    overflow-y: auto;
-    /* 세로 스크롤 활성화 */
-    overflow-x: hidden;
-    flex-grow: 1;
-    /* middle div가 가능한 공간을 모두 차지하게 설정 */
-    padding: 14px;
-    height: 706px;
-    width: 621px;
-    padding-right: 23px;
-}
+
 
 hr {
-    width: 610px;
+    width: 630px;
 }
 
 .date-container {
@@ -95,14 +86,6 @@ hr {
     font-weight: bold;
 }
 
-#header {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    height: 95px;
-    background-color: white;
-    z-index: 1000;
-}
 
 .icon2 {
     cursor: pointer;
@@ -142,9 +125,10 @@ hr {
 .slider-container {
     position: relative;
     width: 100%;
-    max-width: 600px;
+    max-width: 630px;
     overflow: hidden;
-    margin: auto;
+    margin-top: 73px;
+    margin-left: 19px;
 }
 
 .slider {
@@ -192,4 +176,17 @@ hr {
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
+}
+#footer-button{
+    position: fixed;
+    bottom: 0;
+    width: 630px;
+    height: 70px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.menus_detail{
+    cursor: pointer;
+    color: gray;
 }

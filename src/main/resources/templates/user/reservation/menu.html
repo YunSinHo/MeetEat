@@ -104,14 +104,14 @@
 </head>
 
 <body>
-    <div class="container">
+    <!-- <div class="container">
         <div id="header"></div>
 
         <div id="h1">
             <h1>맛집 예약</h1>
             <hr style="position: relative;top: -14px;">
         </div>
-        <div id="middle">
+        <div id="middle"> -->
             <div id="mainMenu">
                 <h2>메인 메뉴</h2>
                 <form action="/reservation/payment/form" method="post">
@@ -121,12 +121,12 @@
                         <h4 id="menuName" th:text="${mainMenu.name}">메뉴 이름</h4>
                         <p id="cost" th:text="${mainMenu.cost} + '원'"></p>
                         <p id="composition" th:text="${mainMenu.composition}"></p>
-                        <div class="counter-container">
+                        <!-- <div class="counter-container">
                             <div class="counter-button" th:onclick="'mainDecrement(' + ${stat.index} + ')'">-</div>
                             <div class="counter-value" th:id="'mainCounter' + ${stat.index}">0</div>
                             <div class="counter-button" th:onclick="'mainIncrement(' + ${stat.index} + ')'">+</div>
                             <input type="hidden" th:id="'mainValue' + ${stat.index}" name="number" value="0">
-                        </div>
+                        </div> -->
                         <p id="menuInfo" th:text="${mainMenu.introduction}">
                         </p>
                         <img th:src="${mainMenu.imagePath}" alt="" id="menuImage">
@@ -142,25 +142,25 @@
                     <h4 id="menuName" th:text="${subMenu.name}" name="name">메뉴 이름</h4>
                     <p id="cost" th:text="${subMenu.cost} + '원'" name="cost"></p>
                     <p id="composition" th:text="${subMenu.composition}" name="composition"></p>
-                    <div class="counter-container">
+                    <!-- <div class="counter-container">
                         <div class="counter-button" th:onclick="'subDecrement(' + ${stat.index} + ')'">-</div>
                         <div class="counter-value" th:id="'subCounter' + ${stat.index}">0</div>
                         <div class="counter-button" th:onclick="'subIncrement(' + ${stat.index} + ')'">+</div>
                         <input type="hidden" th:id="'subValue' + ${stat.index}" name="number" value="0">
-                    </div>
+                    </div> -->
                     <p id="menuInfo" th:text="${subMenu.introduction}" name="introduction">
                     </p>
                     <img th:src="${subMenu.imagePath}" alt="" id="menuImage">
                     <hr id="choiceHr">
                 </div>
             </div>
-            <button type="submit" class="button-next">다 음</button>
+            <!-- <button type="submit" class="button-next">다 음</button>
             </form>
         </div>
 
         <div th:replace="user/footer" id="footer"></div>
 
-    </div>
+    </div> -->
 
 
 

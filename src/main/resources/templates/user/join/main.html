@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>예약 메인페이지</title>
+    <title>합석 메인페이지</title>
     <link rel="stylesheet" href="/css/user-main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -103,13 +103,21 @@
             /* mainHead와 middle div 사이의 간격 추가 */
         }
 
-       
+        #middle {
+            overflow-y: auto;
+            /* 세로 스크롤 활성화 */
+            overflow-x: hidden;
+            flex-grow: 1;
+            /* middle div가 가능한 공간을 모두 차지하게 설정 */
+            padding: 10px;
+            /* 여백 추가 */
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div th:replace="user/header" id="header"></div>
+        <div id="header"></div>
         <div id="mainHead">
 
             <p id="head">맛집 예약</p>
@@ -147,7 +155,7 @@
 
         <div id="middle">
             <div th:each="store, stat : ${stores}">
-                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}">
+                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}" >
                     <input type="hidden" name="storeId" th:value="${store.storeId}">
 
                 </form>
@@ -197,63 +205,7 @@
                      top: -412px;
                      width: 362px;
                      left: 86px;">
-
-                </div>
-            </div>
-
-
-            <div th:each="store, stat : ${stores}">
-                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}">
-                    <input type="hidden" name="storeId" th:value="${store.storeId}">
-
-                </form>
-                <div class="store" th:id="'store' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
-                    <input type="hidden" th:value="${store.isOpen}" th:id="'isOpen' + ${stat.index}">
-                    <img th:src="${store.storeImagePath}" alt="" style="width: 163px;
-                    height: 199px;
-                    border-radius: 0.5em; border: 1px solid black;">
-                    <p th:text="${store.storeName}" style="
-                    font-size: 26px;
-                    font-weight: bold;
-                    position: relative;
-                    top: -233px;
-                    left: 173px;"></p>
-                    <p th:text="${store.category}" style="    
-                    position: relative;
-                    top: -287px;
-                    left: 464px;
-                    color: slategray;"></p>
-                    <p th:text="${store.address}" style="
-                    position: relative;
-                    top: -261px;
-                    left: 175px;"></p>
-                    <p th:text="${store.rank}" style="
-                    position: relative;
-                    top: -329px;
-                    left: 203px;
-                    font-size: 22px;"></p>
-                    <p th:text="${store.heart}" style="
-                    position: relative;
-                    top: -377px;
-                    left: 262px;
-                    font-size: 22px;"></p>
-                    <img src="/images/star.png" alt="" style="     position: relative;
-                        top: -427px;
-
-                    left: 170px;
-                ">
-                    <img src="/images/heart.png" alt="" style="    position: relative;
-                        top: -431px;
-
-                    left: 205px;">
-
-
-                    <hr style="    color: gray;
-                     position: relative;
-                     top: -412px;
-                     width: 362px;
-                     left: 86px;">
-
+                    
                 </div>
             </div>
         </div>
@@ -268,12 +220,12 @@
         // 오픈시간 체크 후 블러 처리
         const stores = document.getElementsByClassName("store");
         function checkOpen(stores) {
-            for (let i = 0; i < stores.length; i++) {
+            for(let i = 0; i < stores.length; i++) {
                 const isOpen = document.getElementById("isOpen" + i);
-                if (isOpen.value === "false") {
+                if(isOpen.value === "false") {
                     document.getElementById("store" + i).style.opacity = "0.3";
                     document.getElementById("store" + i).stylepointerEvents = "none";
-                    document.getElementById("store" + i).style.cursor = "default";
+                    document.getElementById("store" + i).style.cursor = "default"; 
                 }
             }
         }
@@ -281,7 +233,7 @@
 
         // 주소 설정 클릭시 설정 페이지 이동
         const setAddress = document.getElementById("setAddress");
-        setAddress.addEventListener("click", function () {
+        setAddress.addEventListener("click", function(){
             window.location.href = "/user/address-set?goReserveMain=true"
         });
         let lastClickedCategory = localStorage.getItem('selectedCategory');

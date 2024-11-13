@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <div id="header"></div>
+        <div th:replace="user/header" id="header"></div>
         <div id="middle">
             <div id="banner">
                 <div class="slider-container">
@@ -25,7 +25,16 @@
                 </div>
 
             </div>
-            <h2 id="storeName" class="divWidth" th:text="${store.storeName}"></h2>
+            <div style="display: flex;">
+                <h2 id="storeName" class="divWidth" th:text="${store.storeName}"></h2>
+                <div style="display: flex;
+                width: 612px;
+                font-weight: bold;">
+                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;"><p>위치보기</p>
+                </div>
+                
+            </div>
+          
             <div id="location" class="divWidth">
                 <p th:text="${store.address}"></p>
             </div>
@@ -42,27 +51,21 @@
                 left: 15px;
                 font-weight: bold;
                 font-size: 21px;"></p>
-                <p style="position: relative;
-                top: -10px;
-                left: 34px;
-                color: darkgray;
-                cursor: pointer;">x개 리뷰&gt;</p>
             </div>
-            <hr style="position: relative; top: -20px;    left: -5px;">
+            <hr style="position: relative; top: -20px;">
             <div id="explain" class="divWidth">
                 <p id="explainText" th:text="${store.introduction}"></p>
                 <hr>
             </div>
             <div id="callAndReservation" class="divWidth">
-                <div style="cursor: pointer;">
-                    <img src="/images/phone.png" alt="" class="icon2" style="margin-left: 66px;">전화하기
-                </div>
-                <div style="cursor: pointer;top: 6px;position: relative;">
-                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">위치보기
-                </div>
+                <p class="menus_detail" onclick="clickMenus('pMenu')" id="pMenu" >메뉴</p>
+                <p class="menus_detail" onclick="clickMenus('pPicture')" id="pPicture">사진</p>
+                <p class="menus_detail" onclick="clickMenus('pReview')" id="pReview">리뷰</p>
+                <p class="menus_detail" onclick="clickMenus('pIntroduction')" id="pIntroduction">가게정보</p>
             </div>
-            <hr style="left: -5px;position: relative;">
-            <button type="button" id="dateBtn">날짜 선택</button>
+            <hr style="position: relative;">
+            <div th:replace="user/reservation/menu" id="menu"></div>
+            <!-- <button type="button" id="dateBtn">날짜 선택</button>
             <div class="month" id="calendarDiv">
                 <p id="selectedDate"></p>
                 <div id="calendarWrapper" style="display: none;">
@@ -76,6 +79,7 @@
                 <button class="next" id="scrollRight" onclick="handleScrollRight()"
                     style="display: block;right: -30px;">
                     &#10095;</button>
+                    
             </div>
             <div id="tableNumber" class="divWidth">
                 <div id="tableContainer" class="tableContainer">
@@ -88,30 +92,33 @@
                         <input type="hidden" value="twoTable" id="twoTable">
                     </div>
                     <div class="table" id="table2">
-                        <p id="pTable2" ></p>
-                        <input type="hidden" value="fourTable" id="fourTable">
+                        <p id="pTable2" ></p> -->
+                        <!-- <input type="hidden" value="fourTable" id="fourTable">
                     </div>
                     <div class="table" id="table3">
                         <p id="pTable3"></p>
                         <input type="hidden" value="partyTable" id="partyTable">
                     </div>
                 </div>
-            </div>
-            <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
-            <form action="/reservation/choice-menu/form" method="post" id="form">
                 
-                <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
-                <input type="hidden" id="date" name="date">
-                <input type="hidden" id="table" name="table">
-                <input type="hidden" id="time" name="time">
-                <input type="hidden" th:value="${store.storeName}" name="storeName">
-                <button type="submit" id="submitBtn" class="button-next" >다 음</button>
-            </form>
+            </div>
+            
+            <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
+            
 
-        </div>
+        </div> -->
+        <div id="footer-button">
+        <form action="/reservation/choice-menu/form" method="post" id="form">
+                
+            <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+            <input type="hidden" id="date" name="date">
+            <input type="hidden" id="table" name="table">
+            <input type="hidden" id="time" name="time">
+            <input type="hidden" th:value="${store.storeName}" name="storeName">
+            <button type="submit" id="submitBtn" class="button-next" >다 음</button>
+        </form>
         
-        <div th:replace="user/footer" id="footer"></div>
-        
+    </div>
     </div>
    
     
@@ -123,6 +130,23 @@
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script src="/js/store-detail.js"></script>
     <script>
+        const menus = document.getElementsByClassName("menus_detail");
+        let preMenu;
+        document.addEventListener('DOMContentLoaded', function(){
+            document.getElementById("pMenu").click();
+        });
+        function clickMenus(id) {
+            if(preMenu) {
+                preMenu.style.borderBottom = '1px solid white';
+                preMenu.style.color = 'gray';
+            }
+            preMenu = document.getElementById(id)
+            document.getElementById(id).style.borderBottom = '3px solid black';
+            document.getElementById(id).style.color = 'black';
+        }
+            
+           
+
         document.getElementById("dateBtn").addEventListener('click', function () {
             document.getElementById("calendarWrapper").style.display = 'block';
         });
