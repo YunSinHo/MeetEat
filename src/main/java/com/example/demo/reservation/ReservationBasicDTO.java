@@ -15,8 +15,6 @@ public class ReservationBasicDTO {
     private String date;
     private String time;
     private String table;
-    private Integer totalCost;
     private String category;
-    private Map<String, Integer> reservedMenu;
 
 }

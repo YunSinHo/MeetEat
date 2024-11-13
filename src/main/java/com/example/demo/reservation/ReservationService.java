@@ -32,19 +32,17 @@ public class ReservationService {
     private final UserService userService;
 
     private final StoreResInfoRepo storeResInfoRepo;
-    private final StoreResMenuRepo storeResMenuRepo;
     
 
     
     
 
     public ReservationService(OwnerService ownerService, StoreService storeSerivce, UserService userService,
-    @Lazy ManagementService managementService, StoreResMenuRepo storeResMenuRepo, StoreResInfoRepo storeResInfoRepo) {
+    @Lazy ManagementService managementService, StoreResInfoRepo storeResInfoRepo) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
         this.managementService = managementService;
         this.storeResInfoRepo = storeResInfoRepo;
-        this.storeResMenuRepo = storeResMenuRepo;
         this.userService = userService;
     }
 
@@ -303,27 +301,13 @@ public class ReservationService {
         
         StoreReservationInfo info = new StoreReservationInfo();
         info.setDate(LocalDate.parse(reservationBasicDTO.getDate()));
-        info.setFinalPayment(finalPayment);
         info.setIsComplete(false);
         info.setIsJoin(Boolean.parseBoolean(isJoin));
         info.setStoreId(Long.parseLong(reservationBasicDTO.getStoreId()));
         info.setTime(reservationBasicDTO.getTime());
-        info.setTotalCost(String.valueOf(reservationBasicDTO.getTotalCost()));
         info.setUserId(userService.getLoggedInUserId());
         info.setStoreName(reservationBasicDTO.getStoreName());
         storeResInfoRepo.save(info);
-
-        StoreReservationInfo newInfo = getStoreResInfo(info.getDate(), info.getTime(), info.getUserId());
-        Long infoId = newInfo.getInfoId();
-        for(String menu : reservationBasicDTO.getReservedMenu().keySet()) {
-            StoreReservationMenu SRM = new StoreReservationMenu();
-            SRM.setInfoId(infoId);
-            SRM.setMenuName(menu);
-            SRM.setQuantity(String.valueOf(reservationBasicDTO.getReservedMenu().get(menu)));
-            storeResMenuRepo.save(SRM);
-        }
-        
-
         return true;
     }
     // 예약 내역 가져오기

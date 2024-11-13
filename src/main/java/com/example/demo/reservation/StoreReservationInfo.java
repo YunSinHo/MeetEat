@@ -31,18 +31,11 @@ public class StoreReservationInfo {
     @Column(name = "store_name")
     private String storeName;
 
-
     @Column(name = "date")
     private LocalDate date;
 
     @Column(name = "time")
     private String time;
-
-    @Column(name = "total_cost")
-    private String totalCost;
-
-    @Column(name = "final_payment")
-    private String finalPayment;
 
     @Column(name = "is_complete")
     private Boolean isComplete = false;

@@ -30,11 +30,12 @@
                 <div style="display: flex;
                 width: 612px;
                 font-weight: bold;">
-                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;"><p>위치보기</p>
+                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">
+                    <p>위치보기</p>
                 </div>
-                
+
             </div>
-          
+
             <div id="location" class="divWidth">
                 <p th:text="${store.address}"></p>
             </div>
@@ -58,13 +59,16 @@
                 <hr>
             </div>
             <div id="callAndReservation" class="divWidth">
-                <p class="menus_detail" onclick="clickMenus('pMenu')" id="pMenu" >메뉴</p>
+                <p class="menus_detail" onclick="clickMenus('pMenu')" id="pMenu">메뉴</p>
                 <p class="menus_detail" onclick="clickMenus('pPicture')" id="pPicture">사진</p>
                 <p class="menus_detail" onclick="clickMenus('pReview')" id="pReview">리뷰</p>
                 <p class="menus_detail" onclick="clickMenus('pIntroduction')" id="pIntroduction">가게정보</p>
             </div>
-            <hr style="position: relative;">
-            <div th:replace="user/reservation/menu" id="menu"></div>
+            <hr style="position: relative;" id="hr_">
+            <div th:include ="user/reservation/menu" id="menu" style="display: none;"></div>
+            <div th:include ="user/reservation/picture" id="picture" style="display: none;"></div>
+            <div th:include ="user/reservation/review" id="review" style="display: none;"></div>
+            <div th:include ="user/reservation/introduction" id="introduction" style="display: none;"></div>
             <!-- <button type="button" id="dateBtn">날짜 선택</button>
             <div class="month" id="calendarDiv">
                 <p id="selectedDate"></p>
@@ -93,7 +97,7 @@
                     </div>
                     <div class="table" id="table2">
                         <p id="pTable2" ></p> -->
-                        <!-- <input type="hidden" value="fourTable" id="fourTable">
+            <!-- <input type="hidden" value="fourTable" id="fourTable">
                     </div>
                     <div class="table" id="table3">
                         <p id="pTable3"></p>
@@ -107,59 +111,105 @@
             
 
         </div> -->
-        <div id="footer-button">
-        <form action="/reservation/choice-menu/form" method="post" id="form">
-                
-            <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
-            <input type="hidden" id="date" name="date">
-            <input type="hidden" id="table" name="table">
-            <input type="hidden" id="time" name="time">
-            <input type="hidden" th:value="${store.storeName}" name="storeName">
-            <button type="submit" id="submitBtn" class="button-next" >다 음</button>
-        </form>
-        
-    </div>
-    </div>
-   
-    
-    
-   
-    <script src="/js/user-nav.js"></script>
-    <script src="/js/map.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
-    <script src="/js/store-detail.js"></script>
-    <script>
-        const menus = document.getElementsByClassName("menus_detail");
-        let preMenu;
-        document.addEventListener('DOMContentLoaded', function(){
-            document.getElementById("pMenu").click();
-        });
-        function clickMenus(id) {
-            if(preMenu) {
-                preMenu.style.borderBottom = '1px solid white';
-                preMenu.style.color = 'gray';
-            }
-            preMenu = document.getElementById(id)
-            document.getElementById(id).style.borderBottom = '3px solid black';
-            document.getElementById(id).style.color = 'black';
-        }
-            
-           
+            <div id="footer-button">
+                <form action="/reservation/choice-date/form" method="post" id="form">
 
-        document.getElementById("dateBtn").addEventListener('click', function () {
-            document.getElementById("calendarWrapper").style.display = 'block';
-        });
-        document.getElementById("submitBtn").addEventListener('click', function(event){
-            event.preventDefault();
-            if(document.getElementById("table").value === "" || document.getElementById("table").value === null) {
-                alert("테이블을 선택해주세요.");
-                return;
-            } else {
-                document.getElementById("form").submit();
+                    <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                    <input type="hidden" id="date" name="date">
+                    <input type="hidden" id="table" name="table">
+                    <input type="hidden" id="time" name="time">
+                    <input type="hidden" th:value="${store.storeName}" name="storeName">
+                    <button type="submit" id="submitBtn" class="button-next">날짜 & 시간정하기</button>
+                </form>
+
+            </div>
+        </div>
+
+
+
+
+        <script src="/js/user-nav.js"></script>
+        <script src="/js/map.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+        <script src="/js/store-detail.js"></script>
+        <script>
+            const menus = document.getElementsByClassName("menus_detail");
+            let preMenu;
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById("pMenu").click();
+            });
+            function clickMenus(id) {
+                if (preMenu) {
+                    preMenu.style.borderBottom = '1px solid white';
+                    preMenu.style.color = 'gray';
+                }
+                preMenu = document.getElementById(id)
+                document.getElementById(id).style.borderBottom = '3px solid black';
+                document.getElementById(id).style.color = 'black';
+                if (id === 'pMenu') {
+                    getMenu(document.getElementById("storeId").value);
+                } else if (id === 'pPicture') {
+                    getPicture(document.getElementById("storeId").value);
+                } else if (id === 'pReview') {
+                    getReview(document.getElementById("storeId").value);
+                } else if (id === 'pIntroduction') {
+                    getIntroduction(document.getElementById("storeId").value);
+                }
+
             }
-        });
-    </script>
+            let prevDiv;
+            function getMenu(storeId) {
+                $.ajax({
+                    url: "/reservation/menu/form",
+                    type: "post",
+                    data: { storeId: storeId },
+                    success: function (success) {
+                        if (prevDiv) {
+                            prevDiv.style.display = 'none';
+                        }
+                        prevDiv = document.getElementById("menu");
+                        document.getElementById("menu").style.display = 'block';
+                    }
+                });
+            }
+            function getPicture(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("picture");
+                document.getElementById("picture").style.display = 'block';
+            }
+            function getReview(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("review");
+                document.getElementById("review").style.display = 'block';
+            }
+            function getIntroduction(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("introduction");
+                document.getElementById("introduction").style.display = 'block';
+            }
+
+
+
+            document.getElementById("dateBtn").addEventListener('click', function () {
+                document.getElementById("calendarWrapper").style.display = 'block';
+            });
+            document.getElementById("submitBtn").addEventListener('click', function (event) {
+                event.preventDefault();
+                if (document.getElementById("table").value === "" || document.getElementById("table").value === null) {
+                    alert("테이블을 선택해주세요.");
+                    return;
+                } else {
+                    document.getElementById("form").submit();
+                }
+            });
+        </script>
 </body>
 
 </html>

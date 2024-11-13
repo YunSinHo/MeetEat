@@ -125,6 +125,22 @@ public class ReservationController {
         model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
         model.addAttribute("store", store);
 
+
+        // 메뉴 데이터
+        List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(storeId));
+        List<StoreMenu> mainMenu = new ArrayList<>();
+        List<StoreMenu> subMenu = new ArrayList<>();
+        if (menus.isEmpty())
+            menus = new ArrayList<>();
+
+        for (StoreMenu menu : menus) {
+            if (menu.getIsMain() == true)
+                mainMenu.add(menu);
+            else
+                subMenu.add(menu);
+        }
+        model.addAttribute("mainMenu", mainMenu);
+        model.addAttribute("subMenu", subMenu);
         return "user/reservation/store-detail";
     }
 
@@ -145,12 +161,12 @@ public class ReservationController {
         return ResponseEntity.ok(timeMap);
     }
 
-    // 메뉴 고르는 페이지
-    @PostMapping("/choice-menu/form")
-    public String choiceMenuForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
-        session.setAttribute("ReservationBasicDTO", dto);
-        model.addAttribute("reservationBasic", dto);
-        List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(dto.getStoreId()));
+    // 메뉴 가져오기
+    @PostMapping("/choice-date/form")
+    public ResponseEntity<String> menuForm(@RequestParam("storeId")String storeId, HttpSession session, Model model) {
+        // session.setAttribute("ReservationBasicDTO", dto);
+        System.out.println("아이디:" + storeId);
+        List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(storeId));
         List<StoreMenu> mainMenu = new ArrayList<>();
         List<StoreMenu> subMenu = new ArrayList<>();
         if (menus.isEmpty())
@@ -165,22 +181,17 @@ public class ReservationController {
         model.addAttribute("mainMenu", mainMenu);
         model.addAttribute("subMenu", subMenu);
 
-        return "user/reservation/menu-choice";
+        return ResponseEntity.ok("success");
     }
 
     // 최종 결제 페이지
     @PostMapping("/payment/form")
     public String paymentForm(@RequestParam("storeMenuId") List<Long> storeMenuId,
             @RequestParam("number") List<String> number, HttpSession session, Model model) {
-
+            
         ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
         StoreCombineDTO store = reservationService
                 .getStoreInformation(Long.parseLong(reservationBasicDTO.getStoreId()));
-
-        Integer totalCost = reservationService.getTotalCost(storeMenuId, number);
-        Map<String, Integer> menu = reservationService.getReservedMenu(storeMenuId, number);
-        reservationBasicDTO.setTotalCost(totalCost);
-        reservationBasicDTO.setReservedMenu(new HashMap<>(menu));
         model.addAttribute("reservation", reservationBasicDTO);
         model.addAttribute("store", store);
         return "user/reservation/payment";
