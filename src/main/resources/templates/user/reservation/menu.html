@@ -114,7 +114,6 @@
         <div id="middle"> -->
             <div id="mainMenu">
                 <h2>메인 메뉴</h2>
-                <form action="/reservation/payment/form" method="post">
                     <hr style="border: none;border-top: 2px solid rgb(189, 189, 189); ">
                     <div id="menus" th:each="mainMenu, stat : ${mainMenu}">
                         <input type="hidden" th:value="${mainMenu.storeMenuId}" name="storeMenuId">
@@ -142,25 +141,14 @@
                     <h4 id="menuName" th:text="${subMenu.name}" name="name">메뉴 이름</h4>
                     <p id="cost" th:text="${subMenu.cost} + '원'" name="cost"></p>
                     <p id="composition" th:text="${subMenu.composition}" name="composition"></p>
-                    <!-- <div class="counter-container">
-                        <div class="counter-button" th:onclick="'subDecrement(' + ${stat.index} + ')'">-</div>
-                        <div class="counter-value" th:id="'subCounter' + ${stat.index}">0</div>
-                        <div class="counter-button" th:onclick="'subIncrement(' + ${stat.index} + ')'">+</div>
-                        <input type="hidden" th:id="'subValue' + ${stat.index}" name="number" value="0">
-                    </div> -->
+            
                     <p id="menuInfo" th:text="${subMenu.introduction}" name="introduction">
                     </p>
                     <img th:src="${subMenu.imagePath}" alt="" id="menuImage">
                     <hr id="choiceHr">
                 </div>
             </div>
-            <!-- <button type="submit" class="button-next">다 음</button>
-            </form>
-        </div>
-
-        <div th:replace="user/footer" id="footer"></div>
-
-    </div> -->
+   
 
 
 

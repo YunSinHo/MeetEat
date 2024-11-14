@@ -1,7 +1,9 @@
 .calendar {
-    width: 300px;
-    padding: 20px;
+    width: 628px;
     border: 1px solid #ddd;
+    height: 436px;
+    margin-top: 62px;
+
 }
 .header {
     display: flex;
@@ -9,10 +11,10 @@
     align-items: center;
     margin-bottom: 10px;
 }
-.today {
+/* .today {
     color: #ff5a5a;
     font-weight: bold;
-}
+} */
 .month-year {
     font-size: 1.2em;
 }
@@ -26,7 +28,7 @@
     color: #aaa;
 }
 .day {
-    padding: 10px;
+    padding: 26px;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -34,10 +36,10 @@
     color: #ddd;
     cursor: default;
 }
-.day.today {
+/* .day.today {
     background-color: #ff5a5a;
     color: white;
-}
+} */
 .day.clickable:hover {
     background-color: #ff5a5a;
     color: white;
@@ -48,4 +50,9 @@
     cursor: pointer;
     font-size: 1.5em;
     color: #ff5a5a;
+}
+.day.selected {
+    background-color: #ff5a5a;
+    color: white;
+    font-weight: bold;
 }

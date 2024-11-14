@@ -34,15 +34,14 @@ public class StoreReservationInfo {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "returnable_date")
+    private LocalDate returnableDate;
+
     @Column(name = "time")
     private String time;
 
     @Column(name = "is_complete")
     private Boolean isComplete = false;
-
-    @Column(name = "is_join")
-    private Boolean isJoin = false;
-
 
     public StoreReservationInfo(){}
 }

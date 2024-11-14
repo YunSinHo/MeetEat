@@ -297,12 +297,12 @@ public class ReservationService {
 
     // 예약 내역 데이터베이스 저장
     @Transactional
-    public boolean saveReservation(String finalPayment, String isJoin, ReservationBasicDTO reservationBasicDTO) {
+    public boolean saveReservation(String returnableDate, ReservationBasicDTO reservationBasicDTO) {
         
         StoreReservationInfo info = new StoreReservationInfo();
         info.setDate(LocalDate.parse(reservationBasicDTO.getDate()));
+        info.setReturnableDate(LocalDate.parse(returnableDate));
         info.setIsComplete(false);
-        info.setIsJoin(Boolean.parseBoolean(isJoin));
         info.setStoreId(Long.parseLong(reservationBasicDTO.getStoreId()));
         info.setTime(reservationBasicDTO.getTime());
         info.setUserId(userService.getLoggedInUserId());

@@ -17,6 +17,7 @@ import com.example.demo.owner.store.management.menu.StoreMenu;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -124,8 +125,6 @@ public class ReservationController {
         System.out.println("사진 개수 : " + store.getStoreImages().size());
         model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
         model.addAttribute("store", store);
-
-
         // 메뉴 데이터
         List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(storeId));
         List<StoreMenu> mainMenu = new ArrayList<>();
@@ -147,8 +146,23 @@ public class ReservationController {
     // 선택한 날짜 뷰에 저장
     @PostMapping("/choice-date")
     public ResponseEntity<String> choiceDate(@RequestParam("date") String date,
-            @RequestParam("storeId") String storeId) {
+            @RequestParam("storeId") String storeId, Model model) {
         System.out.println("선택한 날짜: " + date + " id : " + storeId);
+        Long id = Long.parseLong(storeId);
+        StoreCombineDTO store = reservationService.getStoreInformation(id);
+        List<String> reservationTimes = reservationService.getReservationTime(store.getStartTime(), store.getEndTime());
+        // ObjectMapper를 사용하여 List<String>을 JSON 문자열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String reservationTimesJson = null;
+        try {
+            reservationTimesJson = objectMapper.writeValueAsString(reservationTimes);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // 예외 처리
+        }
+
+        System.out.println("사진 개수 : " + store.getStoreImages().size());
+        model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
+        model.addAttribute("store", store);
         return ResponseEntity.ok(date);
     }
 
@@ -161,49 +175,66 @@ public class ReservationController {
         return ResponseEntity.ok(timeMap);
     }
 
-    // 메뉴 가져오기
+    // 날짜 & 시간 선택
     @PostMapping("/choice-date/form")
-    public ResponseEntity<String> menuForm(@RequestParam("storeId")String storeId, HttpSession session, Model model) {
-        // session.setAttribute("ReservationBasicDTO", dto);
-        System.out.println("아이디:" + storeId);
-        List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(storeId));
-        List<StoreMenu> mainMenu = new ArrayList<>();
-        List<StoreMenu> subMenu = new ArrayList<>();
-        if (menus.isEmpty())
-            menus = new ArrayList<>();
+    public String menuForm(@RequestParam("storeId") String storeId, HttpSession session, Model model) {
 
-        for (StoreMenu menu : menus) {
-            if (menu.getIsMain() == true)
-                mainMenu.add(menu);
-            else
-                subMenu.add(menu);
+        Long id = Long.parseLong(storeId);
+        StoreCombineDTO store = reservationService.getStoreInformation(id);
+        List<String> reservationTimes = reservationService.getReservationTime(store.getStartTime(), store.getEndTime());
+        // ObjectMapper를 사용하여 List<String>을 JSON 문자열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String reservationTimesJson = null;
+        try {
+            reservationTimesJson = objectMapper.writeValueAsString(reservationTimes);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // 예외 처리
         }
-        model.addAttribute("mainMenu", mainMenu);
-        model.addAttribute("subMenu", subMenu);
 
-        return ResponseEntity.ok("success");
-    }
-
-    // 최종 결제 페이지
-    @PostMapping("/payment/form")
-    public String paymentForm(@RequestParam("storeMenuId") List<Long> storeMenuId,
-            @RequestParam("number") List<String> number, HttpSession session, Model model) {
-            
-        ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
-        StoreCombineDTO store = reservationService
-                .getStoreInformation(Long.parseLong(reservationBasicDTO.getStoreId()));
-        model.addAttribute("reservation", reservationBasicDTO);
+        System.out.println("사진 개수 : " + reservationTimesJson);
+        model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
         model.addAttribute("store", store);
-        return "user/reservation/payment";
+
+        return "user/reservation/date-select";
+    }
+    // @PostMapping("/choice-date/form")
+    // public ResponseEntity<String> menuForm(@RequestParam("storeId")String
+    // storeId, HttpSession session, Model model) {
+    // // session.setAttribute("ReservationBasicDTO", dto);
+
+    // return ResponseEntity.ok("success");
+    // }
+
+    // 최종 예약 페이지
+    @PostMapping("/reservation-confirm/form")
+    public String paymentForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
+        session.setAttribute("reservationDTO", dto);
+        LocalDate returnableDate = LocalDate.parse(dto.getDate()).minusDays(1);
+        StoreCombineDTO store = reservationService
+                .getStoreInformation(Long.parseLong(dto.getStoreId()));
+        String table = "";
+        if (dto.getTable().equals("oneTable"))
+            table = "1인";
+        else if (dto.getTable().equals("twoTable"))
+            table = "2인";
+        else if (dto.getTable().equals("fourTable"))
+            table = "4인";
+        else if (dto.getTable().equals("partyTable"))
+            table = "단체";
+        model.addAttribute("table", table);
+        model.addAttribute("returnableDate", returnableDate);
+        model.addAttribute("reservation", dto);
+        model.addAttribute("store", store);
+        return "user/reservation/reservation-confirm";
     }
 
     // 예약 내역 db저장
     @PostMapping("/reservation-save")
     @Transactional
-    public String saveReservation(@RequestParam("finalPayment") String finalPayment,
-            @RequestParam("isJoin") String isJoin, HttpSession session) {
-        ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("ReservationBasicDTO");
-        boolean isSave = reservationService.saveReservation(finalPayment, isJoin, reservationBasicDTO);
+    public String saveReservation(@RequestParam("returnableDate") String returnableDate,
+     HttpSession session) {
+        ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("reservationDTO");
+        boolean isSave = reservationService.saveReservation(returnableDate, reservationBasicDTO);
         srdService.updateReservationTable(reservationBasicDTO);
         return "redirect:/reservation/status";
     }
@@ -216,6 +247,5 @@ public class ReservationController {
 
         return "user/reservation/status";
     }
-    
 
 }

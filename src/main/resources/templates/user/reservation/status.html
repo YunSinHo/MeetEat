@@ -63,7 +63,6 @@
             <div class="status_container" th:each="status, stat : ${status}">
                 <div th:id="'status' + ${stat.index}" class="status_inner">
                     <h3 th:text="${status.storeName}"></h3>
-                    <p th:text="${status.totalCost} + '원'"></p>
                     <div class="date_time">
                         <p th:text="${status.date}"></p>&nbsp;<p th:text="${status.time}"></p>
                     </div>
