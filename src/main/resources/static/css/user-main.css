@@ -63,6 +63,7 @@ header {
     border-radius: 5px;
     box-sizing: border-box;
     text-align: left;
+    top: 86px;
 }
 .button-next {
     width: 100%;
@@ -92,7 +93,34 @@ header {
     height: 50px;
     border-radius: 50%;
 }
+#go_back {
+    font-size: 35px;
+    border: none;
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+    top: 63px;
+    left: -296px;
+    position: relative;
+    z-index: 10;
+}
+.headerText {
+    text-align: center;
+    margin-bottom: -10px;
 
+}
+.headerText h1{
+    text-align: center;
+}
+
+.headerText hr {
+    margin-top: -21px;
+}
+.intro{
+    background-color: orange;
+    color: white;
+    text-align: center;
+}
 
 
 

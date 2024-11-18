@@ -7,9 +7,8 @@
     <title>유저 메인페이지</title>
     <link rel="stylesheet" href="/css/user-main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <style>
 
+    <style>
         .main-go {
             font-weight: bold;
             color: black;
@@ -27,11 +26,10 @@
 
 
         #reservation {
-
             position: relative;
-            top: -227px;
-            left: 10px;
+            left: 22px;
             z-index: 1;
+            margin-top: 56px;
         }
 
         #reservation::before {
@@ -51,7 +49,6 @@
         #join {
             z-index: 1;
             position: relative;
-            top: -227px;
             left: 35px;
         }
 
@@ -72,10 +69,8 @@
         #map_template {
             width: 591px;
             height: 460px;
-            position: absolute;
             border: 1px solid black;
-            top: 344px;
-            left: 50px;
+            margin-left: 16px;
         }
 
         #map {
@@ -85,23 +80,32 @@
             z-index: 2;
             /* z-index를 높여서 다른 요소 위에 표시되도록 함 */
         }
+
+        #d-1 {
+            position: relative;
+            top: 51px;
+            background: orange;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div id="header"></div>
+        <div th:replace="~{user/header}" id="header"></div>
+        <div id="d-1">
+            <h3>예약임박</h3>
+        </div>
         <div id="middle">
             <a href="/reservation/main" class="main-go" id="reservation">맛집 예약</a>
 
             <a href="/join/main" class="main-go" id="join">합석</a>
 
-            <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="position: relative;
-            top: -220px;
+            <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="
             width: 586px;
-            left: 12px;">
+            margin-top: 10px;
+            margin-left: 19px;">
             <button type="button" id="searchButton" style="position: relative;
-            top: -258px;
+               top: -37px;
             left: 547px;
             border: none;
             background-color: white;
@@ -143,7 +147,7 @@
                         position: new naver.maps.LatLng(data.lat, data.lng),
                         map: map
                     });
-                    
+
 
                     // 정보 윈도우 생성
                     const infoWindow = new naver.maps.InfoWindow({
@@ -158,7 +162,7 @@
             })
             .catch(error => console.error('Error:', error));
 
-            setTimeout(function () {
+        setTimeout(function () {
             console.log("Document is ready!"); // 이 로그가 출력되는지 확인
             $.ajax({
                 url: '/user-profile/main-image',

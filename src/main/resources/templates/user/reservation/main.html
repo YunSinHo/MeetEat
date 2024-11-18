@@ -149,7 +149,7 @@
             <div th:each="store, stat : ${stores}">
                 <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}">
                     <input type="hidden" name="storeId" th:value="${store.storeId}">
-
+                    <input type="hidden" name="isJoin" th:value="${isJoin}">
                 </form>
                 <div class="store" th:id="'store' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
                     <input type="hidden" th:value="${store.isOpen}" th:id="'isOpen' + ${stat.index}">

@@ -7,26 +7,7 @@
     <title>주소 설정</title>
     <link rel="stylesheet" href="/css/user-main.css">
     <style>
-        #go_back {
-            font-size: 35px;
-            border: none;
-            background-color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        h3 {
-            font-size: 30px;
-            position: relative;
-            top: -72px;
-            left: 253px;
-        }
-
-        #middle {
-            position: absolute;
-            top: 91px;
-
-        }
+    
 
         .result-item {
             /* 밑으로 10px 간격 */
@@ -55,7 +36,8 @@
         p {
             margin: 0px;
         }
-        .address_name{
+
+        .address_name {
             font-size: 19px;
         }
     </style>
@@ -64,10 +46,13 @@
 <body>
     <div class="container">
 
-        <div id="header"></div>
+        <div th:replace="~{user/header}" id="header"></div>
         <div id="middle">
-            <button id="go_back" onclick="goBack();">&lt;</button>
-            <h3>주소 검색</h3>
+            <div class="headerText">
+                <button id="go_back" onclick="goBack();">&lt;</button>
+                <h1>주소 검색</h1>
+                <hr>
+            </div>
             <div id="search" style="position: relative;
             width: 615px;
         top: -93px;
@@ -75,7 +60,7 @@
                 <input type="text" id="addressInput" class="input" style="position: relative;">
                 <button type="button" id="searchButton" style="position: relative;
                 left: 560px;
-                top: -38px;
+                top: 44px;
                 border: none;
                 background-color: white;
                 font-weight: bold;
@@ -85,18 +70,19 @@
             </div>
             <div style="overflow-y: auto;
             overflow-x: hidden;height: 483px;">
-                <div id="searchResults" style="position: absolute; top: 106px; border: 2px solid black;width: 611px;
+                <div id="searchResults" style="border: 2px solid black;width: 611px;
                 border-radius: 0.4em;"></div>
                 <hr>
                 <div id="user_address" th:each="address , stat : ${addresses}" class="user_addr">
                     <form action="/user/map/change-active" method="post" th:id="'form_' + ${stat.index}">
                         <div th:id="'submitDiv_' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'"
                             class="address_container">
-                            <p th:text="${address.name}" th:id="'name' + ${stat.index}" class="address_name"></p>&ensp;&ensp;
+                            <p th:text="${address.name}" th:id="'name' + ${stat.index}" class="address_name"></p>
+                            &ensp;&ensp;
                             <p th:id="'active' + ${stat.index}" style="display: none;
                             top: -2px;
                             position: relative;
-                            width: 121px;
+                            width: 125px;
                             background-color: lightskyblue;
                             font-weight: bold;
                             color: darkorange;">현재
@@ -121,7 +107,7 @@
     <script src="/js/map.js"></script>
     <script>
 
-        function goBack(){
+        function goBack() {
             history.back();
         }
         function submitForm(index) {

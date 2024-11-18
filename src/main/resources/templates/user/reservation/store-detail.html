@@ -69,16 +69,25 @@
             <div th:include="user/reservation/picture" id="picture" style="display: none;"></div>
             <div th:include="user/reservation/review" id="review" style="display: none;"></div>
             <div th:include="user/reservation/introduction" id="introduction" style="display: none;"></div>
-           
-            <div id="footer-button">
-                <form action="/reservation/choice-date/form" method="post" id="form">
-                    <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
-                    <button type="submit" id="submitBtn" class="button-next">날짜 & 시간정하기</button>
-                </form>
 
+            <div id="footer-button">
+                <div id="buttonInner">
+                    <form action="/reservation/choice-date/form" method="post" id="form">
+                        <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                        <button type="submit" id="submitBtn" class="button-next">날짜 & 시간정하기</button>
+                    </form>
+                </div>
+                <div id="buttonInner2">
+                    <form action="/join/join-confirm/form" method="post" id="form2">
+                        <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                        <button type="submit" id="reserveBtn" class="button-next">합석 글쓰기</button>
+                    </form>
+                </div>
+                
             </div>
         </div>
-
+    </div>
+        <input type="hidden" th:value="${isJoin}" id="isJoin">
 
 
 
@@ -88,6 +97,13 @@
         <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
         <script src="/js/store-detail.js"></script>
         <script>
+                     document.addEventListener('DOMContentLoaded', function () {
+                if (document.getElementById("isJoin").value === 'true') {
+                    document.getElementById("buttonInner2").style.display = 'block';
+                    document.getElementById("buttonInner").style.display = 'none';
+                }
+
+            });
             const menus = document.getElementsByClassName("menus_detail");
             let preMenu;
             document.addEventListener('DOMContentLoaded', function () {

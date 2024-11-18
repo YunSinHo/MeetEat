@@ -9,32 +9,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/user/store-detail.css">
     <style>
-        .headerText {
-            text-align: center;
-            color: orange;
-            margin-top: -23px;
-            margin-bottom: -10px;
-
-        }
-
-        .headerText hr {
-            margin-top: -21px;
-        }
-
         .status_container {
-            border: 1px solid black;
-            margin-top: -2px;
-            width: 587px;
+            margin-top: -29px;
+            width: 630px;
             border-radius: 0.8em;
         }
 
         .date_time {
-            display: flex;
+            color: goldenrod;
+            font-weight: bold;
+            font-size: 33px;
+            text-align: center;
         }
 
         .detail_cancel_button {
             display: flex;
-            gap: 79px;
+            gap: 132px;
         }
 
         #detailButton,
@@ -54,24 +44,33 @@
 
 <body>
     <div class="container">
-        <div id="header"></div>
+        <div th:replace="~{user/header}" id="header"></div>
         <div class="headerText">
+            <button id="go_back" onclick="goBack();">&lt;</button>
             <h1>예약현황</h1>
             <hr>
+        </div>
+        <div class="intro">
+            <h3>예약하신 시간으로부터 '30분' 이내에 입장 부탁드립니다.</h3>
+            <p>'노쇼'발생 시 패널티가 부과될 수 있으니 예약 시간을 꼭 지켜주세요.</p>
         </div>
         <div id="middle">
             <div class="status_container" th:each="status, stat : ${status}">
                 <div th:id="'status' + ${stat.index}" class="status_inner">
-                    <h3 th:text="${status.storeName}"></h3>
                     <div class="date_time">
-                        <p th:text="${status.date}"></p>&nbsp;<p th:text="${status.time}"></p>
+                        <p th:text="${status.date}"></p>
+                        <p th:text="${status.time}"></p>
                     </div>
+                    <h2 th:text="${status.storeName}" style="text-align: center;"></h2>
+
                     <div class="detail_cancel_button">
                         <button type="button" id="detailButton">상세보기</button>
                         <button type="button" id="cancelButton">예약취소</button>
                     </div>
                 </div>
+                <hr>
             </div>
+            
 
 
         </div>

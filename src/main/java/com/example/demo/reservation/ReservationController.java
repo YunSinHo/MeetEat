@@ -50,7 +50,7 @@ public class ReservationController {
 
     // 예약 메인페이지
     @GetMapping("/main")
-    public String mainReservation(Model model) {
+    public String mainReservation(Model model, @RequestParam(value = "isJoin", required = false) Boolean isJoin) {
         List<StoreCombineDTO> stores = reservationService.getStoreInformation();
         List<UserAddress> addresses = addressService.getUserAddress();
         try {
@@ -74,6 +74,8 @@ public class ReservationController {
             address.setName("주소를 설정해주세요");
             model.addAttribute("address", address);
         }
+        System.out.println("조인" + isJoin);
+        model.addAttribute("isJoin", isJoin);
         model.addAttribute("stores", stores);
 
         return "user/reservation/main";
@@ -109,21 +111,10 @@ public class ReservationController {
     // 가게 클릭시 내부 페이지
 
     @PostMapping("/store-detail/form")
-    public String storeDetailForm(@RequestParam("storeId") String storeId, Model model) {
+    public String storeDetailForm(@RequestParam("storeId") String storeId, Model model,
+            @RequestParam(value = "isJoin", required = false) Boolean isJoin) {
         Long id = Long.parseLong(storeId);
         StoreCombineDTO store = reservationService.getStoreInformation(id);
-        List<String> reservationTimes = reservationService.getReservationTime(store.getStartTime(), store.getEndTime());
-        // ObjectMapper를 사용하여 List<String>을 JSON 문자열로 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        String reservationTimesJson = null;
-        try {
-            reservationTimesJson = objectMapper.writeValueAsString(reservationTimes);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
-        }
-
-        System.out.println("사진 개수 : " + store.getStoreImages().size());
-        model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
         model.addAttribute("store", store);
         // 메뉴 데이터
         List<StoreMenu> menus = managementService.findAllStoreMenu(Long.parseLong(storeId));
@@ -138,8 +129,11 @@ public class ReservationController {
             else
                 subMenu.add(menu);
         }
+
+        model.addAttribute("isJoin", isJoin);
         model.addAttribute("mainMenu", mainMenu);
         model.addAttribute("subMenu", subMenu);
+
         return "user/reservation/store-detail";
     }
 
@@ -151,17 +145,16 @@ public class ReservationController {
         Long id = Long.parseLong(storeId);
         StoreCombineDTO store = reservationService.getStoreInformation(id);
         List<String> reservationTimes = reservationService.getReservationTime(store.getStartTime(), store.getEndTime());
-        // ObjectMapper를 사용하여 List<String>을 JSON 문자열로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         String reservationTimesJson = null;
         try {
             reservationTimesJson = objectMapper.writeValueAsString(reservationTimes);
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
         }
 
         System.out.println("사진 개수 : " + store.getStoreImages().size());
-        model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
+        model.addAttribute("reservationTimes", reservationTimesJson);
         model.addAttribute("store", store);
         return ResponseEntity.ok(date);
     }
@@ -182,30 +175,21 @@ public class ReservationController {
         Long id = Long.parseLong(storeId);
         StoreCombineDTO store = reservationService.getStoreInformation(id);
         List<String> reservationTimes = reservationService.getReservationTime(store.getStartTime(), store.getEndTime());
-        // ObjectMapper를 사용하여 List<String>을 JSON 문자열로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         String reservationTimesJson = null;
         try {
             reservationTimesJson = objectMapper.writeValueAsString(reservationTimes);
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
         }
 
         System.out.println("사진 개수 : " + reservationTimesJson);
-        model.addAttribute("reservationTimes", reservationTimesJson); // JSON 문자열을 모델에 추가
+        model.addAttribute("reservationTimes", reservationTimesJson);
         model.addAttribute("store", store);
 
         return "user/reservation/date-select";
     }
-    // @PostMapping("/choice-date/form")
-    // public ResponseEntity<String> menuForm(@RequestParam("storeId")String
-    // storeId, HttpSession session, Model model) {
-    // // session.setAttribute("ReservationBasicDTO", dto);
 
-    // return ResponseEntity.ok("success");
-    // }
-
-    // 최종 예약 페이지
     @PostMapping("/reservation-confirm/form")
     public String paymentForm(@ModelAttribute ReservationBasicDTO dto, HttpSession session, Model model) {
         session.setAttribute("reservationDTO", dto);
@@ -232,7 +216,7 @@ public class ReservationController {
     @PostMapping("/reservation-save")
     @Transactional
     public String saveReservation(@RequestParam("returnableDate") String returnableDate,
-     HttpSession session) {
+            HttpSession session) {
         ReservationBasicDTO reservationBasicDTO = (ReservationBasicDTO) session.getAttribute("reservationDTO");
         boolean isSave = reservationService.saveReservation(returnableDate, reservationBasicDTO);
         srdService.updateReservationTable(reservationBasicDTO);

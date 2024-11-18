@@ -19,3 +19,7 @@ $.ajax({
         console.error("이미지 로드 실패");
     }
 });
+
+function goBack(){
+    history.back();
+}

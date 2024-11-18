@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>합석</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        #headerText {
+            text-align: center;
+            color: orange;
+            margin-top: -23px;
+            margin-bottom: -10px;
+
+        }
+
+        #headerText hr {
+            margin-top: -21px;
+        }
+
+        .banner {
+            border-radius: 0.5em;
+        }
+
+        #date {
+            display: flex;
+            margin-top: -68px;
+            margin-left: 427px;
+            color: orange;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        #choiceReservation {
+            margin-top: 5px;
+        }
+
+        #choiceButton {
+            display: flex;
+            gap: 77px;
+        }
+
+        .reserveButton {
+            background-color: white;
+            width: 252px;
+            height: 53px;
+            font-size: 26px;
+            font-weight: bold;
+            border-radius: 0.4em;
+            border: 1px solid black;
+        }
+
+
+
+        .label {
+            font-weight: bold;
+            /* 항목 이름을 강조 */
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+        #pay {
+            position: relative;
+            top: 10px;
+        }
+
+        .count {
+            display: flex;
+        }
+
+        #requiredCount,
+        #userCount {
+            width: 63px;
+            height: 30px;
+            font-size: 18px;
+            position: relative;
+            top: -46px;
+            left: 540px;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/join/join-save" method="post" id="form">
+        <input type="hidden" name="storeId" th:value="${store.storeId}">
+        <input type="hidden" name="storeName" th:value="${store.storeName}">
+        <input type="hidden" name="category" th:value="${store.category}">
+        <input type="hidden" name="storeImagePath" th:value="${storeImage}">
+        <div class="container">
+            <div th:replace="user/header" id="header"></div>
+            <div id="headerText">
+                <h1>합석 글쓰기</h1>
+                <hr>
+            </div>
+            <div id="middle">
+                <div style="margin-left: 14px;">
+                    <div id="banner">
+                        <div class="slider-container">
+                            <div class="slider">
+                                <img th:src="${storeImage}" alt="Image 1" class="banner">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mainName">
+                        <h2 th:text="${store.storeName}" id="name"></h2>
+                    </div>
+                    <div>
+                        <p style="color:gray">게시글은 24시간동안 유지됩니다.</p>
+                    </div>
+                    <br>
+                    <div class="title">
+                        <h3>제목</h3>
+                        <input type="text" name="title" style="width: 596px;">
+                    </div>
+                    <div class="content">
+                        <h3>합석 내용을 자유롭게 써주세요.</h3>
+                        <textarea name="content" id="content" style="width: 599px;height: 200px;">
+                        </textarea>
+                    </div>
+
+                    <div class="count">
+                        <div style="gap: 493px;">
+                            <h3 class="label">주최자 인원</h3>
+                            <select id="userCount" name="userCount">
+                                <option value="1">1인</option>
+                                <option value="2">2인</option>
+                                <option value="3">3인</option>
+                                <option value="4">4인</option>
+                                <option value="5">5인</option>
+                                <option value="6">6인</option>
+                                <option value="7">7인</option>
+                                <option value="8">8인</option>
+                            </select>
+                            <div style="gap: 493px;">
+                                <h3 class="label">합석 인원</h3>
+                                <select id="requiredCount" name="requiredCount">
+                                    <option value="1">1인</option>
+                                    <option value="2">2인</option>
+                                    <option value="3">3인</option>
+                                    <option value="4">4인</option>
+                                    <option value="5">5인</option>
+                                    <option value="6">6인</option>
+                                    <option value="7">7인</option>
+                                    <option value="8">8인</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="footer-button">
+                        
+                            <button type="submit" class="button-next" id="paymentButton">합석 글올리기</button>
+                        </form>
+
+                    </div>
+
+                </div>
+    </form>
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/store-detail.js"></script>
+
+    <script>
+        let prevReservationButton;
+
+
+    </script>
+</body>
+
+</html>
