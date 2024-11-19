@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 상세정보</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+
+    <style>
+        .mi_1 {
+            display: flex;
+            margin-left: 13px;
+        }
+
+        .mi_2 {
+            display: flex;
+            position: relative;
+            top: -3px;
+            left: 98px;
+            gap: 61px;
+            font-size: 22px;
+        }
+
+        .mi_3 {
+            display: flex;
+        }
+
+        .mi_3 img {
+            width: 255px;
+            height: 214px;
+            border-radius: 1.4em;
+        }
+
+        .mi_4 {
+            overflow-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            width: 623px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{user/header}" id="header"></div>
+        <div id="middle">
+            <div id="banner">
+                <div class="slider-container">
+                    <div class="slider">
+                        <div class="slide" th:each="image : ${images}"><img th:src="${image.imagePath}" alt="Image 1"
+                                class="banner"></div>
+                    </div>
+                    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                    <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                </div>
+
+            </div>
+            <div class="mi_1">
+                <h2 th:text="${jp.profile.nickname}"></h2>
+                <div class="mi_2">
+                    <p th:text="${jp.profile.gender}"></p>
+                    <p th:text="${ageGroup}"></p>
+                </div>
+
+            </div>
+            <hr>
+            <div class="mi_3">
+                <img th:src="${jp.info.storeImagePath}" alt="">
+                <h2 id="storeName" th:text="${jp.info.storeName}"></h2>
+
+            </div>
+            <div class="mi_4">
+                <p th:text="${jp.info.content}"></p>
+            </div>
+
+            <div id="footer-button">
+                <div id="buttonInner">
+                    <form action="/join/request" method="post" id="form">
+                        <input type="hidden" id="joinId" th:value="${jp.info.joinId}" name="joinId">
+                        <input type="hidden" id="joinId" th:value="${jp.info.userId}" name="userId">
+                        <button type="submit" id="submitBtn" class="button-next">합석 신청하기</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <input type="hidden" th:value="${isJoin}" id="isJoin">
+    <input type="hidden" th:value="${userId}" id="userId">
+    <input type="hidden" th:value="${jp.info.userId}" id="writerId">
+    <input type="hidden" th:value="${isRequested}" id="isRequested">
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+    <script src="/js/store-detail.js"></script>
+    <script>
+        function checkRequest() {
+            if(document.getElementById("userId").value === document.getElementById("writerId").value ||
+               document.getElementById("isRequested").value === 'true') {
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").style.backgroundColor = 'gray';
+               }
+        }
+        checkRequest()
+
+
+
+    </script>
+</body>
+
+</html>

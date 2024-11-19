@@ -1,6 +1,7 @@
 package com.example.demo.user.join;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,11 @@ import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.reservation.ReservationBasicDTO;
 import com.example.demo.reservation.ReservationService;
+import com.example.demo.user.UserService;
+import com.example.demo.user.Users;
+import com.example.demo.user.profile.UserProfile;
+import com.example.demo.user.profile.UserProfileService;
+import com.example.demo.user.profile.image.UserProfileImage;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,32 +38,35 @@ public class JoinController {
     private final AddressService addressService;
     private final JoinService joinService;
     private final StoreService storeService;
+    private final UserProfileService userProfileService;
+    private final UserService userService;
     
     public JoinController(ReservationService reservationService, AddressService addressService, JoinService joinService,
-    StoreService storeService){
+    StoreService storeService, UserProfileService userProfileService, UserService userService){
         this.reservationService = reservationService;
         this.joinService = joinService;
         this.addressService = addressService;
         this.storeService = storeService;
+        this.userProfileService = userProfileService;
+        this.userService = userService;
     }
     @GetMapping("/main")
     public String main(Model model) {
-        List<JoinInfo> infos = joinService.findAll();
+        List<JoinAndProfileDTO> jpList = joinService.findAllJoinAndProfile();
+        
+
+        
         List<UserAddress> addresses = addressService.getUserAddress();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int addCnt = 0;
+
         for (UserAddress address : addresses) {
-            addCnt++;
             if (address.getIsActive() == true) {
                 model.addAttribute("address", address);
                 break;
-            } else if (addCnt == addresses.size()) {
-                address.setName("주소를 설정해주세요.");
-                model.addAttribute("address", address);
             }
         }
         if (addresses.isEmpty()) {
@@ -65,8 +74,8 @@ public class JoinController {
             address.setName("주소를 설정해주세요");
             model.addAttribute("address", address);
         }
+        model.addAttribute("jp", jpList);
         model.addAttribute("isJoin", true);
-        model.addAttribute("join", infos);
 
         return "user/join/main";
     }
@@ -94,6 +103,40 @@ public class JoinController {
         
         return "redirect:/join/main";
     }
+    
+    // 합석 디테일 페이지
+    @PostMapping("/join-detail/form")
+    public String joinDetailForm(@RequestParam("joinId")String joinId, Model model) {
+        Long id = Long.valueOf(joinId);
+        Long userId = userService.getLoggedInUserId();
+        JoinAndProfileDTO jp = joinService.findJoinAndProfile(id);
+        Users user = userService.findById(jp.getInfo().getUserId());
+        List<UserProfileImage> images = userProfileService.findByUserIdFromUserImages(user);
+        String ageGroup = joinService.getAgeGroup(jp.getProfile().getDateOfBirth());
+
+        Boolean isRequested = false;
+        List<JoinRequest> requests =  new ArrayList<>();
+        requests = joinService.findAllByUserId(userId);
+        for(JoinRequest request : requests) {
+            if(request.getJoinId() == id)
+                isRequested = true;
+        }
+        model.addAttribute("isRequested", isRequested);
+        model.addAttribute("userId", userId);
+        model.addAttribute("ageGroup", ageGroup);
+        model.addAttribute("images", images);
+        model.addAttribute("jp", jp);
+
+        return "user/join/join-detail";
+    }
+
+    @PostMapping("/request")
+    public String request(@RequestParam("joinId") Long joinId, @RequestParam("userId") Long userId) {
+        joinService.saveRequest(joinId, userId);
+        
+        return "redirect:/login/user/main";
+    }
+    
     
     
 

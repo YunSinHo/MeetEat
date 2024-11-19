@@ -22,6 +22,7 @@ header {
     flex: 1; /* 남은 공간을 middle이 차지 */
     overflow: hidden; /* middle 자체에 스크롤 방지 */
     margin-bottom: 70px;
+    padding: 6px;
   }
 #footer {
     position: relative; /* fixed 대신 relative를 사용 */

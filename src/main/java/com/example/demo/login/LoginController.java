@@ -12,6 +12,7 @@ import com.example.demo.address.UserAddress;
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.user.UserService;
+import com.example.demo.user.join.JoinService;
 import com.example.demo.user.profile.UserProfileService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,14 +27,16 @@ public class LoginController {
     private final OwnerService ownerService;
     private final StoreService storeService;
     private final AddressService addressService;
+    private final JoinService joinService;
 
     public LoginController(UserService userService, UserProfileService userProfileService,
-            OwnerService ownerService, StoreService storeService, AddressService addressService) {
+            OwnerService ownerService, StoreService storeService, AddressService addressService, JoinService joinService) {
         this.userService = userService;
         this.userProfileService = userProfileService;
         this.ownerService = ownerService;
         this.storeService = storeService;
         this.addressService = addressService;
+        this.joinService = joinService;
     }
 
     @GetMapping("")
@@ -76,6 +79,8 @@ public class LoginController {
                 break;
             }
         }
+        Boolean existsRequest = joinService.checkExistsRequest();
+        model.addAttribute("existsRequest", existsRequest);
         
         System.out.println("1위도 : " + latValue) ;
         System.out.println("1경도 : " + lngValue) ;
@@ -88,6 +93,7 @@ public class LoginController {
             return "user/main";
 
         }
+
             
 
         return "redirect:/user-profile/set-user";

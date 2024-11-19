@@ -1,8 +1,8 @@
 #banner {
     width: 599px;
     height: 260px;
-    margin-top: -50px;
-    margin-left: -16px;
+    margin-top: -14px;
+    margin-left: -9px;
 
 }
 
@@ -184,6 +184,7 @@ hr {
     height: 70px;
     background-color: white;
     z-index: 1000;
+    margin-left: -6px;
 }
 
 .menus_detail{

@@ -23,6 +23,8 @@ public class JoinInfo {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+    @Column(name = "other_id")
+    private Long otherId;
 
     @Column(name = "store_id", nullable = false)
     private Long storeId;
@@ -48,9 +50,15 @@ public class JoinInfo {
 
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate = LocalDateTime.now();
+    @Column(name = "end_date", nullable = false)
+    private LocalDateTime endDate = createDate.plusHours(24);
 
     @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isActive = true;
+    @Column(name = "is_request", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isRequest = false;
+    @Column(name = "is_accept", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean isaccept = false;
     // 기본 생성자
     public JoinInfo() {
     }

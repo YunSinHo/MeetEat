@@ -81,7 +81,7 @@
             background-color: #D3D3D3;
         }
 
-        .store {
+        .join {
             width: 540px;
             /* 너비 지정 */
             height: 200px;
@@ -102,6 +102,24 @@
             position: relative;
             top: -47px;
             /* mainHead와 middle div 사이의 간격 추가 */
+        }
+
+        .mi_1 {
+            display: flex;
+            font-size: 26px;
+            font-weight: bold;
+            position: relative;
+            top: -233px;
+            left: 173px;
+            gap: 62px;
+        }
+
+        .mi_2 {
+            font-size: 26px;
+            position: relative;
+            top: -233px;
+            left: 173px;
+            gap: 62px;
         }
     </style>
 </head>
@@ -145,32 +163,37 @@
         </div>
 
         <div id="middle">
-            <div th:each="join, stat : ${join}">
-                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}">
-                    <input type="hidden" name="joinId" th:value="${join.joinId}">
+            <div th:each="jp, stat : ${jp}">
+                <form action="/join/join-detail/form" method="post" th:id="'form_' + ${stat.index}">
+                    <input type="hidden" name="joinId" th:value="${jp.info.joinId}">
 
                 </form>
-                <div class="store" th:id="'store' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
-                    <input type="hidden" th:value="${join.createDate}" th:id="'isOpen' + ${stat.index}">
-                    <img th:src="${join.userImagePath}" alt="" style="width: 163px;
+                <div class="join" th:id="'join' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
+                    <input type="hidden" th:value="${jp.info.createDate}" th:id="'isOpen' + ${stat.index}">
+                    <img th:src="${jp.info.userImagePath}" alt="" style="width: 163px;
                     height: 199px;
                     border-radius: 0.5em; border: 1px solid black;">
-                    <p th:text="${join.storeName}" style="
-                    font-size: 26px;
-                    font-weight: bold;
-                    position: relative;
-                    top: -233px;
-                    left: 173px;"></p>
-                    <p th:text="${join.category}" style="    
-                    position: relative;
-                    top: -287px;
-                    left: 464px;
-                    color: slategray;"></p>
+                    <div class="mi_1">
+                        <p th:text="${jp.info.storeName}"></p>
+                        <p th:text="'(' + ${jp.info.requiredCount} + '/' + ${jp.info.userCount} + ')'"></p>
+                    </div>
+
                     <hr style="    color: gray;
-                     position: relative;
-                     top: -412px;
-                     width: 362px;
-                     left: 86px;">
+                    position: relative;
+                    width: 362px;
+                    left: 86px;
+                    top: -263px;">
+                    <div class="mi_2">
+                        <p th:text="${jp.profile.nickname}"
+                            style="color:orange;font-weight: bold;position: relative;top: -28px;"></p>
+                        <p th:text="'\'' + ${jp.info.title} + '\''"
+                            style="position: relative; top: -50px; width: 376px; 
+                            word-wrap: break-word; overflow-wrap: break-word; 
+                            word-break: break-word; white-space: normal;">
+                        </p>
+
+
+                    </div>
 
                 </div>
             </div>

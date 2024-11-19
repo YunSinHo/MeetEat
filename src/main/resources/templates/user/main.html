@@ -121,6 +121,7 @@
         <div th:replace="user/footer" id="footer"></div>
 
     </div>
+    <input type="hidden" th:value="${existsRequest}" id="existsRequest">
     <input type="hidden" th:value="${lat}" id="lat">
     <input type="hidden" th:value="${lng}" id="lng">
     <script src="/js/user-nav.js"></script>
@@ -128,6 +129,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script>
+
+        document.getElementById('DOMContentLoaded', function () {
+            if (document.getElementById("existsRequest").value === 'true') {
+                document.getElementById("existsRequestJoin").style.display = 'block';
+                document.getElementById("joinIcon").style.display = 'none';
+            }
+        });
+        
         let lat = document.getElementById("lat").value;
         let lng = document.getElementById("lng").value;
         const addressInput = document.getElementById("addressInput");

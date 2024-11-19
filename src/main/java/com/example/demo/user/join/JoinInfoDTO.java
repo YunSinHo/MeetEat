@@ -11,6 +11,7 @@ public class JoinInfoDTO {
     private Long joinId;
     private Long userId;
     private Long storeId;
+    private Long otherId;
     private String userImagePath;
     private String storeImagePath;
     private String userCount;
