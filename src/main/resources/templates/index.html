@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,10 @@
     <style>
         /* 화면 페이드 아웃 */
         .fade-out {
-            opacity: 0; /* 사라지는 상태 */
+            opacity: 0;
+            /* 사라지는 상태 */
         }
-        
+
         /* 로딩 컨테이너 중앙 정렬 */
         .loading-container {
             text-align: center;
@@ -18,24 +20,29 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* 전체 화면 높이 사용 */
-            background-color: #f5f5f5; /* 배경색 설정 */
+            background-color: #f5f5f5;
+            height: 866px;
         }
-        
+
         /* 로고 이미지 크기 조정 */
         .loading-logo {
             width: 500px;
-            height: 500px; /* 이미지 비율 유지 */
-            margin-bottom: 20px; /* 이미지와 텍스트 사이 여백 */
-
+            height: 500px;
+            position: relative;
+            top: 119px;
         }
+
         
+
         /* 메시지 스타일 */
         .message {
             font-size: 23px;
             font-weight: bold;
             color: #333;
             margin-top: 0;
+            z-index: 10;
+            position: relative;
+            top: -40px;
         }
 
         /* 컬러 전환 애니메이션 */
@@ -44,8 +51,19 @@
         }
 
         @keyframes colorChange {
-            0% { background-color: #f39c12; }
-            100% { background-color: #ffffff; }
+            0% {
+                background-color: #f39c12;
+            }
+
+            100% {
+                background-color: #ffffff;
+            }
+        }
+
+        .inner {
+            width: 500px;
+            height: 866px;
+            background-color: white;
         }
     </style>
     <script>
@@ -57,10 +75,15 @@
         }, 3000); // 3초 대기 후 애니메이션 시작
     </script>
 </head>
+
 <body>
     <div class="loading-container">
-        <img src="/images/loading_logo.png" alt="로딩 중" class="loading-logo">
-        <div class="message">저랑 같이 '웨이팅 맛집'에서 식사하실래요?</div>
+        <div class="inner">
+            <img src="/images/loading_logo.png" alt="로딩 중" class="loading-logo">
+            <div class="message">저랑 같이 '웨이팅 맛집'에서 식사하실래요?</div>
+        </div>
     </div>
+
 </body>
+
 </html>

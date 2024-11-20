@@ -24,53 +24,10 @@
         }
 
 
-
-        #reservation {
-            position: relative;
-            left: 22px;
-            z-index: 1;
-            margin-top: 56px;
-        }
-
-        #reservation::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-image: url('/images/reservation_back.png');
-            background-position: center;
-            opacity: 0.6;
-            z-index: -1;
-        }
-
-        #join {
-            z-index: 1;
-            position: relative;
-            left: 35px;
-        }
-
-        #join::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-image: url('/images/jointable_back.png');
-            background-position: center;
-            opacity: 0.6;
-            z-index: -1;
-        }
-
         #map_template {
-            width: 591px;
-            height: 460px;
-            border: 1px solid black;
-            margin-left: 16px;
+            width: 560px;
+            height: 355px;
+            margin: 0 auto;
         }
 
         #map {
@@ -86,6 +43,22 @@
             top: 51px;
             background: orange;
         }
+
+        #middle img {
+            width: 100px;
+        }
+
+        .img_inner {
+            position: relative;
+            top: 48px;
+            left: -5px;
+            display: flex;
+        }
+
+        .imgEx {
+            position: relative;
+            top: -46px;
+        }
     </style>
 </head>
 
@@ -96,14 +69,22 @@
             <h3>예약임박</h3>
         </div>
         <div id="middle">
-            <a href="/reservation/main" class="main-go" id="reservation">맛집 예약</a>
+            <div class="img_inner">
+                <a href="/reservation/main" class="main-go" id="reservation">
+                    <img src="/images/eat.png" alt="">
+                    <h3 class="imgEx">맛집예약</h3>
+                </a>
 
-            <a href="/join/main" class="main-go" id="join">합석</a>
-
+                <a href="/join/main" class="main-go" id="join">
+                    <img src="/images/join.png" alt="">
+                    <h3 class="imgEx">합석하기</h3>
+                </a>
+            </div>
+            <h2 style="position: relative;top: 19px; left: 29px;">플레이스</h2>
             <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="
-            width: 586px;
-            margin-top: 10px;
-            margin-left: 19px;">
+            width: 561px;
+    margin-top: 10px;
+    margin-left: 28px;">
             <button type="button" id="searchButton" style="position: relative;
                top: -37px;
             left: 547px;
@@ -130,13 +111,8 @@
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script>
 
-        document.getElementById('DOMContentLoaded', function () {
-            if (document.getElementById("existsRequest").value === 'true') {
-                document.getElementById("existsRequestJoin").style.display = 'block';
-                document.getElementById("joinIcon").style.display = 'none';
-            }
-        });
-        
+
+
         let lat = document.getElementById("lat").value;
         let lng = document.getElementById("lng").value;
         const addressInput = document.getElementById("addressInput");

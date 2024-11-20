@@ -11,7 +11,13 @@ public interface JoinRequestRepo extends JpaRepository<JoinRequest, Long>{
 
     List<JoinRequest> findAllByUserId(Long userId);
 
-    JoinRequest findAllByJoinId(Long joinId);
+    List<JoinRequest> findAllByJoinId(Long joinId);
+
+    List<JoinRequest> findAllByOtherId(Long userId);
+
+    JoinRequest findByJoinId(Long joinId);
+
+    List<JoinRequest> findAllByJoinIdAndIsAcceptAndIsRefused(Long joinId, boolean b, boolean c);
     
 
 }

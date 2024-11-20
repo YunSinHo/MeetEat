@@ -58,7 +58,7 @@ public class JoinInfo {
     @Column(name = "is_request", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isRequest = false;
     @Column(name = "is_accept", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
-    private Boolean isaccept = false;
+    private Boolean isAccept = false;
     // 기본 생성자
     public JoinInfo() {
     }

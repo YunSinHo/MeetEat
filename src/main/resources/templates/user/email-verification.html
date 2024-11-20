@@ -5,8 +5,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이메일로 가입하기</title>
-    <link rel="stylesheet" href="/css/styles.css"> <!-- 외부 CSS 연결 -->
+    <link rel="stylesheet" href="/css/join.css"> <!-- 외부 CSS 연결 -->
 
+    <style>
+        .title {
+            top: 134px;
+        }
+
+        .subtitle,
+        .subtitle2 {
+
+            font-size: 18px;
+            position: relative;
+            top: 164px;
+            margin: 0 auto;
+        }
+
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            top: 287px;
+
+            width: 482px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #f39c12;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .button-request {
+            position: absolute;
+            bottom: -71px;
+            left: 0;
+            padding: 10px 25px;
+            background-color: #f39c12;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .button-request:hover {
+            background-color: #e67e22;
+        }
+
+        .button-next {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #f39c12;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            position: fixed;
+            top: 766px;
+            width: 479px;
+        }
+
+        .button-next:hover {
+            background-color: #e67e22;
+        }
+
+
+        .error-message,
+        .success-message {
+            color: red;
+            /* 에러 메시지 색상 설정 */
+            font-size: 14px;
+            display: none;
+            /* 기본적으로 숨김 */
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: green;
+            /* 성공 메시지 색상 설정 */
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        #resendLink {
+            position: absolute;
+            /* 위치를 절대값으로 설정 */
+            left: 427px;
+            top: 84px;
+            font-weight: bold;
+
+            font-size: 14px;
+            color: black;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,11 +131,13 @@
                 <div id="emailError" class="error-message">올바른 이메일을 입력하세요.</div>
                 <div class="success-message" id="successMessage">인증 요청이 성공적으로 전송되었습니다.</div>
                 <button type="button" id="sendBtn" class="button-request" disabled>인증 요청</button>
-                <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력" style="display:none;margin-top: 21px;">
+                <input type="text" id="code" class="input" name="code" placeholder="인증번호 입력"
+                    style="display:none;margin-top: 21px;">
                 <a href="#" id="resendLink" style="display:none;">재전송</a>
                 <div id="verifyCodeError" class="error-message">인증번호가 올바르지 않습니다.</div>
+                <button type="submit" class="button-next" id="verifyCodeBtn" disabled>확인</button>
             </div>
-            <button type="submit" class="button-next" id="verifyCodeBtn" disabled>확인</button>
+            
         </div>
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

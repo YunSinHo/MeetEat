@@ -8,19 +8,14 @@ html, body {
 }
 
 .container {
-    width: 617px;
-    min-height: 90vh;
-    height: auto; /* 높이를 자동으로 설정 */
-    padding: 40px; /* 컨텐츠 여백 */
-    background-color: white; /* 배경색 */
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-    border-radius: 15px; /* 모서리 둥글게 */
-    margin: 40px auto; /* 컨테이너를 상단으로부터 여백을 주고 중앙 정렬 */
+    width: 555px;
+    background-color: white;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin: 0 auto;
+    min-height: 851px;
 }
-
 .logo {
     display: block; /* 블록 요소로 설정 */
     margin: 0 auto 40px;  /* 위쪽 여백 제거 및 아래쪽 여백 추가 */

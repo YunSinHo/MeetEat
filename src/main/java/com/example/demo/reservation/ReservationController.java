@@ -14,6 +14,9 @@ import com.example.demo.owner.store.StoreCombineDTO;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.SRDService;
 import com.example.demo.owner.store.management.menu.StoreMenu;
+import com.example.demo.user.join.JoinAndRequestDTO;
+import com.example.demo.user.join.JoinInfo;
+import com.example.demo.user.join.JoinService;
 
 import java.util.List;
 import java.util.Map;
@@ -37,15 +40,17 @@ public class ReservationController {
     private final ManagementService managementService;
     private final DateService dateService;
     private final SRDService srdService;
+    private final JoinService joinService;
 
     public ReservationController(SRDService srdService, ReservationService reservationService,
             AddressService addressService, DateService dateService,
-            ManagementService managementService) {
+            ManagementService managementService, JoinService joinService) {
         this.srdService = srdService;
         this.reservationService = reservationService;
         this.addressService = addressService;
         this.managementService = managementService;
         this.dateService = dateService;
+        this.joinService = joinService;
     }
 
     // 예약 메인페이지
@@ -226,7 +231,16 @@ public class ReservationController {
     // 예약 현황
     @GetMapping("/status")
     public String reservationStatus(Model model) {
+
+        // 식당 예약 목록
         List<StoreReservationInfo> infos = reservationService.findVaildReservaion();
+
+        // 합석 예약 목록
+        List<JoinInfo> joinInfos = joinService.findAcceptReqeust();
+        
+        List<JoinAndRequestDTO> jr = joinService.findAcceptJoin(joinInfos);
+
+        model.addAttribute("jr", jr);
         model.addAttribute("status", infos);
 
         return "user/reservation/status";

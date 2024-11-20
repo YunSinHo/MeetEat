@@ -28,6 +28,9 @@ public class JoinRequest {
 
     @Column(name = "other_id")
     private Long otherId;
+
+    @Column(name = "other_image_path")
+    private String otherImagePath;
     
     @Column(name = "is_accept", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isAccept = false;

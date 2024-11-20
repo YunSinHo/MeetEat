@@ -1,98 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeetEat 회원가입</title>
-    <link rel="stylesheet" href="/css/styles.css"> <!-- 외부 CSS 연결 -->
+
+    <link rel="stylesheet" href="/css/join.css">
     <style>
-        .background-container {
-            position: fixed; /* 고정 위치 */
-            top: 0;
-            left: 0;
-            width: 100vw; /* 전체 너비 */
-            height: 100vh; /* 전체 높이 */
-            overflow: hidden; /* 잘림 방지 */
-            z-index: 1; /* 배경 이미지 아래에 배치 */
-            text-align: center;
-            box-shadow: 10px 0 20px rgba(0, 0, 0, 0.1), -10px 0 20px rgba(0, 0, 0, 0.1);
+        #img {
+            width: 555px;
+            position: relative;
+            top: -6px;
+            height: 588px;
+            opacity: 0.5;
         }
-        .register_page_background {
-            width: 475px;
-            height: 665px;
-            object-fit: cover; /* 이미지가 잘리도록 조정 */
-            filter: blur(1.5px); /* 흐리게 만들기 */
-            text-align: center;
-        }
-        .signup-container {
-            position: relative; /* 자식 요소의 절대 위치 지정을 위해 필요 */
-            z-index: 2; /* 컨텐츠가 배경 이미지 위에 표시되도록 */
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.1); /* 투명도 조절 */
-            border-radius: 8px;
-            text-align: center;
-            max-width: 400px; /* 최대 너비 설정 */
-            width: 90%; /* 여백을 위해 비율로 설정 */
-            margin: auto; /* 중앙 정렬 */
-            margin-top: 28%; /* 화면 아래로 이동 (값 조정 가능) */
-        }
-        .title {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .button {
-            display: block;
-            width: 100%;
-            padding: 13px;
-            margin: 10px 0;
-            background-color: white;
-            color: black;
-            border: 2px solid #f39c12; /* 주황색 테두리 */
-            border-radius: 20px;
-            font-size: 17px;
-            cursor: pointer;
+
+        .title2 {
+            top: -132px;
+            position: relative;
+            z-index: 10;
+            font-size: 23px;
             font-weight: bold;
         }
-        .button:hover {
-            background-color: #e67e22;
-        }
-        .account-check {
-            display: flex; /* Flexbox 사용하여 가로 정렬 */
-            align-items: center; /* 세로 가운데 정렬 */
-            justify-content: center;
-            font-size: 17px;
-            margin-top: 15px;
-            color: #000407;
-            font-weight: bold;
-        }
-        .login-link {
-            text-decoration: none;
-            display: block;
-            color:#dd6903;
-            margin-left: 10px; /* 링크와 문장 사이에 여백 추가 */
+
+        .mi_1 {
+            position: relative;
+            top: -73px;
+            width: 492px;
+            margin: 0 auto;
         }
     </style>
 </head>
-<body>
-    <div class="background-container">
-        <img src="/images/register_page_background.jfif" alt="배경" class="register_page_background">
-    </div>
-    <div class="signup-container">
-        <div class="title">
-            숨겨진 보석같은 식당을<br/>
-            세상에 알릴 기회!<br/>
-            쉽고 간편한 예약 관리로<br/>
-            고객 유치와 매출 증가를 경험해보세요!<br/>
 
+<body>
+    <div class="container">
+        <div class="background-container">
+            <img src="/images/register_page_background.jfif" alt="배경" class="register_page_background" id="img">
         </div>
-        <button class="button" onclick="window.location.href='/user/signup-choice'">회원가입</button>
-        <button class="button">카카오톡 계정으로 계속</button>
-        <div class="account-check">
-            <div>이미 계정이 있나요?</div>
-            <a href="#" class="login-link" onclick="window.location.href='/login'">로그인</a>
-        </div>        
+        <div class="signup-container">
+            <div class="title2">
+                숨겨진 보석같은 식당을<br />
+                세상에 알릴 기회!<br />
+                쉽고 간편한 예약 관리로<br />
+                고객 유치와 매출 증가를 경험해보세요!<br />
+
+            </div>
+            <div class="mi_1">
+                <button class="button" onclick="window.location.href='/user/signup-choice'">회원가입</button>
+                <button class="button">카카오톡 계정으로 계속</button>
+                <div class="account-check">
+                    <div>이미 계정이 있나요?</div>
+                    <a href="#" class="login-link" onclick="window.location.href='/login'">로그인</a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>

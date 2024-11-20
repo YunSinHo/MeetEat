@@ -20,6 +20,7 @@
             gap: 10px;
             /* 입력 필드 사이 여백 추가 */
             align-items: center;
+            margin: 0 auto;
         }
 
         label {
@@ -36,20 +37,21 @@
             <div class="title">비밀번호를 입력해주세요</div>
             <div class="subtitle">너무 쉬운 건 쉽게 들킬 수 있어요!</div>
             <div class="input-group">
-                <label for="email" style="margin-left: -401px;">이메일</label>
+                <label for="email" style="margin-left: -444px;">이메일</label>
                 <input type="email" name="email" class="input" th:value="${email}" readonly>
-                <label for="phoneNumber" style="margin-left: -388px;">전화번호</label>
+                <label for="phoneNumber" style="margin-left: -430px;">전화번호</label>
                 <input type="text" id="phoneNumber" name="phoneNumber" class="input" maxlength="14"
                     placeholder="('-'하이픈 없이 입력)">
                 <div id="phoneError" class="error-message" style="top: 174px">올바른 전화번호를 입력하세요.</div>
-                <label for="password" style="margin-left: -388px;">비밀번호</label>
+                <label for="password" style="margin-left: -429px;">비밀번호</label>
                 <input type="password" id="password" name="password" class="input" placeholder="8자 이상 입력">
                 <div id="passwordError" class="error-message" style="top: 267px;">비밀번호는 8자 이상이어야 합니다.</div>
-                <label for="confirmPassword" style="margin-left: -351px;">비밀번호 확인</label>
+                <label for="confirmPassword" style="margin-left: -395px;">비밀번호 확인</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" class="input" placeholder="8자 이상 입력">
                 <div id="confirmPasswordError" class="error-message" style="top: 356px;">비밀번호가 일치하지 않습니다.</div>
+                <button type="submit" id="nextBtn" class="button-next" disabled>가입하기</button>
             </div>
-            <button type="submit" id="nextBtn" class="button-next" disabled>가입하기</button>
+            
         </div>
         
     </form>

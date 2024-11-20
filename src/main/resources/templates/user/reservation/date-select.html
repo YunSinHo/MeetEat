@@ -59,16 +59,17 @@
 
         </div>
         <div id="footer-button">
-            <form action="/reservation/reservation-confirm/form" method="post" id="form">
+            <div id="buttonInner">
+                <form action="/reservation/reservation-confirm/form" method="post" id="form">
 
-                <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
-                <input type="hidden" id="date" name="date">
-                <input type="hidden" id="table" name="table">
-                <input type="hidden" id="time" name="time">
-                <input type="hidden" th:value="${store.storeName}" name="storeName">
-                <button type="submit" id="submitBtn" class="button-next">다 음</button>
-            </form>
-
+                    <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                    <input type="hidden" id="date" name="date">
+                    <input type="hidden" id="table" name="table">
+                    <input type="hidden" id="time" name="time">
+                    <input type="hidden" th:value="${store.storeName}" name="storeName">
+                    <button type="submit" id="submitBtn" class="button-next">다 음</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -286,7 +287,7 @@
                 }
                 isExistPrevTable = true;
                 prevTable = document.getElementById("table" + i);
-                
+
                 document.getElementById("table" + i).style.color = 'white';
                 document.getElementById("table" + i).style.backgroundColor = 'orange';
             });

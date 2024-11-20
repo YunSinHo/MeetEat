@@ -28,8 +28,6 @@ import com.example.demo.user.profile.image.UserProfileImage;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @Controller
 @RequestMapping("/join")
 public class JoinController {
@@ -40,9 +38,9 @@ public class JoinController {
     private final StoreService storeService;
     private final UserProfileService userProfileService;
     private final UserService userService;
-    
+
     public JoinController(ReservationService reservationService, AddressService addressService, JoinService joinService,
-    StoreService storeService, UserProfileService userProfileService, UserService userService){
+            StoreService storeService, UserProfileService userProfileService, UserService userService) {
         this.reservationService = reservationService;
         this.joinService = joinService;
         this.addressService = addressService;
@@ -50,12 +48,11 @@ public class JoinController {
         this.userProfileService = userProfileService;
         this.userService = userService;
     }
+
     @GetMapping("/main")
     public String main(Model model) {
         List<JoinAndProfileDTO> jpList = joinService.findAllJoinAndProfile();
-        
 
-        
         List<UserAddress> addresses = addressService.getUserAddress();
         try {
             Thread.sleep(100);
@@ -79,19 +76,19 @@ public class JoinController {
 
         return "user/join/main";
     }
-    
+
     @GetMapping("/store-select")
-    public String storeSelect(@RequestParam(value="isJoin", required = false) Boolean isJoin) {
-        
+    public String storeSelect(@RequestParam(value = "isJoin", required = false) Boolean isJoin) {
+
         return "redirect:/reservation/main?isJoin=" + isJoin;
     }
+
     @PostMapping("/join-confirm/form")
-    public String joinForm(Model model, @RequestParam("storeId")String storeId) {
+    public String joinForm(Model model, @RequestParam("storeId") String storeId) {
         Long id = Long.parseLong(storeId);
         String storeImage = storeService.getStoreMainImage(id);
         Store store = storeService.findById(id);
 
-        
         model.addAttribute("store", store);
         model.addAttribute("storeImage", storeImage);
         return "user/join/join-confirm";
@@ -100,13 +97,13 @@ public class JoinController {
     @PostMapping("/join-save")
     public String joinSave(@ModelAttribute JoinInfoDTO info) {
         joinService.saveJoin(info);
-        
+
         return "redirect:/join/main";
     }
-    
+
     // 합석 디테일 페이지
     @PostMapping("/join-detail/form")
-    public String joinDetailForm(@RequestParam("joinId")String joinId, Model model) {
+    public String joinDetailForm(@RequestParam("joinId") String joinId, Model model) {
         Long id = Long.valueOf(joinId);
         Long userId = userService.getLoggedInUserId();
         JoinAndProfileDTO jp = joinService.findJoinAndProfile(id);
@@ -115,10 +112,11 @@ public class JoinController {
         String ageGroup = joinService.getAgeGroup(jp.getProfile().getDateOfBirth());
 
         Boolean isRequested = false;
-        List<JoinRequest> requests =  new ArrayList<>();
-        requests = joinService.findAllByUserId(userId);
-        for(JoinRequest request : requests) {
-            if(request.getJoinId() == id)
+        List<JoinRequest> requests = new ArrayList<>();
+        requests = joinService.findAllByOtherId(userId);
+        System.out.println(requests.size() + "글개수");
+        for (JoinRequest request : requests) {
+            if (request.getJoinId() == id)
                 isRequested = true;
         }
         model.addAttribute("isRequested", isRequested);
@@ -133,11 +131,27 @@ public class JoinController {
     @PostMapping("/request")
     public String request(@RequestParam("joinId") Long joinId, @RequestParam("userId") Long userId) {
         joinService.saveRequest(joinId, userId);
-        
+
         return "redirect:/login/user/main";
     }
-    
-    
-    
+
+    @GetMapping("/status")
+    public String status(Model model) {
+        List<JoinInfo> infos = joinService.findVaildJoin();
+        List<JoinAndRequestDTO> jr = joinService.findVaildRequests(infos);
+
+        model.addAttribute("status", jr);
+        return "user/join/status";
+    }
+
+    // 합석 여부 수락or거절 저장
+    @PostMapping("/accept")
+    public String accept(@RequestParam("accept") Boolean accept,
+            @RequestParam("joinId") Long joinId, @RequestParam("requestId") Long requestId, @RequestParam("otherId") Long otherId) {
+
+        joinService.updateJoin(joinId, otherId, accept);
+        joinService.updateRequest(requestId, accept);
+        return "redirect:/join/status";
+    }
 
 }
