@@ -82,7 +82,7 @@
                         <input type="hidden" name="requestId" th:value="${request.requestId}">
                         <input type="hidden" name="joinId" th:value="${jr.info.joinId}">
                         <input type="hidden" name="accept" th:id="${stat.index} + 'accept'">
-                        <input type="hidden" name="otherId" th:value="${jr.info.otherId}">
+                        <input type="hidden" name="otherId" th:value="${request.otherId}">
                     </form>
                     <div class="mi_1">
                         <img th:src="${request.otherImagePath}" alt="">

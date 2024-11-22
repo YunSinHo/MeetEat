@@ -16,7 +16,7 @@
             text-decoration-line: none;
             display: inline-block;
             /* 크기를 지정하기 위해 필요 */
-            width: 281px;
+            width: 128px;
             height: 148px;
             background-size: cover;
             /* 이미지가 요소 크기에 맞춰지도록 */
@@ -45,19 +45,32 @@
         }
 
         #middle img {
-            width: 100px;
+            width: 169px;
+            left: 10px;
+            position: relative;
         }
 
         .img_inner {
-            position: relative;
-            top: 48px;
-            left: -5px;
             display: flex;
+            margin: 0 auto;
+            position: relative;
+            top: 68px;
+            left: 61px;
+            gap: 80px;
+            margin-bottom: 62px;
         }
 
         .imgEx {
             position: relative;
             top: -46px;
+        }
+
+        .img_inner a {
+            border: 2px solid black;
+            width: 208px;
+            border-radius: 0.5em;
+            height: 175px;
+
         }
     </style>
 </head>
@@ -72,12 +85,10 @@
             <div class="img_inner">
                 <a href="/reservation/main" class="main-go" id="reservation">
                     <img src="/images/eat.png" alt="">
-                    <h3 class="imgEx">맛집예약</h3>
                 </a>
 
                 <a href="/join/main" class="main-go" id="join">
                     <img src="/images/join.png" alt="">
-                    <h3 class="imgEx">합석하기</h3>
                 </a>
             </div>
             <h2 style="position: relative;top: 19px; left: 29px;">플레이스</h2>
