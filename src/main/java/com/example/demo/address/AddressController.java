@@ -116,8 +116,10 @@ public class AddressController {
 
     // 주소 선택 이후 메인 페이지 이동
     @GetMapping("/user/update-map")
-    public String updateMap(@RequestParam(value = "goReserveMain", required = false) Boolean goReserveMain) {
-        if(goReserveMain != null && goReserveMain == true){
+    public String updateMap(@RequestParam(value = "goReserveMain", defaultValue =  "false") String goReserveMain) {
+        Boolean goReserve = Boolean.parseBoolean(goReserveMain);
+        System.out.println("리저브 : " + goReserve);
+        if(goReserve != null && goReserve == true){
             return "user/reservation/main";
         }
         return "redirect:/login/user/main";

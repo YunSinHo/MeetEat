@@ -23,6 +23,7 @@ public class StoreCombineDTO{
     private Boolean isOpen;
     private List<StoreImage> storeImages = new ArrayList<>();
     private Double Lat; 
+    
     private Double Lng;
     private String phoneNumber;
     private String introduction;

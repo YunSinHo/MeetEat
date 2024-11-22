@@ -1,5 +1,7 @@
 package com.example.demo.owner.store.management;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,7 @@ public class ManagementController {
 
     private final StoreService storeService;
     private final OwnerService ownerService;
+    
     private final ManagementService managementService;
     private final ImageService imageService;
     public ManagementController(StoreService storeService, OwnerService ownerService, 
@@ -123,6 +126,7 @@ public class ManagementController {
         if(!image.isEmpty())
         imageService.deleteImage("/images/store/food/" + preImageName);
         System.out.println("이름"+preImageName+"이름");
+
         managementService.saveStoreMenu(storeMenuDTO, image, preImageName);
         return "redirect:/mgmt/food-menu";
     }
@@ -144,7 +148,7 @@ public class ManagementController {
     public String saveTable(@ModelAttribute StoreTableDTO dto) {
         Long ownerId = ownerService.getLoggedInOwnerId();
         Store store = storeService.findByOwnerId(ownerId);
-
+        managementService.setStoreReservationTable(dto, store.getStoreId());
         managementService.saveStoreTable(dto, store.getStoreId());
         return "redirect:/owner/menu";
     }

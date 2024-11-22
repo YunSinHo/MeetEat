@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 메인페이지</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        #head {
+            font-size: 35px;
+            font-weight: bold;
+            color: #e67e22;
+            position: relative;
+            top: 40px;
+            left: 67px;
+        }
+
+        #dish {
+            position: relative;
+            bottom: 50px;
+            size: 30px;
+        }
+
+
+        #address {
+            position: relative;
+            bottom: 109px;
+            left: 220px;
+        }
+
+        #setAddress {
+            position: relative;
+            bottom: 169px;
+            left: 564px;
+            color: gray;
+            cursor: pointer;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            /* 각 열의 크기를 자동으로 설정 */
+            width: 100%;
+            /* container에 맞게 width를 조정 */
+            /* 간격을 줄임 */
+            position: relative;
+            gap: 38px;
+            bottom: 143px;
+            font-size: 20px;
+        }
+
+        .word {
+            text-align: center;
+            padding: 2px;
+            /* 패딩을 줄임 */
+            margin: 0;
+            /* 마진을 없앰 */
+            min-width: 0;
+            color: darkgray
+                /* 최소 너비를 없앰 */
+        }
+
+        .category {
+            text-decoration-line: none;
+        }
+
+        #arrange-button {
+            display: flex;
+            bottom: 142px;
+            position: relative;
+        }
+
+        .ag-button {
+            margin-left: 48px;
+            border-radius: 10px;
+            font-size: 20px;
+            border-color: #D3D3D3;
+            background-color: #D3D3D3;
+        }
+
+        .join {
+            width: 540px;
+            /* 너비 지정 */
+            height: 200px;
+            /* 높이 지정 */
+            border: 2px solid black;
+            /* 테두리 지정: 두께, 스타일, 색상 */
+            padding: 10px;
+            /* 내용과 테두리 사이의 여백 */
+            margin: 20px;
+            /* 외부 여백 */
+            border-radius: 0.5em;
+            cursor: pointer;
+        }
+
+        #mainHead {
+            margin-top: 39px;
+            margin-bottom: -192px;
+            position: relative;
+            top: -47px;
+            /* mainHead와 middle div 사이의 간격 추가 */
+        }
+
+        .mi_1 {
+            display: flex;
+            font-size: 26px;
+            font-weight: bold;
+            position: relative;
+            top: -233px;
+            left: 173px;
+            gap: 62px;
+        }
+
+        .mi_2 {
+            font-size: 26px;
+            position: relative;
+            top: -233px;
+            left: 173px;
+            gap: 62px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{user/header}" id="header"></div>
+        <div id="mainHead">
+
+            <p id="head">합석 예약</p>
+            <img src="/images/dish.png" alt="" id="dish">
+            <p id="address" th:text="${address.name}"></p>
+            <p id="setAddress">재설정</p>
+
+            <div class="word-grid">
+                <a href="/reservation/sort?category=전체" class="category" id="all_a" onclick="categoryColor('all')"><span
+                        class="word" id="all">전체</span></a>
+                <a href="/reservation/sort?category=한식" class="category" id="kor_a" onclick="categoryColor('kor')"><span
+                        class="word" id="kor">한식</span></a>
+                <a href="/reservation/sort?category=중식" class="category" id="chn_a" onclick="categoryColor('chn')"><span
+                        class="word" id="chn">중식</span></a>
+                <a href="/reservation/sort?category=양식" class="category" id="eur_a" onclick="categoryColor('eur')"><span
+                        class="word" id="eur">양식</span></a>
+                <a href="/reservation/sort?category=일식" class="category" id="jpn_a" onclick="categoryColor('jpn')"><span
+                        class="word" id="jpn">일식</span></a>
+                <a href="/reservation/sort?category=분식" class="category" id="sb_a" onclick="categoryColor('sb')"><span
+                        class="word" id="sb">분식</span></a>
+                <a href="/reservation/sort?category=맞춤" class="category" id="taste_a"
+                    onclick="categoryColor('taste')"><span class="word" id="taste">맞춤</span></a>
+
+
+            </div>
+            <hr style="color:gray;position: relative;bottom: 143px;">
+            <div id="arrange-button">
+                <button class="ag-button">랭킹순</button>
+                <button class="ag-button">쿠폰</button>
+                <button class="ag-button">최소합석금액</button>
+                <button class="ag-button">별점</button>
+
+            </div>
+        </div>
+
+        <div id="middle">
+            <div th:each="jp, stat : ${jp}">
+                <form action="/join/join-detail/form" method="post" th:id="'form_' + ${stat.index}">
+                    <input type="hidden" name="joinId" th:value="${jp.info.joinId}">
+
+                </form>
+                <div class="join" th:id="'join' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
+                    <input type="hidden" th:value="${jp.info.createDate}" th:id="'isOpen' + ${stat.index}">
+                    <img th:src="${jp.info.userImagePath}" alt="" style="width: 163px;
+                    height: 199px;
+                    border-radius: 0.5em; border: 1px solid black;">
+                    <div class="mi_1">
+                        <p th:text="${jp.info.storeName}"></p>
+                        <p th:text="'(' + ${jp.info.requiredCount} + '/' + ${jp.info.userCount} + ')'"></p>
+                    </div>
+
+                    <hr style="    color: gray;
+                    position: relative;
+                    width: 362px;
+                    left: 86px;
+                    top: -263px;">
+                    <div class="mi_2">
+                        <p th:text="${jp.profile.nickname}"
+                            style="color:orange;font-weight: bold;position: relative;top: -28px;"></p>
+                        <p th:text="'\'' + ${jp.info.title} + '\''"
+                            style="position: relative; top: -50px; width: 376px; 
+                            word-wrap: break-word; overflow-wrap: break-word; 
+                            word-break: break-word; white-space: normal;">
+                        </p>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="footer-button">
+            <button type="button" class="button-next" id="reservationButton">합석 예약하기</button>
+        </div>
+
+    </div>
+    <script src="/js/user-nav.js"></script>
+    <script>
+        const reservationBtn = document.getElementById("reservationButton");
+
+        reservationBtn.addEventListener('click', function () {
+            window.location.href = "/join/store-select?isJoin=" + true;
+        });
+
+        // 주소 설정 클릭시 설정 페이지 이동
+        const setAddress = document.getElementById("setAddress");
+        setAddress.addEventListener("click", function () {
+            window.location.href = "/user/address-set?goReserveMain=true"
+        });
+        let lastClickedCategory = localStorage.getItem('selectedCategory');
+
+        function categoryColor(categoryId) {
+            // 이전에 클릭한 카테고리가 있으면 색상을 원래대로 되돌림
+            if (lastClickedCategory) {
+                document.getElementById(lastClickedCategory).style.color = 'darkgray';
+            }
+
+            // 현재 클릭한 카테고리의 색상을 검은색으로 변경
+            const currentCategory = document.getElementById(categoryId);
+            currentCategory.style.color = 'black';
+
+            // 현재 클릭한 카테고리 ID를 localStorage에 저장
+            localStorage.setItem('selectedCategory', categoryId);
+
+            // lastClickedCategory 업데이트
+            lastClickedCategory = categoryId;
+        }
+
+        // 페이지가 로드될 때 localStorage에 저장된 카테고리 색상 적용
+        if (lastClickedCategory) {
+            document.getElementById(lastClickedCategory).style.color = 'black';
+        }
+
+        // 가게 클릭시 세부 페이지 이동
+        function submitForm(index) {
+            document.getElementById("form_" + index).submit();
+        }
+    </script>
+</body>
+
+</html>

@@ -10,28 +10,40 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.owner.OwnerService;
 import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreCombineDTO;
-import com.example.demo.owner.store.StoreRepository;
 import com.example.demo.owner.store.StoreService;
 import com.example.demo.owner.store.image.StoreImage;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.StoreBasic;
+import com.example.demo.owner.store.management.menu.StoreMenu;
+import com.example.demo.user.UserService;
 
 @Service
 public class ReservationService {
     private final OwnerService ownerService;
     private final StoreService storeSerivce;
     private final ManagementService managementService;
+    private final UserService userService;
 
-    public ReservationService(OwnerService ownerService, StoreService storeSerivce,
-            ManagementService managementService) {
+    private final StoreResInfoRepo storeResInfoRepo;
+    
+
+    
+    
+
+    public ReservationService(OwnerService ownerService, StoreService storeSerivce, UserService userService,
+    @Lazy ManagementService managementService, StoreResInfoRepo storeResInfoRepo) {
         this.ownerService = ownerService;
         this.storeSerivce = storeSerivce;
         this.managementService = managementService;
+        this.storeResInfoRepo = storeResInfoRepo;
+        this.userService = userService;
     }
 
     // 가게 오픈 시간 확인
@@ -253,5 +265,85 @@ public class ReservationService {
 
         return timeSlots;
     }
+
+    // 총 결제 가격 구하기
+    public Integer getTotalCost(List<Long> storeMenuId, List<String> number) {
+        
+        Integer totalCost = 0;
+        for(int i = 0; i < storeMenuId.size(); i++) {
+            StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId.get(i));
+            totalCost += Integer.parseInt(menu.getCost()) * Integer.parseInt(number.get(i));
+        }
+
+        return totalCost;
+        
+        
+
+    }
+
+    // 실제 예약한 메뉴
+    public Map<String, Integer> getReservedMenu(List<Long> storeMenuId, List<String> number) {
+        
+        Map<String, Integer> reservedMenu = new HashMap<>();
+        for(int i = 0 ; i < storeMenuId.size(); i++) {
+            if(number.get(i).equals("0")) continue;
+            else {
+                StoreMenu menu = managementService.findByMenuIdFromStoreMenu(storeMenuId.get(i));
+                reservedMenu.put(menu.getName(), Integer.parseInt(number.get(i)));
+            }
+        }
+        return reservedMenu;
+    }
+
+    // 예약 내역 데이터베이스 저장
+    @Transactional
+    public boolean saveReservation(String returnableDate, ReservationBasicDTO reservationBasicDTO) {
+        
+        StoreReservationInfo info = new StoreReservationInfo();
+        info.setDate(LocalDate.parse(reservationBasicDTO.getDate()));
+        info.setReturnableDate(LocalDate.parse(returnableDate));
+        info.setIsComplete(false);
+        info.setStoreId(Long.parseLong(reservationBasicDTO.getStoreId()));
+        info.setTime(reservationBasicDTO.getTime());
+        info.setUserId(userService.getLoggedInUserId());
+        info.setStoreName(reservationBasicDTO.getStoreName());
+        storeResInfoRepo.save(info);
+        return true;
+    }
+    // 예약 내역 가져오기
+    public StoreReservationInfo getStoreResInfo(LocalDate date, String time, Long userId) {
+
+        StoreReservationInfo info = storeResInfoRepo.findByUserIdAndDateAndTime(userId, date, time)
+                                                    .orElseThrow(() -> new RuntimeException("info not found with ID: " + userId));
+        return info;
+    }
+
+    public List<StoreReservationInfo> findVaildReservaion() {
+        Long userId = userService.getLoggedInUserId();
+        List<StoreReservationInfo> infos = storeResInfoRepo.findAllByUserId(userId);
+
+        List<StoreReservationInfo> newInfos = new ArrayList<>();
+        for(StoreReservationInfo info : infos) {
+            LocalDate date = info.getDate();
+            String timeStr = info.getTime();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    
+            LocalTime time = LocalTime.parse(timeStr, timeFormatter);
+    
+            LocalDateTime dateTimeFromDB = LocalDateTime.of(date, time);
+    
+            LocalDateTime currentDateTime = LocalDateTime.now();
+    
+            // 비교
+            if (dateTimeFromDB.isAfter(currentDateTime)) {
+                newInfos.add(info);
+            } 
+        }
+        
+
+        return newInfos;
+
+    }
+
 
 }

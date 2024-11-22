@@ -65,6 +65,19 @@ public class StoreService {
         return stores;
     }
 
+    // 대표 이미지 가져오기
+    public String getStoreMainImage(Long id) {
+        List<StoreImage> storeImages = findByStoreIdFromImage(id);
+        String imagePath = "";
+        for (StoreImage image : storeImages) {
+            if (image.getIsMain() == true) {
+                imagePath = image.getImagePath();
+                break;
+            }
+        }
+        return imagePath;
+    }
+
     
 
 }

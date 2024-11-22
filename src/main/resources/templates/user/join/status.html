@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>합석 현황</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        .status_container {
+            margin-top: -29px;
+            width: 630px;
+            border-radius: 0.8em;
+        }
+
+        .date_time {
+            color: goldenrod;
+            font-weight: bold;
+            font-size: 33px;
+            text-align: center;
+        }
+
+        .detail_cancel_button {
+            display: flex;
+            gap: 36px;
+            position: relative;
+            top: -36px;
+            left: 93px;
+        }
+
+        #detailButton,
+        #cancelButton {
+            width: 153px;
+            left: 133px;
+            position: relative;
+            top: -6px;
+            font-weight: bold;
+            background-color: white;
+            cursor: pointer;
+            height: 42px;
+            font-size: 20px;
+            border-radius: 0.7em;
+            border :none;
+        }
+        #detailButton {
+            color: white;
+            background-color: orange;
+        }
+        #cancelButton {
+            color: white;
+            background-color: red;
+        }
+
+        .mi_1 {
+            display: flex;
+            margin-top: 42px;
+        }
+
+        .mi_1 img {
+            border-radius: 50%;
+            width: 178px;
+            height: 155px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{user/header}" id="header"></div>
+        <div class="headerText">
+            <button id="go_back" onclick="goBack();">&lt;</button>
+            <h1>합석현황</h1>
+            <hr>
+        </div>
+        <div id="middle">
+            <div class="status_container" th:each="jr : ${status}">
+                
+                <div th:each="request, stat : ${jr.request}">
+                    <form action="/join/accept" method="post" th:id="${stat.index} + 'form'">
+                        <input type="hidden" name="requestId" th:value="${request.requestId}">
+                        <input type="hidden" name="joinId" th:value="${jr.info.joinId}">
+                        <input type="hidden" name="accept" th:id="${stat.index} + 'accept'">
+                        <input type="hidden" name="otherId" th:value="${request.otherId}">
+                    </form>
+                    <div class="mi_1">
+                        <img th:src="${request.otherImagePath}" alt="">
+                        <h2 th:text="${jr.info.storeName}" style="position: relative; top: -24px;left: 50px;"></h2>
+
+                    </div>
+                    <div class="status_inner">
+                        <div class="detail_cancel_button">
+                            <button type="button" id="detailButton" th:onclick="'acceptRequest(' + ${stat.index} + ')'">수락</button>
+                            <button type="button" id="cancelButton" th:onclick="'acceptRequest(' + ${stat.index} + ')'">거절</button>
+                        </div>
+                    </div>
+                    <hr style="position: relative;top: -46px;">
+                </div>
+
+                
+            </div>
+
+
+
+        </div>
+        <div th:replace="user/footer" id="footer"></div>
+
+    </div>
+
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/store-detail.js"></script>
+    <script>
+        function acceptRequest(index) {
+            document.getElementById(index + "accept").value = true;
+            document.getElementById(index + "form").submit();
+        }
+        function refuseRequest(index) {
+            document.getElementById(index + "accept").value = false;
+            document.getElementById(index + "form").submit();
+        }
+    </script>
+
+</body>
+
+</html>

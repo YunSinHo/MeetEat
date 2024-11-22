@@ -1,16 +1,22 @@
+<style>
+     a {
+      text-decoration: none; /* 밑줄 제거 (선택사항) */
+    }
+</style>
 <div class="footer-container">
   
     <div class="icon">
         <i class="fas fa-search"></i>
     </div>
     <div class="icon">
-        <i class="fas fa-clipboard"></i>
+        <a href="/reservation/status"><i class="fas fa-clipboard"></i></a>
     </div>
     <div class="icon">
         <i class="fas fa-heart"></i>
     </div>
     <div class="icon">
-        <i class="fas fa-user-friends"></i>
+        <a href="/join/status"><i class="fas fa-user-friends" id="joinIcon"></i></a>
+        <img src="/images/joinPeople.png" alt="" style="display: none;width: 44px;" id="existsRequestJoin" >
     </div>
     <div class="icon">
         <img th:src="${imagePath}" alt="Profile" class="profile-pic" id="mainImage">
@@ -18,6 +24,16 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        document.getElementById("existsRequestJoin").addEventListener('click', function() {
+            window.location.href = "/join/status";
+        });
+         document.addEventListener('DOMContentLoaded', function () {
+            const existsRequest = document.getElementById("existsRequest");
+            if (existsRequest && existsRequest.value === 'true') {
+                document.getElementById("existsRequestJoin").style.display = 'block';
+                document.getElementById("joinIcon").style.display = 'none';
+            }
+        });
         setTimeout(function () {
             console.log("Document is ready!"); // 이 로그가 출력되는지 확인
             $.ajax({

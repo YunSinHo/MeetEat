@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 </title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        #h1 {
+            margin-top: -26px;
+            color: orange;
+            position: relative;
+            text-align: center;
+        }
+
+        #mainMenu,
+        #subMenu {
+            margin-top: -16px;
+        }
+
+        #subMenu {
+            margin-top: 2px;
+        }
+
+        #menus {}
+
+        #menuName {
+            font-size: 19px;
+            width: 268px;
+        }
+
+        #mainMenuBtn,
+        #subMenuBtn {
+            margin-left: 213px;
+            position: relative;
+            top: -122px;
+        }
+
+        #menuInfo {
+            width: 428px;
+            position: relative;
+            top: -34px;
+        }
+
+        #menuImage {
+            top: -190px;
+            margin-left: 429px;
+            position: relative;
+            height: 194px;
+            width: 180px;
+            border-radius: 0.7em;
+        }
+
+        #choiceHr {
+            margin-top: -196px;
+        }
+
+        #cost {
+            width: 100px;
+            position: relative;
+            top: -20px;
+        }
+
+        #composition {
+            width: 200px;
+            position: relative;
+            top: -35px;
+        }
+
+        .counter-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            width: 100px;
+            position: relative;
+            top: -120px;
+            left: 246px;
+        }
+
+        .counter-button {
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            user-select: none;
+            background-color: #f0f0f0;
+        }
+
+        .counter-button:active {
+            background-color: #e0e0e0;
+        }
+
+        .counter-value {
+            flex: 2;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="container">
+        <div id="header"></div>
+
+        <div id="h1">
+            <h1>맛집 예약</h1>
+            <hr style="position: relative;top: -14px;">
+        </div>
+        <div id="middle"> -->
+            <div id="mainMenu">
+                <h2>메인 메뉴</h2>
+                    <hr style="border: none;border-top: 2px solid rgb(189, 189, 189); ">
+                    <div id="menus" th:each="mainMenu, stat : ${mainMenu}">
+                        <input type="hidden" th:value="${mainMenu.storeMenuId}" name="storeMenuId">
+                        <h4 id="menuName" th:text="${mainMenu.name}">메뉴 이름</h4>
+                        <p id="cost" th:text="${mainMenu.cost} + '원'"></p>
+                        <p id="composition" th:text="${mainMenu.composition}"></p>
+                        <!-- <div class="counter-container">
+                            <div class="counter-button" th:onclick="'mainDecrement(' + ${stat.index} + ')'">-</div>
+                            <div class="counter-value" th:id="'mainCounter' + ${stat.index}">0</div>
+                            <div class="counter-button" th:onclick="'mainIncrement(' + ${stat.index} + ')'">+</div>
+                            <input type="hidden" th:id="'mainValue' + ${stat.index}" name="number" value="0">
+                        </div> -->
+                        <p id="menuInfo" th:text="${mainMenu.introduction}">
+                        </p>
+                        <img th:src="${mainMenu.imagePath}" alt="" id="menuImage">
+                        <hr id="choiceHr">
+                    </div>
+
+            </div>
+            <div id="subMenu">
+                <h2>사이드 메뉴</h2>
+                <hr style="border: none;border-top: 2px solid rgb(189, 189, 189); ">
+                <div id="menus" th:each="subMenu, stat : ${subMenu}">
+                    <input type="hidden" th:value="${subMenu.storeMenuId}" name="storeMenuId">
+                    <h4 id="menuName" th:text="${subMenu.name}" name="name">메뉴 이름</h4>
+                    <p id="cost" th:text="${subMenu.cost} + '원'" name="cost"></p>
+                    <p id="composition" th:text="${subMenu.composition}" name="composition"></p>
+            
+                    <p id="menuInfo" th:text="${subMenu.introduction}" name="introduction">
+                    </p>
+                    <img th:src="${subMenu.imagePath}" alt="" id="menuImage">
+                    <hr id="choiceHr">
+                </div>
+            </div>
+   
+
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        function mainIncrement(index) {
+            let count = document.getElementById("mainValue" + index);
+
+            count.value = Number(count.value) + 1;
+            document.getElementById("mainCounter" + index).textContent = count.value;
+        }
+
+        function mainDecrement(index) {
+            let count = document.getElementById("mainValue" + index);
+            if (Number(count.value) > 0) {
+                count.value = Number(count.value) - 1;
+                document.getElementById("mainCounter" + index).textContent = count.value;
+            }
+        }
+        function subIncrement(index) {
+            let count = document.getElementById("subValue" + index);
+            count.value = Number(count.value) + 1;
+            document.getElementById("subCounter" + index).textContent = count.value;
+        }
+
+        function subDecrement(index) {
+            let count = document.getElementById("subValue" + index);
+            if (Number(count.value) > 0) {
+                count.value = Number(count.value) - 1;
+                document.getElementById("subCounter" + index).textContent = count.value;
+            }
+        }
+
+    </script>
+</body>
+
+</html>

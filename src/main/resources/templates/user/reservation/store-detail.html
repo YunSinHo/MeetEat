@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <div id="header"></div>
+        <div th:replace="~{user/header}" id="header"></div>
         <div id="middle">
             <div id="banner">
                 <div class="slider-container">
@@ -25,7 +25,17 @@
                 </div>
 
             </div>
-            <h2 id="storeName" class="divWidth" th:text="${store.storeName}"></h2>
+            <div style="display: flex;">
+                <h2 id="storeName" class="divWidth" th:text="${store.storeName}"></h2>
+                <div style="display: flex;
+                width: 612px;
+                font-weight: bold;">
+                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">
+                    <p>위치보기</p>
+                </div>
+
+            </div>
+
             <div id="location" class="divWidth">
                 <p th:text="${store.address}"></p>
             </div>
@@ -42,62 +52,116 @@
                 left: 15px;
                 font-weight: bold;
                 font-size: 21px;"></p>
-                <p style="position: relative;
-                top: -10px;
-                left: 34px;
-                color: darkgray;
-                cursor: pointer;">x개 리뷰&gt;</p>
             </div>
-            <hr style="position: relative; top: -20px;    left: -5px;">
+            <hr style="position: relative; top: -20px;">
             <div id="explain" class="divWidth">
                 <p id="explainText" th:text="${store.introduction}"></p>
                 <hr>
             </div>
             <div id="callAndReservation" class="divWidth">
-                <div style="cursor: pointer;">
-                    <img src="/images/phone.png" alt="" class="icon2" style="margin-left: 66px;">전화하기
-                </div>
-                <div style="cursor: pointer;top: 6px;position: relative;">
-                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">위치보기
-                </div>
+                <p class="menus_detail" onclick="clickMenus('pMenu')" id="pMenu">메뉴</p>
+                <p class="menus_detail" onclick="clickMenus('pPicture')" id="pPicture">사진</p>
+                <p class="menus_detail" onclick="clickMenus('pReview')" id="pReview">리뷰</p>
+                <p class="menus_detail" onclick="clickMenus('pIntroduction')" id="pIntroduction">가게정보</p>
             </div>
-            <hr style="left: -5px;position: relative;">
-            <button type="button" id="dateBtn">날짜 선택</button>
-            <div class="month" id="calendarDiv">
-                <p id="selectedDate"></p>
-                <div id="calendarWrapper" style="display: none;">
-                    <div th:replace="calendar" id="calendar" style="display: none;"></div>
-                </div>
-            </div>
-            <div id="reservationTime" class="divWidth">
-                <button class="prev" id="scrollLeft" onclick="handleScrollLeft()"
-                    style="display: none;left: -13px;">&#10094;</button>
-                <div id="timeContainer"></div>
-                <button class="next" id="scrollRight" onclick="handleScrollRight()"
-                    style="display: block;right: -30px;">
-                    &#10095;</button>
-            </div>
+            <hr style="position: relative;" id="hr_">
+            <div th:include="user/reservation/menu" id="menu" style="display: none;"></div>
+            <div th:include="user/reservation/picture" id="picture" style="display: none;"></div>
+            <div th:include="user/reservation/review" id="review" style="display: none;"></div>
+            <div th:include="user/reservation/introduction" id="introduction" style="display: none;"></div>
 
-
+            <div id="footer-button">
+                <div id="buttonInner">
+                    <form action="/reservation/choice-date/form" method="post" id="form">
+                        <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                        <button type="submit" id="submitBtn" class="button-next">날짜 & 시간정하기</button>
+                    </form>
+                </div>
+                <div id="buttonInner2">
+                    <form action="/join/join-confirm/form" method="post" id="form2">
+                        <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                        <button type="submit" id="reserveBtn" class="button-next">합석 글쓰기</button>
+                    </form>
+                </div>
+                
+            </div>
         </div>
-
-
-        <div th:replace="user/footer" id="footer"></div>
     </div>
+        <input type="hidden" th:value="${isJoin}" id="isJoin">
 
-    <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
-    <input type="hidden" id="storeId" th:value="${store.storeId}">
-    <input type="hidden" id="date" name="date">
-    <script src="/js/user-nav.js"></script>
-    <script src="/js/map.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
-    <script src="/js/store-detail.js"></script>
-    <script>
-        document.getElementById("dateBtn").addEventListener('click', function () {
-            document.getElementById("calendarWrapper").style.display = 'block';
-        });
-    </script>
+
+
+        <script src="/js/user-nav.js"></script>
+        <script src="/js/map.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+        <script src="/js/store-detail.js"></script>
+        <script>
+                     document.addEventListener('DOMContentLoaded', function () {
+                if (document.getElementById("isJoin").value === 'true') {
+                    document.getElementById("buttonInner2").style.display = 'block';
+                    document.getElementById("buttonInner").style.display = 'none';
+                }
+
+            });
+            const menus = document.getElementsByClassName("menus_detail");
+            let preMenu;
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById("pMenu").click();
+            });
+            function clickMenus(id) {
+                if (preMenu) {
+                    preMenu.style.borderBottom = '1px solid white';
+                    preMenu.style.color = 'gray';
+                }
+                preMenu = document.getElementById(id)
+                document.getElementById(id).style.borderBottom = '3px solid black';
+                document.getElementById(id).style.color = 'black';
+                if (id === 'pMenu') {
+                    getMenu(document.getElementById("storeId").value);
+                } else if (id === 'pPicture') {
+                    getPicture(document.getElementById("storeId").value);
+                } else if (id === 'pReview') {
+                    getReview(document.getElementById("storeId").value);
+                } else if (id === 'pIntroduction') {
+                    getIntroduction(document.getElementById("storeId").value);
+                }
+
+            }
+            let prevDiv;
+            function getMenu(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("menu");
+                document.getElementById("menu").style.display = 'block';
+            }
+
+
+            function getPicture(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("picture");
+                document.getElementById("picture").style.display = 'block';
+            }
+            function getReview(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("review");
+                document.getElementById("review").style.display = 'block';
+            }
+            function getIntroduction(storeId) {
+                if (prevDiv) {
+                    prevDiv.style.display = 'none';
+                }
+                prevDiv = document.getElementById("introduction");
+                document.getElementById("introduction").style.display = 'block';
+            }
+
+
+        </script>
 </body>
 
 </html>

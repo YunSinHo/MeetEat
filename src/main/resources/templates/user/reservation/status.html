@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제창</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        .status_container {
+            margin-top: -29px;
+            width: 630px;
+            border-radius: 0.8em;
+        }
+
+        .date_time {
+            color: goldenrod;
+            font-weight: bold;
+            font-size: 33px;
+            text-align: center;
+        }
+
+        .detail_cancel_button {
+            display: flex;
+            gap: 132px;
+        }
+
+        #detailButton,
+        #cancelButton {
+            width: 241px;
+            left: 10px;
+            position: relative;
+            top: -6px;
+            font-weight: bold;
+            background-color: white;
+            cursor: pointer;
+            height: 42px;
+            font-size: 20px;
+        }
+        .status_container {
+            margin-top: -29px;
+            width: 630px;
+            border-radius: 0.8em;
+        }
+
+        .date_time {
+            color: goldenrod;
+            font-weight: bold;
+            font-size: 33px;
+            text-align: center;
+        }
+
+        .detail_cancel_button {
+            display: flex;
+            gap: 36px;
+            position: relative;
+            top: -36px;
+            left: 93px;
+        }
+
+        #detailButton,
+        #cancelButton {
+            width: 153px;
+            left: 133px;
+            position: relative;
+            top: -6px;
+            font-weight: bold;
+            background-color: white;
+            cursor: pointer;
+            height: 42px;
+            font-size: 20px;
+            border-radius: 0.7em;
+            border :none;
+        }
+      
+        .mi_1 {
+            display: flex;
+            margin-top: 42px;
+        }
+
+        .mi_1 img {
+            border-radius: 50%;
+            width: 178px;
+            height: 155px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{user/header}" id="header"></div>
+        <div class="headerText">
+            <button id="go_back" onclick="goBack();">&lt;</button>
+            <h1>예약현황</h1>
+            <hr>
+        </div>
+        <div class="intro">
+            <h3>예약하신 시간으로부터 '30분' 이내에 입장 부탁드립니다.</h3>
+            <p>'노쇼'발생 시 패널티가 부과될 수 있으니 예약 시간을 꼭 지켜주세요.</p>
+        </div>
+        <div id="middle">
+            <h2>식당 예약</h2>
+            <div class="status_container" th:each="status, stat : ${status}">
+                <div th:id="'status' + ${stat.index}" class="status_inner">
+                    <div class="date_time">
+                        <p th:text="${status.date}"></p>
+                        <p th:text="${status.time}"></p>
+                    </div>
+                    <h2 th:text="${status.storeName}" style="text-align: center;"></h2>
+
+                </div>
+                <hr>
+            </div>
+            <h2>합석 예약</h2>
+            <div class="status_container" th:each="jr : ${jr}">
+                
+                <div th:each="request, stat : ${jr.request}">
+                    <form action="/join/accept" method="post" th:id="${stat.index} + 'form'">
+                        <input type="hidden" name="requestId" th:value="${request.requestId}">
+                        <input type="hidden" name="joinId" th:value="${jr.info.joinId}">
+                        <input type="hidden" name="accept" th:id="${stat.index} + 'accept'">
+                    </form>
+                    <div class="mi_1">
+                        <img th:src="${request.otherImagePath}" alt="">
+                        <h2 th:text="${jr.info.storeName}" style="position: relative; top: 108px;left: 64px;"></h2>
+
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div th:replace="user/footer" id="footer"></div>
+
+    </div>
+
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/store-detail.js"></script>
+
+</body>
+
+</html>

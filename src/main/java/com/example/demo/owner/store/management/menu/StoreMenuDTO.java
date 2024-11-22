@@ -23,6 +23,8 @@ public class StoreMenuDTO {
 
     private String imagePath;
 
+    private String number;
+
     private Boolean isMain = false;
 
     private Boolean isActive = true;

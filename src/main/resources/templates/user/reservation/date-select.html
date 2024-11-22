@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가게 상세정보</title>
+    <link rel="stylesheet" href="/css/user-main.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/store-detail.css">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{user/header}" id="header"></div>
+        <div id="middle">
+
+            <div class="month" id="calendarDiv">
+                <p id="selectedDate"></p>
+                <div id="calendarWrapper">
+                    <div th:include="~{calendar}" id="calendar"></div>
+                </div>
+            </div>
+            <div id="reservationTime" class="divWidth">
+                <button class="prev" id="scrollLeft" onclick="handleScrollLeft()"
+                    style="display: none;left: -13px;">&#10094;</button>
+                <div id="timeContainer"></div>
+                <button class="next" id="scrollRight" onclick="handleScrollRight()"
+                    style="display: block;right: -30px;">
+                    &#10095;</button>
+
+            </div>
+            <div id="tableNumber" class="divWidth">
+                <div id="tableContainer" class="tableContainer">
+                    <div class="table" id="table0">
+                        <p id="pTable0"></p>
+                        <input type="hidden" value="oneTable" id="oneTable">
+                    </div>
+                    <div class="table" id="table1">
+                        <p id="pTable1"></p>
+                        <input type="hidden" value="twoTable" id="twoTable">
+                    </div>
+                    <div class="table" id="table2">
+                        <p id="pTable2"></p>
+                        <input type="hidden" value="fourTable" id="fourTable">
+                    </div>
+                    <div class="table" id="table3">
+                        <p id="pTable3"></p>
+                        <input type="hidden" value="partyTable" id="partyTable">
+                    </div>
+                </div>
+
+            </div>
+
+            <input type="hidden" id="reservationTimes" th:value="${reservationTimes}" />
+
+
+        </div>
+        <div id="footer-button">
+            <div id="buttonInner">
+                <form action="/reservation/reservation-confirm/form" method="post" id="form">
+
+                    <input type="hidden" id="storeId" th:value="${store.storeId}" name="storeId">
+                    <input type="hidden" id="date" name="date">
+                    <input type="hidden" id="table" name="table">
+                    <input type="hidden" id="time" name="time">
+                    <input type="hidden" th:value="${store.storeName}" name="storeName">
+                    <button type="submit" id="submitBtn" class="button-next">다 음</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="/js/user-nav.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
+    <script src="/js/store-detail.js"></script>
+    <script src="/js/calendar.js"></script>
+    <script>
+        let currentIndex2 = 0; // 현재 인덱스
+        const itemsPerPage = 4; // 페이지당 요소 수
+        let currentSelectedTime = null;
+
+        // 요소가 HTML에 렌더링된 후 접근하도록 함
+        const reservationTimes = JSON.parse(document.getElementById('reservationTimes').value);
+
+        function renderTimes() {
+            const timeContainer = document.getElementById('timeContainer');
+            const totalItems = reservationTimes.length;
+
+            // 이전 요소들을 제거
+            timeContainer.innerHTML = '';
+
+            // 현재 인덱스에 따라 5개 요소 추가
+            for (let i = currentIndex2; i < Math.min(currentIndex2 + itemsPerPage, totalItems); i++) {
+                const p = document.createElement('p');
+                const div = document.createElement('div');
+                div.classList.add('time');
+                div.id = 'time' + i;
+                p.innerText = reservationTimes[i]; // 시간대 추가
+                p.style.textAlign = 'center';
+                p.style.fontSize = '31px';
+                p.style.marginLeft = '22px';
+                p.style.marginTop = '22px';
+                p.classList.add('times');
+
+                // 클릭 이벤트 추가
+                div.addEventListener('click', function () {
+                    if (date === null || date === "") {
+                        document.getElementById("tableNumber").style.display = 'none';
+                        alert('날짜를 선택해주세요.');
+                        isRequestInProgress = false;
+                        return;
+                    }
+                    clickTime(reservationTimes[i]);
+                    if (currentSelectedTime) {
+
+                        currentSelectedTime.style.color = 'black';
+                        currentSelectedTime.style.backgroundColor = '#f7f7f7';
+                    }
+                    currentSelectedTime = div;
+                    currentSelectedTime.style.color = 'white';
+                    currentSelectedTime.style.backgroundColor = 'orange';
+                });
+
+                timeContainer.appendChild(div);
+                div.appendChild(p);
+            }
+
+            // 버튼 가시성 조정
+            document.getElementById('scrollLeft').style.display = currentIndex2 > 0 ? 'block' : 'none';
+            document.getElementById('scrollRight').style.display = currentIndex2 + itemsPerPage < totalItems ? 'block' : 'none';
+        }
+
+
+        function handleScrollLeft() {
+            if (currentIndex2 > 0) {
+                currentIndex2 -= itemsPerPage; // 인덱스 감소
+                renderTimes(); // 재렌더링
+            }
+        }
+
+        function handleScrollRight() {
+            const totalItems = reservationTimes.length;
+            if (currentIndex2 + itemsPerPage < totalItems) {
+                currentIndex2 += itemsPerPage; // 인덱스 증가
+                renderTimes(); // 재렌더링
+            }
+        }
+
+
+        // 초기 렌더링 호출
+        renderTimes();
+
+        document.getElementById("submitBtn").addEventListener('click', function (event) {
+            event.preventDefault();
+            if (document.getElementById("table").value === "" || document.getElementById("table").value === null) {
+                alert("테이블을 선택해주세요.");
+                return;
+            } else {
+                document.getElementById("form").submit();
+            }
+        });
+        let prevTime;
+        let isExistPrev = false;
+        const times = document.getElementsByClassName("time");
+        for (let i = 0; i < times.length; i++) {
+            let timeElement = document.getElementById("time" + i);
+
+            if (timeElement) {
+                timeElement.addEventListener('click', function () {
+                    if (isExistPrev) {
+                        prevTime.style.color = 'black';
+                        prevTime.style.backgroundColor = '#f7f7f7';
+                    }
+                    isExistPrev = true;
+                    prevTime = timeElement;
+                    let time = timeElement.querySelector("p").textContent;
+                    timeElement.style.color = 'white';
+                    timeElement.style.backgroundColor = 'orange';
+                    document.getElementById("tableNumber").style.display = 'block';
+                    clickTime(time);
+                });
+            }
+        }
+
+        let isRequestInProgress = false;
+
+        // 시간 클릭
+        let isVaildTable = true;
+        function clickTime(time) {
+            if (isRequestInProgress) return;  // 요청 중복 방지
+            isRequestInProgress = true;
+
+            let storeId = document.getElementById("storeId").value;
+            let date = document.getElementById("date").value;
+            if (date === null || date === "") {
+                document.getElementById("tableNumber").style.display = 'none';
+                alert('날짜를 선택해주세요.');
+                isRequestInProgress = false;
+                return;
+            }
+            document.getElementById("table").value = "";
+
+            if (isExistPrevTable) {
+
+                prevTable.style.color = 'black';
+                prevTable.style.backgroundColor = '#f7f7f7';
+            }
+
+            $.ajax({
+                url: "/reservation/table-information",
+                type: "post",
+                data: { storeId: storeId, date: date, time: time },
+                success: function (tableMap) {
+                    document.getElementById("time").value = time;
+                    for (let i = 0; i < 4; i++) {
+
+                        const div = document.getElementById('table' + i);
+                        const p = document.getElementById('pTable' + i);
+                        const pValue = p;
+                        if (i === 0) {
+                            p.innerHTML = "<strong>1인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.oneTable;
+                            pValue.value = tableMap.oneTable;
+
+                        }
+
+                        else if (i === 1) {
+                            p.innerHTML = "<strong>2인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.twoTable;
+                            pValue.value = tableMap.twoTable;
+                        }
+
+                        else if (i === 2) {
+                            p.innerHTML = "<strong>4인 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.fourTable;
+                            pValue.value = tableMap.fourTable;
+                        }
+                        else if (i === 3) {
+                            p.innerHTML = "<strong>단체 테이블</strong>" + "<br>" + "<br>" + "남은 테이블: " + tableMap.partyTable;
+                            pValue.value = tableMap.partyTable;
+                        }
+                        document.getElementById('table' + i).style.pointerEvents = 'auto';
+                        document.getElementById('table' + i).style.cursor = 'pointer';
+                        document.getElementById('table' + i).style.opacity = '1';
+                        if (pValue.value === 0) {
+                            document.getElementById('table' + i).style.cursor = 'default';
+                            document.getElementById('table' + i).style.opacity = '0.5';
+                            document.getElementById('table' + i).style.pointerEvents = 'none';
+                        }
+
+
+
+
+                        p.style.textAlign = "center";
+                        p.style.fontSize = '16px';
+                        p.style.marginLeft = '13px';
+                        p.style.marginTop = '10px';
+                        div.appendChild(p);
+                    }
+
+                },
+                error: function () {
+                    alert("서버 오류가 발생했습니다.");
+                },
+                complete: function () {
+                    isRequestInProgress = false;  // 요청 완료 후 플래그 리셋
+                }
+            });
+        }
+        let isExistPrevTable = false;
+        let prevTable;
+        const table = document.getElementsByClassName("table");
+        for (let i = 0; i < table.length; i++) {
+
+            document.getElementById("table" + i).addEventListener('click', function () {
+
+
+                document.getElementById("table").value = document.getElementById("table" + i).querySelector('input[type="hidden"]').value;
+                if (isExistPrevTable) {
+
+                    prevTable.style.color = 'black';
+                    prevTable.style.backgroundColor = '#f7f7f7';
+                }
+                isExistPrevTable = true;
+                prevTable = document.getElementById("table" + i);
+
+                document.getElementById("table" + i).style.color = 'white';
+                document.getElementById("table" + i).style.backgroundColor = 'orange';
+            });
+        }
+    </script>
+</body>
+
+</html>

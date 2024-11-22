@@ -9,7 +9,7 @@ html, body {
 
 .container {
     width: 617px;
-    min-height: 90vh;
+    min-height: 100vh;
     height: auto; /* 높이를 자동으로 설정 */
     padding: 40px; /* 컨텐츠 여백 */
     background-color: white; /* 배경색 */

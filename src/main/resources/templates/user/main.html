@@ -7,21 +7,8 @@
     <title>유저 메인페이지</title>
     <link rel="stylesheet" href="/css/user-main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <style>
-        #searchResults {
-            margin-top: 10px;
-            /* 여백 추가 */
-            border: 1px solid #ccc;
-            /* 경계선 추가 */
-            max-height: 150px;
-            /* 최대 높이 설정 */
-            overflow-y: auto;
-            /* 스크롤 가능 */
-            position: relative;
-            top: 55px;
-        }
 
+    <style>
         .main-go {
             font-weight: bold;
             color: black;
@@ -29,7 +16,7 @@
             text-decoration-line: none;
             display: inline-block;
             /* 크기를 지정하기 위해 필요 */
-            width: 281px;
+            width: 128px;
             height: 148px;
             background-size: cover;
             /* 이미지가 요소 크기에 맞춰지도록 */
@@ -37,57 +24,10 @@
         }
 
 
-
-        #reservation {
-
-            position: relative;
-            top: -227px;
-            left: 10px;
-            z-index: 1;
-        }
-
-        #reservation::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-image: url('/images/reservation_back.png');
-            background-position: center;
-            opacity: 0.6;
-            z-index: -1;
-        }
-
-        #join {
-            z-index: 1;
-            position: relative;
-            top: -227px;
-            left: 35px;
-        }
-
-        #join::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-image: url('/images/jointable_back.png');
-            background-position: center;
-            opacity: 0.6;
-            z-index: -1;
-        }
-
         #map_template {
-            width: 591px;
-            height: 460px;
-            position: absolute;
-            border: 1px solid black;
-            top: 344px;
-            left: 50px;
+            width: 560px;
+            height: 355px;
+            margin: 0 auto;
         }
 
         #map {
@@ -97,24 +37,67 @@
             z-index: 2;
             /* z-index를 높여서 다른 요소 위에 표시되도록 함 */
         }
+
+        #d-1 {
+            position: relative;
+            top: 51px;
+            background: orange;
+        }
+
+        #middle img {
+            width: 169px;
+            left: 10px;
+            position: relative;
+        }
+
+        .img_inner {
+            display: flex;
+            margin: 0 auto;
+            position: relative;
+            top: 68px;
+            left: 61px;
+            gap: 80px;
+            margin-bottom: 62px;
+        }
+
+        .imgEx {
+            position: relative;
+            top: -46px;
+        }
+
+        .img_inner a {
+            border: 2px solid black;
+            width: 208px;
+            border-radius: 0.5em;
+            height: 175px;
+
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <!-- <div id="searchResults"></div> -->
-        <div id="header"></div>
+        <div th:replace="~{user/header}" id="header"></div>
+        <div id="d-1">
+            <h3>예약임박</h3>
+        </div>
         <div id="middle">
-            <a href="/reservation/main" class="main-go" id="reservation">맛집 예약</a>
+            <div class="img_inner">
+                <a href="/reservation/main" class="main-go" id="reservation">
+                    <img src="/images/eat.png" alt="">
+                </a>
 
-            <a href="" class="main-go" id="join">합석</a>
-
-            <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="position: relative;
-            top: -220px;
-            width: 586px;
-            left: 12px;">
+                <a href="/join/main" class="main-go" id="join">
+                    <img src="/images/join.png" alt="">
+                </a>
+            </div>
+            <h2 style="position: relative;top: 19px; left: 29px;">플레이스</h2>
+            <input type="text" class="input" placeholder="오늘은 어디서 누구랑 먹지?" id="addressInput" th:value="${name}" style="
+            width: 561px;
+    margin-top: 10px;
+    margin-left: 28px;">
             <button type="button" id="searchButton" style="position: relative;
-            top: -258px;
+               top: -37px;
             left: 547px;
             border: none;
             background-color: white;
@@ -130,6 +113,7 @@
         <div th:replace="user/footer" id="footer"></div>
 
     </div>
+    <input type="hidden" th:value="${existsRequest}" id="existsRequest">
     <input type="hidden" th:value="${lat}" id="lat">
     <input type="hidden" th:value="${lng}" id="lng">
     <script src="/js/user-nav.js"></script>
@@ -137,6 +121,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
     <script>
+
+
+
         let lat = document.getElementById("lat").value;
         let lng = document.getElementById("lng").value;
         const addressInput = document.getElementById("addressInput");
@@ -156,7 +143,7 @@
                         position: new naver.maps.LatLng(data.lat, data.lng),
                         map: map
                     });
-                    
+
 
                     // 정보 윈도우 생성
                     const infoWindow = new naver.maps.InfoWindow({
@@ -171,7 +158,7 @@
             })
             .catch(error => console.error('Error:', error));
 
-            setTimeout(function () {
+        setTimeout(function () {
             console.log("Document is ready!"); // 이 로그가 출력되는지 확인
             $.ajax({
                 url: '/user-profile/main-image',

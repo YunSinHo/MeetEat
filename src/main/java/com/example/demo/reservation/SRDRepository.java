@@ -15,12 +15,19 @@ public interface SRDRepository extends JpaRepository<StoreReservationDate, Long>
 
     void deleteAllByDate(LocalDate yesterday);
 
-    // 어플리케이션 실행시 데이터 체크
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM StoreReservationDate e WHERE e.storeId = :storeId AND e.date = :date")
+    // // 어플리케이션 실행시 데이터 체크
+    // @Query("SELECT COUNT(e) > 0 FROM StoreReservationDate e WHERE e.date = :date AND e.storeId = :storeId")
     boolean existsByDateAndStoreId(@Param("date") LocalDate date, @Param("storeId") Long storeId);
+    
 
     @Query("SELECT e FROM StoreReservationDate e WHERE e.storeId = :storeId AND e.date = :date AND e.time = :time")
     Optional<StoreReservationDate> findByIdAndDateAndTime(@Param("storeId")long storeId,
      @Param("date")LocalDate date, @Param("time")String time);
+
+    
+    
+    List<StoreReservationDate> findAllByStoreId(Long storeId);
+
+    StoreReservationDate findByStoreIdAndDateAndTime(long long1, LocalDate localDate, String time);
 
 }

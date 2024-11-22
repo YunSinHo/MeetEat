@@ -1,50 +1,44 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden; /* 가로 스크롤 금지 */
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-}
 
 .container {
-    width: 617px;
-    overflow-x: hidden;
-    min-height: 85vh; /* 컨테이너 높이를 고정 */
+    width: 630px;
     background-color: white;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    margin: 40px auto;
-    overflow-y: auto; /* 스크롤 가능하도록 설정 */
-    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    margin: 0 auto;
+    min-height: 851px;
 }
 
 header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    width: 100%; /* 컨테이너 너비에 맞춤 */
+    width: 630px;
     height: 70px;
     background-color: white;
     z-index: 1000;
 }
 
+#middle {
+    flex: 1; /* 남은 공간을 middle이 차지 */
+    overflow: hidden; /* middle 자체에 스크롤 방지 */
+    margin-bottom: 70px;
+    padding: 6px;
+  }
 #footer {
-    position: sticky;
-    bottom: 0;
-    width: 100%; /* 컨테이너 너비에 맞춤 */
-    height: 50px;
-    background-color: white;
-    z-index: 1000;
+    position: relative; /* fixed 대신 relative를 사용 */
+    width: 100%;
 }
 
 .footer-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 100%;
+    position: fixed;
+    bottom: 0;
+    width: 630px;
+    height: 70px;
+    background-color: white;
+    z-index: 1000;
 }
 .icon {
     cursor: pointer;
@@ -70,18 +64,19 @@ header {
     border-radius: 5px;
     box-sizing: border-box;
     text-align: left;
+    top: 86px;
 }
 .button-next {
     width: 100%;
     padding: 15px;
-    font-size: 16px;
+    font-size: 21px;
     font-weight: bold;
     border: 2px solid #e67e22;
     color: white; /* 확인 버튼의 색상 */
     background-color: #e67e22;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 70px; /* 인증 요청 버튼과 확인 버튼 사이의 여백 */
+    margin-top: 8px;
 }
 .button-next:hover {
     background-color: #e67e22;
@@ -99,7 +94,34 @@ header {
     height: 50px;
     border-radius: 50%;
 }
+#go_back {
+    font-size: 35px;
+    border: none;
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+    top: 63px;
+    left: -296px;
+    position: relative;
+    z-index: 10;
+}
+.headerText {
+    text-align: center;
+    margin-bottom: -10px;
 
+}
+.headerText h1{
+    text-align: center;
+}
+
+.headerText hr {
+    margin-top: -21px;
+}
+.intro{
+    background-color: orange;
+    color: white;
+    text-align: center;
+}
 
 
 
