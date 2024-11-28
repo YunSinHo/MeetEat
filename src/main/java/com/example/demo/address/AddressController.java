@@ -42,8 +42,8 @@ public class AddressController {
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://naveropenapi.apigw.ntruss.com")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .defaultHeader("X-NCP-APIGW-API-KEY-ID", "nix6e3syt1")
-            .defaultHeader("X-NCP-APIGW-API-KEY", "Rx0M6mbtwdQTdLbilzSOKO3mAXuUc5uCe0iRc5lk")
+            .defaultHeader("X-NCP-APIGW-API-KEY-ID", "na7scvm6e4")
+            .defaultHeader("X-NCP-APIGW-API-KEY", "tE713I5A5kyHammRTTsMve4gnykVHeMDLpcfch32")
             .build();
 
     @GetMapping("/geocode")
@@ -147,6 +147,16 @@ public class AddressController {
         return ResponseEntity.ok(locInfos);
 
     }
+
+    // 가게 위치정보
+    @PostMapping("/store-location")
+    public ResponseEntity<Map<String, Object>> storeLocation(@RequestParam("storeId") Long storeId) {
+        Map<String, Object> locInfos = new HashMap<>();
+        locInfos = addressService.mapMarking(locInfos, storeId);
+        
+        return ResponseEntity.ok(locInfos);
+    }
+    
     
 
 }

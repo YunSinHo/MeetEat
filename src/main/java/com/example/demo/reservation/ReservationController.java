@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.address.AddressService;
 import com.example.demo.address.UserAddress;
+import com.example.demo.owner.store.Store;
 import com.example.demo.owner.store.StoreCombineDTO;
+import com.example.demo.owner.store.StoreService;
 import com.example.demo.owner.store.management.ManagementService;
 import com.example.demo.owner.store.management.SRDService;
 import com.example.demo.owner.store.management.menu.StoreMenu;
@@ -41,16 +43,18 @@ public class ReservationController {
     private final DateService dateService;
     private final SRDService srdService;
     private final JoinService joinService;
+    private final StoreService storeService;
 
     public ReservationController(SRDService srdService, ReservationService reservationService,
             AddressService addressService, DateService dateService,
-            ManagementService managementService, JoinService joinService) {
+            ManagementService managementService, JoinService joinService, StoreService storeService) {
         this.srdService = srdService;
         this.reservationService = reservationService;
         this.addressService = addressService;
         this.managementService = managementService;
         this.dateService = dateService;
         this.joinService = joinService;
+        this.storeService = storeService;
     }
 
     // 예약 메인페이지
@@ -97,17 +101,19 @@ public class ReservationController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int addCnt = 0;
         for (UserAddress address : addresses) {
-            addCnt++;
             if (address.getIsActive() == true) {
                 model.addAttribute("address", address);
                 break;
-            } else if (addCnt == addresses.size()) {
-                address.setName("주소를 설정해주세요.");
-                model.addAttribute("address", address);
-            }
+            } 
         }
+        if(addresses.isEmpty()){
+            UserAddress address = new UserAddress();
+            address.setName("주소를 설정해주세요.");
+            model.addAttribute("address", address);
+        }
+        
+        
         List<StoreCombineDTO> stores = reservationService.getStoreInformation(category);
         model.addAttribute("stores", stores);
         return "user/reservation/main";
@@ -135,6 +141,8 @@ public class ReservationController {
                 subMenu.add(menu);
         }
 
+        Store store2 = storeService.findById(id);
+        model.addAttribute("store2", store2);
         model.addAttribute("isJoin", isJoin);
         model.addAttribute("mainMenu", mainMenu);
         model.addAttribute("subMenu", subMenu);

@@ -30,7 +30,7 @@ public class EmailController {
             emailService.deleteByEmail(email);
 
         emailService.saveEmailCode(email, authCode, currentTime, expirationTime);
-        emailService.sendSimpleEmail(email, "가입 인증 메일입니다.", authCode);
+        emailService.sendSimpleEmail(email, "MeatEat 이메일 인증 코드입니다.", "인증 코드 : " + authCode);
         System.out.println(authCode);
         return ResponseEntity.ok().build();
     }

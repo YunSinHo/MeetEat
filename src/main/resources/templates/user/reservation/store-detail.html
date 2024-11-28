@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="/css/user-main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/user/store-detail.css">
+    <style>
+        #map_template {
+            width: 362px;
+            height: 214px;
+            margin: 0 auto;
+        }
+
+        #map {
+            position: relative;
+            z-index: 2;
+            /* z-index를 높여서 다른 요소 위에 표시되도록 함 */
+        }
+    </style>
 </head>
 
 <body>
@@ -30,8 +43,7 @@
                 <div style="display: flex;
                 width: 612px;
                 font-weight: bold;">
-                    <img src="/images/location.png" alt="" class="icon2" style="margin-left: 172px;">
-                    <p>위치보기</p>
+
                 </div>
 
             </div>
@@ -62,13 +74,14 @@
                 <p class="menus_detail" onclick="clickMenus('pMenu')" id="pMenu">메뉴</p>
                 <p class="menus_detail" onclick="clickMenus('pPicture')" id="pPicture">사진</p>
                 <p class="menus_detail" onclick="clickMenus('pReview')" id="pReview">리뷰</p>
-                <p class="menus_detail" onclick="clickMenus('pIntroduction')" id="pIntroduction">가게정보</p>
+                <p class="menus_detail" onclick="clickMenus('pLocation')" id="pLocation">위치보기</p>
             </div>
             <hr style="position: relative;" id="hr_">
             <div th:include="user/reservation/menu" id="menu" style="display: none;"></div>
             <div th:include="user/reservation/picture" id="picture" style="display: none;"></div>
             <div th:include="user/reservation/review" id="review" style="display: none;"></div>
-            <div th:include="user/reservation/introduction" id="introduction" style="display: none;"></div>
+            <div id="map_template" style="display: none;"></div>
+            <!-- <div th:include="user/reservation/location" id="location" style="display: none;"></div> -->
 
             <div id="footer-button">
                 <div id="buttonInner">
@@ -83,85 +96,109 @@
                         <button type="submit" id="reserveBtn" class="button-next">합석 글쓰기</button>
                     </form>
                 </div>
-                
+
             </div>
         </div>
     </div>
-        <input type="hidden" th:value="${isJoin}" id="isJoin">
+    <input type="hidden" th:value="${isJoin}" id="isJoin">
+    <input type="hidden" th:value="${store2.lat}" id="lat">
+    <input type="hidden" th:value="${store2.lng}" id="lng">
 
 
-
-        <script src="/js/user-nav.js"></script>
-        <script src="/js/map.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv&callback=initMap"></script>
-        <script src="/js/store-detail.js"></script>
-        <script>
-                     document.addEventListener('DOMContentLoaded', function () {
-                if (document.getElementById("isJoin").value === 'true') {
-                    document.getElementById("buttonInner2").style.display = 'block';
-                    document.getElementById("buttonInner").style.display = 'none';
-                }
-
-            });
-            const menus = document.getElementsByClassName("menus_detail");
-            let preMenu;
-            document.addEventListener('DOMContentLoaded', function () {
-                document.getElementById("pMenu").click();
-            });
-            function clickMenus(id) {
-                if (preMenu) {
-                    preMenu.style.borderBottom = '1px solid white';
-                    preMenu.style.color = 'gray';
-                }
-                preMenu = document.getElementById(id)
-                document.getElementById(id).style.borderBottom = '3px solid black';
-                document.getElementById(id).style.color = 'black';
-                if (id === 'pMenu') {
-                    getMenu(document.getElementById("storeId").value);
-                } else if (id === 'pPicture') {
-                    getPicture(document.getElementById("storeId").value);
-                } else if (id === 'pReview') {
-                    getReview(document.getElementById("storeId").value);
-                } else if (id === 'pIntroduction') {
-                    getIntroduction(document.getElementById("storeId").value);
-                }
-
-            }
-            let prevDiv;
-            function getMenu(storeId) {
-                if (prevDiv) {
-                    prevDiv.style.display = 'none';
-                }
-                prevDiv = document.getElementById("menu");
-                document.getElementById("menu").style.display = 'block';
+    <script src="/js/user-nav.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y614hn2kbc&callback=initMap"></script>
+    <script src="/js/store-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.getElementById("isJoin").value === 'true') {
+                document.getElementById("buttonInner2").style.display = 'block';
+                document.getElementById("buttonInner").style.display = 'none';
             }
 
-
-            function getPicture(storeId) {
-                if (prevDiv) {
-                    prevDiv.style.display = 'none';
-                }
-                prevDiv = document.getElementById("picture");
-                document.getElementById("picture").style.display = 'block';
+        });
+        const menus = document.getElementsByClassName("menus_detail");
+        let preMenu;
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById("pMenu").click();
+        });
+        function clickMenus(id) {
+            if (preMenu) {
+                preMenu.style.borderBottom = '1px solid white';
+                preMenu.style.color = 'gray';
             }
-            function getReview(storeId) {
-                if (prevDiv) {
-                    prevDiv.style.display = 'none';
-                }
-                prevDiv = document.getElementById("review");
-                document.getElementById("review").style.display = 'block';
-            }
-            function getIntroduction(storeId) {
-                if (prevDiv) {
-                    prevDiv.style.display = 'none';
-                }
-                prevDiv = document.getElementById("introduction");
-                document.getElementById("introduction").style.display = 'block';
+            preMenu = document.getElementById(id)
+            document.getElementById(id).style.borderBottom = '3px solid black';
+            document.getElementById(id).style.color = 'black';
+            if (id === 'pMenu') {
+                getMenu(document.getElementById("storeId").value);
+            } else if (id === 'pPicture') {
+                getPicture(document.getElementById("storeId").value);
+            } else if (id === 'pReview') {
+                getReview(document.getElementById("storeId").value);
+            } else if (id === 'pLocation') {
+                getLocation(document.getElementById("storeId").value);
             }
 
+        }
+        let prevDiv;
+        function getMenu(storeId) {
+            if (prevDiv) {
+                prevDiv.style.display = 'none';
+            }
+            prevDiv = document.getElementById("menu");
+            document.getElementById("menu").style.display = 'block';
+        }
 
-        </script>
+
+        function getPicture(storeId) {
+            if (prevDiv) {
+                prevDiv.style.display = 'none';
+            }
+            prevDiv = document.getElementById("picture");
+            document.getElementById("picture").style.display = 'block';
+        }
+        function getReview(storeId) {
+            if (prevDiv) {
+                prevDiv.style.display = 'none';
+            }
+            prevDiv = document.getElementById("review");
+            document.getElementById("review").style.display = 'block';
+        }
+        function getLocation(storeId) {
+            if (prevDiv) {
+                prevDiv.style.display = 'none';
+            }
+            prevDiv = document.getElementById("map_template");
+            document.getElementById("map_template").style.display = 'block';
+        }
+        fetch('/store-location', {
+            method: "POST"
+        })  // 여러 위치 데이터를 반환하는 API 엔드포인트
+            .then(response => response.json())
+            .then(data => {
+                    // 마커 생성
+                    const marker = new naver.maps.Marker({
+                        position: new naver.maps.LatLng(data.lat, data.lng),
+                        map: map
+                    });
+
+
+                    // 정보 윈도우 생성
+                    const infoWindow = new naver.maps.InfoWindow({
+                        content: `<div style="width:150px;text-align:center;padding:10px;">${data.name}</div>`
+                    });
+
+                    // 마커 클릭 시 정보 윈도우 표시
+                    naver.maps.Event.addListener(marker, 'click', () => {
+                        infoWindow.open(map, marker);
+                    });
+              
+            })
+            .catch(error => console.error('Error:', error));
+
+    </script>
 </body>
 
 </html>

@@ -1,14 +1,14 @@
-let map; // 전역 변수로 선언
+let map; 
 function initMap() {
-    console.log("initMap 함수가 호출되었습니다."); // 초기화 여부 확인
+    console.log("initMap 함수가 호출되었습니다."); 
     if (typeof naver !== "undefined" && typeof naver.maps !== "undefined") {
         const mapOptions = {
             center: new naver.maps.LatLng(37.737721, 127.0461758),
             zoom: 17
         };
 
-        map = new naver.maps.Map('map', mapOptions); // 전역 변수에 할당
-        console.log("지도 초기화 완료:", map); // 초기화 확인
+        map = new naver.maps.Map('map', mapOptions); 
+        console.log("지도 초기화 완료:", map); 
 
         // 지도가 초기화된 후 좌표가 있는 경우에만 업데이트
         let lat = document.getElementById("lat").value;
@@ -51,7 +51,7 @@ fetch('/map.html')
         
         // map.html의 스크립트를 실행
         const script = document.createElement('script');
-        script.src = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hmuxpcm6uv';
+        script.src = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y614hn2kbc';
         script.onload = initMap; // initMap 호출
         document.body.appendChild(script); // 스크립트를 body에 추가
     })

@@ -169,7 +169,7 @@
                     color: slategray;"></p>
                     <p th:text="${store.address}" style="
                     position: relative;
-                    top: -261px;
+                    top: -255px;
                     left: 175px;"></p>
                     <p th:text="${store.rank}" style="
                     position: relative;
@@ -202,60 +202,6 @@
             </div>
 
 
-            <div th:each="store, stat : ${stores}">
-                <form action="/reservation/store-detail/form" method="post" th:id="'form_' + ${stat.index}">
-                    <input type="hidden" name="storeId" th:value="${store.storeId}">
-
-                </form>
-                <div class="store" th:id="'store' + ${stat.index}" th:onclick="'submitForm(' + ${stat.index} + ')'">
-                    <input type="hidden" th:value="${store.isOpen}" th:id="'isOpen' + ${stat.index}">
-                    <img th:src="${store.storeImagePath}" alt="" style="width: 163px;
-                    height: 199px;
-                    border-radius: 0.5em; border: 1px solid black;">
-                    <p th:text="${store.storeName}" style="
-                    font-size: 26px;
-                    font-weight: bold;
-                    position: relative;
-                    top: -233px;
-                    left: 173px;"></p>
-                    <p th:text="${store.category}" style="    
-                    position: relative;
-                    top: -287px;
-                    left: 464px;
-                    color: slategray;"></p>
-                    <p th:text="${store.address}" style="
-                    position: relative;
-                    top: -261px;
-                    left: 175px;"></p>
-                    <p th:text="${store.rank}" style="
-                    position: relative;
-                    top: -329px;
-                    left: 203px;
-                    font-size: 22px;"></p>
-                    <p th:text="${store.heart}" style="
-                    position: relative;
-                    top: -377px;
-                    left: 262px;
-                    font-size: 22px;"></p>
-                    <img src="/images/star.png" alt="" style="     position: relative;
-                        top: -427px;
-
-                    left: 170px;
-                ">
-                    <img src="/images/heart.png" alt="" style="    position: relative;
-                        top: -431px;
-
-                    left: 205px;">
-
-
-                    <hr style="    color: gray;
-                     position: relative;
-                     top: -412px;
-                     width: 362px;
-                     left: 86px;">
-
-                </div>
-            </div>
         </div>
 
 

@@ -103,5 +103,13 @@ public class AddressService {
         System.out.println("유저 활성화된 주소 : " + address.getName());
         return locInfos;
     }
+    public Map<String, Object> mapMarking(Map<String, Object> locInfos, Long storeId) {
+        Store store = storeService.findById(storeId);
+
+        locInfos.put("lat", store.getLat());
+        locInfos.put("lng", store.getLng());
+        locInfos.put("name", store.getStoreName());
+        return locInfos;
+    }
 
 }

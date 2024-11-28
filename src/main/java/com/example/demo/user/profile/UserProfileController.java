@@ -121,12 +121,14 @@ public class UserProfileController {
         List<Long> userCategoryId = userProfileService.findUserCategories(user); 
         model.addAttribute("categories", categories);
         model.addAttribute("userCategoryId", userCategoryId);
+       
         return "user/profile/food-interest";
     }
 
     // 음식 취향 저장
     @PostMapping("/food/set-user")
-    public String setUserFood(@RequestParam("food") List<String> foods, Model model) {
+    public String setUserFood(@RequestParam("food") List<String> foods, Model model, 
+    @RequestParam(value = "config", required = false)Boolean isConfig) {
         Long userId = userService.getLoggedInUserId();
         // 이전에 있었던 음식 취향 삭제
         Users user = userService.findById(userId);
@@ -135,6 +137,9 @@ public class UserProfileController {
         for (String food : foods) {
             Long id = userProfileService.findByNameFromCategory(food);
             userProfileService.saveUserFood(id, userService.getLoggedInUserId());
+        }
+        if(isConfig != null && isConfig)  {
+            return "redirect:/user/config";
         }
         return "redirect:/user-profile/image/form";
     }
